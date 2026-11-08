@@ -1,0 +1,54 @@
+{
+  "app": {
+    "titol": "Observatori Ciutadà de l'Horta",
+    "promou": "Una iniciativa de Per l'Horta"
+  },
+  "panell": {
+    "obrir": "Capes i filtres",
+    "tancar": "Tanca el panell",
+    "fons": "Mapa de fons",
+    "capes": "Capes de referència",
+    "partides": "Partides",
+    "municipis": "Municipis",
+    "sigpac": "Recintes SIGPAC",
+    "sigpacZoom": "Visibles en acostar el mapa",
+    "inventari": "Inventari",
+    "elements_one": "{{count, number}} element validat",
+    "elements_other": "{{count, number}} elements validats",
+    "visibles": "{{visibles, number}} de {{total, number}} visibles",
+    "tots": "Tots",
+    "cap": "Cap",
+    "desplegar": "Mostra les variables de {{tema}}",
+    "plegar": "Amaga les variables de {{tema}}"
+  },
+  "fons": {
+    "topo": "Topogràfic IGN",
+    "pnoa": "PNOA màxima actualitat",
+    "osm": "OpenStreetMap"
+  },
+  "fitxa": {
+    "tancar": "Tanca la fitxa",
+    "carregant": "Carregant la fitxa…",
+    "error": "No s'ha pogut carregar la fitxa.",
+    "tema": "Tema",
+    "categoria": "Categoria",
+    "partida": "Partida",
+    "municipi": "Municipi",
+    "data": "Data d'alta",
+    "estat": "Estat",
+    "origen": "Origen",
+    "fotos": "Fotografies",
+    "foto": "Fotografia de l'element ({{n}} de {{total}})",
+    "estats": { "pendent": "Pendent de validar", "validat": "Validat", "rebutjat": "Rebutjat" },
+    "origens": { "legacy_2018": "Inventari 2017-2018", "web": "Aportació web", "app": "Aportació des de l'app" }
+  },
+  "estat": {
+    "carregant": "Carregant l'inventari…",
+    "error": "No s'han pogut carregar les dades de l'Observatori.",
+    "reintentar": "Torna-ho a provar"
+  },
+  "llicencia": {
+    "dades": "Dades: CC BY 4.0",
+    "codi": "Codi: AGPL-3.0"
+  }
+}

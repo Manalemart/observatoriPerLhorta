@@ -327,6 +327,7 @@ as $$
       'id', e.id,
       'geometry', st_asgeojson(e.geom, 7)::jsonb,
       'properties', jsonb_build_object(
+        'id', e.id,                       -- MapLibre descarta los id de Feature que no son numéricos
         'tema_id', v.tema_id, 'tema', t.nom,
         'variable_id', e.variable_id, 'variable', v.nom,
         'categoria', c.nom, 'estat', e.estat, 'origen', e.origen,
@@ -342,6 +343,35 @@ as $$
     and (p_tema_id is null or v.tema_id = p_tema_id)
     and (p_variable_id is null or e.variable_id = p_variable_id)
     and (p_estat is null or e.estat = p_estat);
+$$;
+
+-- ─── Territorio → GeoJSON para el mapa ─────────────────────────────────────
+
+create function public.municipis_geojson()
+returns jsonb
+language sql stable
+set search_path = public, extensions, pg_temp
+as $$
+  select jsonb_build_object('type', 'FeatureCollection', 'features', coalesce(jsonb_agg(jsonb_build_object(
+    'type', 'Feature',
+    'geometry', st_asgeojson(geom, 5)::jsonb,
+    'properties', jsonb_build_object('codcat', codcat, 'nom', nom)
+  )), '[]'::jsonb))
+  from public.municipis;
+$$;
+
+create function public.partides_geojson()
+returns jsonb
+language sql stable
+set search_path = public, extensions, pg_temp
+as $$
+  select jsonb_build_object('type', 'FeatureCollection', 'features', coalesce(jsonb_agg(jsonb_build_object(
+    'type', 'Feature',
+    'geometry', st_asgeojson(p.geom, 6)::jsonb,
+    'properties', jsonb_build_object('id', p.id, 'nom', p.nom, 'municipi', m.nom)
+  )), '[]'::jsonb))
+  from public.partides p
+  join public.municipis m on m.codcat = p.codcat;
 $$;
 
 -- ─── Custom access token hook: rol y partidas en el JWT ────────────────────

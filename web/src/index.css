@@ -1,0 +1,129 @@
+:root {
+  --superficie: #fcfcfb;
+  --superficie-2: #f3f2ee;
+  --vora: #dedcd5;
+  --text: #2b2822;
+  --text-2: #5c584f;
+  --marca: #5f8f1f;
+  --marca-fosc: #4a7016;
+  --ombra: 0 2px 12px rgb(0 0 0 / 0.18);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--superficie);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --superficie: #1f1e1b;
+    --superficie-2: #2a2925;
+    --vora: #45433c;
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --marca: #a5d65a;
+    --marca-fosc: #bfe582;
+  }
+  .logo { background: #fcfcfb; border-radius: 6px; padding: 2px 6px; }
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+h2 { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-2); margin: 0 0 0.5rem; }
+h3 { font-size: 0.85rem; margin: 1rem 0 0.5rem; }
+button { font: inherit; color: inherit; cursor: pointer; }
+ul { list-style: none; margin: 0; padding: 0; }
+input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin: 0; flex: none; }
+:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+
+.app { height: 100%; display: flex; flex-direction: column; }
+
+/* Cabecera */
+.capcalera {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.4rem 1rem; border-bottom: 3px solid var(--marca); background: var(--superficie);
+  flex: none;
+}
+.logo { height: 40px; display: block; }
+.promou { font-size: 0.8rem; color: var(--text-2); }
+.obrir-panell {
+  display: none; margin-left: auto; padding: 0.45rem 0.75rem; min-height: 40px;
+  border: 1px solid var(--vora); border-radius: 6px; background: var(--superficie-2);
+  font-size: 0.85rem; white-space: nowrap;
+}
+
+/* Cuerpo */
+.cos { flex: 1; min-height: 0; display: flex; }
+.panell { width: 300px; flex: none; overflow-y: auto; border-right: 1px solid var(--vora); background: var(--superficie); }
+.panell-contingut { padding: 1rem; display: flex; flex-direction: column; gap: 1.25rem; min-height: 100%; }
+.zona-mapa { flex: 1; min-width: 0; position: relative; }
+.zona-mapa .mapa { position: absolute; inset: 0; } /* .maplibregl-map fija position: relative */
+
+.seccio-cap { display: flex; justify-content: space-between; align-items: baseline; }
+.accions { display: flex; gap: 0.25rem; }
+.accions button {
+  border: 0; background: none; color: var(--marca-fosc); font-size: 0.8rem;
+  padding: 0.25rem 0.4rem; border-radius: 4px; text-decoration: underline;
+}
+.resum { margin: 0 0 0.75rem; font-size: 0.85rem; color: var(--text-2); line-height: 1.5; }
+.resum strong { color: var(--text); font-size: 1rem; }
+
+/* Temas */
+.tema { border-top: 1px solid var(--vora); }
+.tema-fila { display: flex; align-items: center; gap: 0.5rem; min-height: 40px; }
+.tema-etiqueta { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; font-size: 0.92rem; cursor: pointer; }
+.mostra { width: 14px; height: 14px; border-radius: 4px; flex: none; display: inline-block; }
+.recompte { font-size: 0.8rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.desplegar { border: 0; background: none; width: 32px; height: 32px; border-radius: 4px; color: var(--text-2); flex: none; }
+.desplegar:hover { background: var(--superficie-2); }
+.variables { padding: 0 0 0.5rem 1.4rem; }
+.variables li { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 30px; font-size: 0.85rem; }
+.variables label { display: flex; align-items: center; gap: 0.5rem; min-width: 0; cursor: pointer; }
+
+/* Opciones */
+.opcions { display: flex; flex-direction: column; gap: 0.15rem; }
+.opcions label { display: flex; align-items: center; gap: 0.5rem; min-height: 32px; font-size: 0.92rem; cursor: pointer; }
+.opcions small { display: block; font-size: 0.75rem; color: var(--text-2); }
+.peu { margin-top: auto; font-size: 0.75rem; color: var(--text-2); padding-top: 0.5rem; border-top: 1px solid var(--vora); }
+
+/* Ficha */
+.fitxa {
+  position: absolute; top: 0.75rem; left: 0.75rem; width: 320px; max-height: calc(100% - 3.5rem);
+  overflow-y: auto; padding: 1rem; background: var(--superficie); border-radius: 8px; box-shadow: var(--ombra);
+  z-index: 2;
+}
+.fitxa h2 { font-size: 1.15rem; letter-spacing: 0; text-transform: none; color: var(--text); margin: 0 1.5rem 0.5rem 0; }
+.fitxa-tema { display: flex; align-items: center; gap: 0.4rem; margin: 0 1.5rem 0.25rem 0; font-size: 0.8rem; color: var(--text-2); }
+.fitxa-descripcio { margin: 0 0 0.75rem; font-size: 0.9rem; line-height: 1.45; white-space: pre-line; }
+.fitxa dl { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.75rem; margin: 0; font-size: 0.85rem; }
+.fitxa dt { color: var(--text-2); }
+.fitxa dd { margin: 0; }
+.fotos img { width: 100%; display: block; border-radius: 6px; margin-bottom: 0.5rem; }
+.tancar {
+  position: absolute; top: 0.4rem; right: 0.4rem; width: 36px; height: 36px; border: 0; border-radius: 50%;
+  background: none; font-size: 1.4rem; line-height: 1; color: var(--text-2);
+}
+.tancar:hover { background: var(--superficie-2); }
+
+/* Avisos */
+.avis { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; padding: 1rem; text-align: center; }
+.avis button { padding: 0.5rem 1rem; border: 1px solid var(--vora); border-radius: 6px; background: var(--superficie-2); }
+
+/* Móvil: el panel y la ficha flotan sobre el mapa */
+@media (max-width: 767px) {
+  .capcalera { padding: 0.35rem 16px; gap: 0.5rem; }
+  .logo { height: 32px; }
+  .promou { display: none; }
+  .obrir-panell { display: block; }
+  .panell {
+    display: none; position: absolute; inset: 0; width: 100%; z-index: 3; border-right: 0;
+  }
+  .panell.obert { display: block; }
+  .cos { position: relative; }
+  .panell-contingut { padding: 1rem 16px; }
+  .tema-fila, .opcions label, .variables li { min-height: 44px; }
+  .desplegar { width: 44px; height: 44px; }
+  .fitxa {
+    top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-height: 60%;
+    border-radius: 12px 12px 0 0; padding: 1rem 16px;
+  }
+  .tancar { width: 44px; height: 44px; }
+}

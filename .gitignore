@@ -7,3 +7,6 @@ dist/
 # Flutter
 app/build/
 app/.dart_tool/
+
+# Copiado de node_modules en predev/prebuild
+web/public/maplibre-gl-worker.mjs

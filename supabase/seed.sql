@@ -4,11 +4,11 @@
 -- Generado desde la BD legacy restaurada (observatori-revival).
 -- ═══════════════════════════════════════════════════════════════════════════
 
-insert into public.temes (nom, ordre) values ('Agressions', 1);
-insert into public.temes (nom, ordre) values ('Construccions', 2);
-insert into public.temes (nom, ordre) values ('Infraestructura', 3);
-insert into public.temes (nom, ordre) values ('Ús del sòl', 4);
-insert into public.temes (nom, ordre) values ('Vegetació', 5);
+insert into public.temes (nom, ordre, color) values ('Agressions', 1, '#c9302c');
+insert into public.temes (nom, ordre, color) values ('Construccions', 2, '#1f5fb0');
+insert into public.temes (nom, ordre, color) values ('Infraestructura', 3, '#d65db1');
+insert into public.temes (nom, ordre, color) values ('Ús del sòl', 4, '#eda100');
+insert into public.temes (nom, ordre, color) values ('Vegetació', 5, '#1baf7a');
 
 insert into public.variables (tema_id, nom, geometria, text_lliure) select id, 'Abocament (sòlid ó liquid)', 'punt', false from public.temes where nom = 'Agressions';
 insert into public.variables (tema_id, nom, geometria, text_lliure) select id, 'Altres agressions (text lliure)', 'punt', true from public.temes where nom = 'Agressions';

@@ -12,7 +12,7 @@ Supabase, una web React y una app Flutter. La documentación del proyecto está 
 | Carpeta | Contenido |
 |---------|-----------|
 | `supabase/` | Migraciones SQL (esquema, lógica, RLS), seed del catálogo y tests pgTAP |
-| `web/` | Web pública y panel de validación — React + Vite + MapLibre *(pendiente)* |
+| `web/` | Mapa público — React + Vite + MapLibre. Aportaciones y validación *(pendientes)* |
 | `app/` | App de campo — Flutter *(pendiente)* |
 | `etl/` | Migración de los datos de 2017-2018 y de los límites oficiales del IGN |
 | `docs/` | Documentación técnica que acompaña al código |
@@ -49,3 +49,13 @@ npm run verificar         # compara el resultado con el origen
 ```
 
 Los usuarios de 2018 no se migran (RGPD). Las fotos se recodifican para eliminar EXIF y GPS.
+
+## Web
+
+```bash
+cd web
+cp .env.example .env.local   # clave anon: npx supabase status -o env
+npm install
+npm run dev                  # http://localhost:5173
+npm run build && npm run lint
+```
