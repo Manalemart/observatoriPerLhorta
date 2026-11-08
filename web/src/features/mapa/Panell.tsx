@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { FeatureCollection } from 'geojson';
 import { FONS } from './estil';
 import type { Dades, Fons, Tema } from './tipus';
 
 interface Props {
   dades: Dades;
+  elements: FeatureCollection;
   fons: Fons;
   onFons: (f: Fons) => void;
   variablesActives: Set<number>;
@@ -89,21 +91,25 @@ function FilaTema({ tema, recompte, actives, onCanvi }: {
 }
 
 export function Panell({
-  dades, fons, onFons, variablesActives, onVariablesActives,
+  dades, elements, fons, onFons, variablesActives, onVariablesActives,
   veurePartides, onPartides, veureMunicipis, onMunicipis, veureSigpac, onSigpac,
 }: Props) {
   const { t } = useTranslation();
 
   const recompte = useMemo(() => {
     const m = new Map<number, number>();
-    for (const f of dades.elements.features) {
+    for (const f of elements.features) {
       const id = f.properties?.variable_id as number;
       m.set(id, (m.get(id) ?? 0) + 1);
     }
     return m;
-  }, [dades.elements]);
+  }, [elements]);
 
-  const total = dades.elements.features.length;
+  const total = elements.features.length;
+  const noValidats = useMemo(
+    () => elements.features.filter((f) => f.properties?.estat !== 'validat').length,
+    [elements],
+  );
   const visibles = useMemo(
     () => [...recompte].reduce((s, [id, n]) => s + (variablesActives.has(id) ? n : 0), 0),
     [recompte, variablesActives],
@@ -121,7 +127,8 @@ export function Panell({
           </div>
         </div>
         <p className="resum">
-          <strong>{t('panell.elements', { count: total })}</strong>
+          <strong>{t('panell.elements', { count: total - noValidats })}</strong>
+          {noValidats > 0 && <><br />{t('panell.noValidats', { count: noValidats })}</>}
           <br />
           {t('panell.visibles', { visibles, total })}
         </p>

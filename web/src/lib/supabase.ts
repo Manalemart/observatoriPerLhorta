@@ -7,4 +7,5 @@ if (!url || !anonKey) {
   throw new Error('Falten VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY (vegeu web/.env.example)');
 }
 
-export const supabase = createClient(url, anonKey);
+// PKCE: el enlace mágico clásico devuelve los tokens en el hash de la URL, que aquí usa el mapa
+export const supabase = createClient(url, anonKey, { auth: { flowType: 'pkce' } });

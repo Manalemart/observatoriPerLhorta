@@ -1,19 +1,30 @@
 import { useEffect, useRef, useState } from 'react';
-import { Map as MapaGL, NavigationControl, ScaleControl, type FilterSpecification, type Point } from 'maplibre-gl';
-import { setWorkerUrl } from 'maplibre-gl';
+import {
+  GeoJSONSource, Map as MapaGL, NavigationControl, ScaleControl, setWorkerUrl,
+  type ExpressionSpecification, type FilterSpecification, type Point,
+} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { FeatureCollection } from 'geojson';
 import { CAPES_ELEMENTS, colorPerTema, estilBase, FONS, LIMITS_AMBIT } from './estil';
-import type { Dades, Fons } from './tipus';
+import type { Dades, Esborrany, Fons } from './tipus';
 
 interface Props {
   dades: Dades;
+  elements: FeatureCollection;
   fons: Fons;
   variablesActives: Set<number>;
   veurePartides: boolean;
   veureMunicipis: boolean;
   veureSigpac: boolean;
   seleccionat: string | null;
-  onSeleccionar: (id: string | null) => void;
+  /** Ids de los elementos bajo el clic: pueden ser varios superpuestos. */
+  onSeleccionar: (ids: string[]) => void;
+  /** Mientras se aporta, los clics capturan posiciones en lugar de abrir fichas. */
+  capturant: boolean;
+  /** Aportando, sin variable aún: los clics no hacen nada. */
+  ignorarClics: boolean;
+  onClicCaptura: (lng: number, lat: number) => void;
+  esborrany: Esborrany;
 }
 
 // Worker servido tal cual desde public/ (lo copian predev y prebuild): Vite le inyecta su
@@ -21,22 +32,27 @@ interface Props {
 setWorkerUrl('/maplibre-gl-worker.mjs');
 
 const MARGE_CLIC_PX = 5;
+const BUIT: FeatureCollection = { type: 'FeatureCollection', features: [] };
+const COLOR_ESBORRANY = '#0b0b0b';
 // map.remove() borra el hash de la URL: sin esto, el doble montaje de StrictMode pierde la vista
-const HASH_INICIAL = window.location.hash;
+const HASH_INICIAL = /^#[\d.]+\/-?[\d.]+\/-?[\d.]+/.test(window.location.hash) ? window.location.hash : '';
+
+const NO_VALIDAT: ExpressionSpecification = ['!=', ['get', 'estat'], 'validat'];
 
 function visibilitat(mapa: MapaGL, capa: string, visible: boolean) {
   mapa.setLayoutProperty(capa, 'visibility', visible ? 'visible' : 'none');
 }
 
-function afegirCapes(mapa: MapaGL, dades: Dades) {
+function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
   const color = colorPerTema(dades.temes);
   mapa.addSource('municipis', { type: 'geojson', data: dades.municipis });
   mapa.addSource('partides', { type: 'geojson', data: dades.partides });
   mapa.addSource('elements', {
     type: 'geojson',
-    data: dades.elements,
+    data: elements,
     attribution: "Observatori Ciutadà de l'Horta · Per l'Horta · Font parcel·les 2018: D. G. del Cadastre",
   });
+  mapa.addSource('esborrany', { type: 'geojson', data: BUIT });
 
   mapa.addLayer({
     id: 'sigpac-linies', type: 'line', source: 'sigpac', 'source-layer': 'recinto', minzoom: 14,
@@ -54,24 +70,28 @@ function afegirCapes(mapa: MapaGL, dades: Dades) {
   mapa.addLayer({
     id: 'elements-poligons', type: 'fill', source: 'elements',
     filter: ['==', ['geometry-type'], 'Polygon'],
-    paint: { 'fill-color': color, 'fill-opacity': 0.4, 'fill-outline-color': color },
+    paint: {
+      'fill-color': color,
+      'fill-opacity': ['case', NO_VALIDAT, 0.2, 0.4],
+      'fill-outline-color': ['case', NO_VALIDAT, '#0b0b0b', color],
+    },
   });
   mapa.addLayer({
     id: 'elements-linies', type: 'line', source: 'elements',
     filter: ['==', ['geometry-type'], 'LineString'],
     paint: { 'line-color': color, 'line-width': 3 },
   });
+  // Lo no validado (solo lo ve quien tiene permiso) lleva contorno negro
   mapa.addLayer({
     id: 'elements-punts', type: 'circle', source: 'elements',
     filter: ['==', ['geometry-type'], 'Point'],
     paint: {
       'circle-color': color,
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 15, 7],
-      'circle-stroke-color': '#ffffff',
+      'circle-stroke-color': ['case', NO_VALIDAT, '#0b0b0b', '#ffffff'],
       'circle-stroke-width': 1.5,
     },
   });
-  // Resalte del elemento seleccionado
   mapa.addLayer({
     id: 'seleccio-poligon', type: 'line', source: 'elements',
     filter: ['==', ['get', 'id'], ''],
@@ -87,16 +107,36 @@ function afegirCapes(mapa: MapaGL, dades: Dades) {
       'circle-stroke-width': 3,
     },
   });
+  // Lo que se está dibujando
+  mapa.addLayer({
+    id: 'esborrany-fons', type: 'fill', source: 'esborrany',
+    filter: ['==', ['geometry-type'], 'Polygon'],
+    paint: { 'fill-color': '#ffffff', 'fill-opacity': 0.35 },
+  });
+  mapa.addLayer({
+    id: 'esborrany-linies', type: 'line', source: 'esborrany',
+    paint: { 'line-color': COLOR_ESBORRANY, 'line-width': 3, 'line-dasharray': [2, 1] },
+  });
+  mapa.addLayer({
+    id: 'esborrany-punts', type: 'circle', source: 'esborrany',
+    paint: {
+      'circle-radius': 6, 'circle-color': '#ffffff',
+      'circle-stroke-color': COLOR_ESBORRANY, 'circle-stroke-width': 3,
+    },
+  });
 }
 
 export function Mapa({
-  dades, fons, variablesActives, veurePartides, veureMunicipis, veureSigpac, seleccionat, onSeleccionar,
+  dades, elements, fons, variablesActives, veurePartides, veureMunicipis, veureSigpac,
+  seleccionat, onSeleccionar, capturant, ignorarClics, onClicCaptura, esborrany,
 }: Props) {
   const contenidor = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<MapaGL | null>(null);
   const [llest, setLlest] = useState(false);
-  const onSeleccionarRef = useRef(onSeleccionar);
-  onSeleccionarRef.current = onSeleccionar;
+
+  // Los manejadores del mapa viven tanto como él: leen siempre el último valor de estos refs
+  const ultim = useRef({ onSeleccionar, capturant, ignorarClics, onClicCaptura, elements });
+  ultim.current = { onSeleccionar, capturant, ignorarClics, onClicCaptura, elements };
 
   useEffect(() => {
     if (!contenidor.current) return;
@@ -104,7 +144,7 @@ export function Mapa({
     const mapa = new MapaGL({
       container: contenidor.current,
       style: estilBase(),
-      bounds: window.location.hash ? undefined : LIMITS_AMBIT, // bounds tendría prioridad sobre el hash
+      bounds: HASH_INICIAL ? undefined : LIMITS_AMBIT, // bounds tendría prioridad sobre el hash
       attributionControl: { compact: true },
       hash: true,                       // la vista queda en la URL y se puede compartir
     });
@@ -113,23 +153,33 @@ export function Mapa({
     mapa.addControl(new ScaleControl({ unit: 'metric' }), 'bottom-left');
 
     mapa.on('load', () => {
-      afegirCapes(mapa, dades);
+      afegirCapes(mapa, dades, ultim.current.elements);
       setLlest(true);
     });
 
-    const capesAlPunt = (p: Point) =>
+    const elementsAlPunt = (p: Point) =>
       mapa.queryRenderedFeatures(
         [[p.x - MARGE_CLIC_PX, p.y - MARGE_CLIC_PX], [p.x + MARGE_CLIC_PX, p.y + MARGE_CLIC_PX]],
         { layers: CAPES_ELEMENTS },
       );
     mapa.on('click', (e) => {
-      if (!mapa.getLayer(CAPES_ELEMENTS[0])) return;
-      const f = capesAlPunt(e.point)[0];     // queryRenderedFeatures: primero lo de más arriba
-      onSeleccionarRef.current((f?.properties?.id as string | undefined) ?? null);
+      const { capturant: capturantAra, ignorarClics: ignorar } = ultim.current;
+      if (capturantAra) {
+        ultim.current.onClicCaptura(e.lngLat.lng, e.lngLat.lat);
+        return;
+      }
+      if (ignorar || !mapa.getLayer(CAPES_ELEMENTS[0])) return;
+      // Sin repetir: queryRenderedFeatures puede devolver un elemento por cada tesela que cruza
+      const ids = elementsAlPunt(e.point).map((f) => f.properties?.id as string);
+      ultim.current.onSeleccionar([...new Set(ids)]);
     });
     mapa.on('mousemove', (e) => {
       if (!mapa.getLayer(CAPES_ELEMENTS[0])) return;
-      mapa.getCanvas().style.cursor = capesAlPunt(e.point).length ? 'pointer' : '';
+      const { capturant: capturantAra, ignorarClics: ignorar } = ultim.current;
+      let cursor = '';
+      if (capturantAra) cursor = 'crosshair';
+      else if (!ignorar && elementsAlPunt(e.point).length) cursor = 'pointer';
+      mapa.getCanvas().style.cursor = cursor;
     });
 
     return () => {
@@ -138,6 +188,16 @@ export function Mapa({
       mapa.remove();
     };
   }, [dades]);
+
+  useEffect(() => {
+    if (!llest) return;
+    mapaRef.current?.getSource<GeoJSONSource>('elements')?.setData(elements);
+  }, [elements, llest]);
+
+  useEffect(() => {
+    if (!llest) return;
+    mapaRef.current?.getSource<GeoJSONSource>('esborrany')?.setData(esborrany ?? BUIT);
+  }, [esborrany, llest]);
 
   useEffect(() => {
     const mapa = mapaRef.current;

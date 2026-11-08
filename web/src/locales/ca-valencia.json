@@ -19,7 +19,9 @@
     "tots": "Tots",
     "cap": "Cap",
     "desplegar": "Mostra les variables de {{tema}}",
-    "plegar": "Amaga les variables de {{tema}}"
+    "plegar": "Amaga les variables de {{tema}}",
+    "noValidats_one": "i {{count}} no validat que pots veure (contorn negre)",
+    "noValidats_other": "i {{count}} no validats que pots veure (contorn negre)"
   },
   "fons": {
     "topo": "Topogràfic IGN",
@@ -39,16 +41,111 @@
     "origen": "Origen",
     "fotos": "Fotografies",
     "foto": "Fotografia de l'element ({{n}} de {{total}})",
-    "estats": { "pendent": "Pendent de validar", "validat": "Validat", "rebutjat": "Rebutjat" },
-    "origens": { "legacy_2018": "Inventari 2017-2018", "web": "Aportació web", "app": "Aportació des de l'app" }
+    "estats": {
+      "pendent": "Pendent de validar",
+      "validat": "Validat",
+      "rebutjat": "Rebutjat"
+    },
+    "origens": {
+      "legacy_2018": "Inventari 2017-2018",
+      "web": "Aportació web",
+      "app": "Aportació des de l'app"
+    },
+    "motiu": "Motiu del rebuig",
+    "confirmarEsborrar": "Vols esborrar este element? No es pot desfer.",
+    "reobrir": "Torna a pendent",
+    "posicio": "Element {{n}} de {{total}} en este punt",
+    "anterior": "Element anterior",
+    "seguent": "Element següent"
   },
   "estat": {
     "carregant": "Carregant l'inventari…",
     "error": "No s'han pogut carregar les dades de l'Observatori.",
-    "reintentar": "Torna-ho a provar"
+    "reintentar": "Torna-ho a provar",
+    "noTrobat": "Esta pàgina no existeix."
   },
   "llicencia": {
     "dades": "Dades: CC BY 4.0",
     "codi": "Codi: AGPL-3.0"
+  },
+  "comu": {
+    "tancar": "Tanca",
+    "cancelar": "Cancel·la",
+    "desar": "Guarda",
+    "editar": "Edita",
+    "esborrar": "Esborra",
+    "tria": "Tria…",
+    "carregant": "Carregant…",
+    "errorDesar": "No s'ha pogut guardar. Torna-ho a provar."
+  },
+  "auth": {
+    "entrar": "Entra",
+    "eixir": "Ix",
+    "correu": "Correu electrònic",
+    "explicacio": "T'enviarem un enllaç al correu per a entrar, sense contrasenya.",
+    "enviarEnllac": "Envia'm l'enllaç",
+    "google": "Continua amb Google",
+    "revisaCorreu": "Hem enviat un enllaç a {{email}}. Obri'l en este mateix navegador per a entrar.",
+    "error": "No s'ha pogut enviar l'enllaç. Torna-ho a provar d'ací a una estona.",
+    "benvinguda": "Benvinguda a l'Observatori",
+    "aliesExplicacio": "Tria un àlies. La coordinació l'utilitzarà per a identificar-te.",
+    "alies": "Àlies"
+  },
+  "aportar": {
+    "boto": "+ Aporta un element",
+    "titol": "Nova aportació",
+    "variable": "Què és?",
+    "quin": "Especifica quin",
+    "descripcio": "Descripció (opcional)",
+    "fotos": "Fotografies (opcional, fins a {{max}})",
+    "fotosTriades_one": "{{count}} foto triada",
+    "fotosTriades_other": "{{count}} fotos triades",
+    "llicencia": "En enviar-ho, acceptes publicar les dades amb llicència CC BY 4.0 i les fotos amb CC BY-SA 4.0. Evita que isquen persones o matrícules. Es revisarà abans de publicar-ho.",
+    "instruccio": {
+      "punt": "Fes clic al mapa on està l'element.",
+      "linia": "Fes clic al mapa per a marcar cada punt de la línia.",
+      "poligon": "Fes clic al mapa per a marcar cada vèrtex del polígon.",
+      "parcela": "Acosta el mapa i fes clic damunt de la parcel·la."
+    },
+    "vertexs_one": "{{count}} punt marcat",
+    "vertexs_other": "{{count}} punts marcats",
+    "puntMarcat": "Posició marcada. Pots tornar a fer clic per a canviar-la.",
+    "desfer": "Desfés l'últim punt",
+    "esborrar": "Esborra el dibuix",
+    "cercantRecinte": "Buscant el recinte SIGPAC…",
+    "recinte": "Recinte SIGPAC: {{ref}}",
+    "senseRecinte": "Ací no hi ha cap recinte SIGPAC. Prova en una altra posició.",
+    "errorSigpac": "No s'ha pogut consultar SIGPAC. Torna a fer clic d'ací a una estona.",
+    "enviar": "Envia",
+    "enviant": "Enviant…",
+    "errorFotos": "L'element s'ha guardat, però alguna foto no s'ha pogut pujar."
+  },
+  "validacio": {
+    "titol": "Validació",
+    "tornar": "Torna al mapa",
+    "pendents": "Pendents",
+    "detall": "Element seleccionat",
+    "totes": "Totes les partides",
+    "lesMeues": "Les meues partides",
+    "recompte_one": "{{count}} element pendent",
+    "recompte_other": "{{count}} elements pendents",
+    "buit": "No hi ha res pendent de validar.",
+    "error": "No s'han pogut carregar els pendents.",
+    "pagina": "Pàgina {{n}} de {{total}}",
+    "validar": "Valida",
+    "rebutjar": "Rebutja",
+    "motiu": "Motiu del rebuig (el veurà qui ho ha aportat)",
+    "confirmarRebuig": "Confirma el rebuig",
+    "senseAcces": "Esta pàgina és per a padrins i coordinació."
+  },
+  "padrinatges": {
+    "titol": "Padrinatges",
+    "persona": "Persona",
+    "assignar": "Assigna la partida",
+    "vigents_one": "{{count}} padrinatge vigent",
+    "vigents_other": "{{count}} padrinatges vigents",
+    "buit": "Encara no hi ha cap padrinatge.",
+    "desDe": "des del {{data}}",
+    "finalitzar": "Finalitza"
   }
 }

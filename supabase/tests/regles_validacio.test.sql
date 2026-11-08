@@ -2,7 +2,7 @@
 -- Ejecutar: npx supabase test db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(21);
+select plan(25);
 
 -- ─── Fixtures ──────────────────────────────────────────────────────────────
 -- Municipio y dos partidas en una zona ficticia, lejos de l'Horta: los tests no dependen
@@ -130,6 +130,23 @@ select lives_ok(
 select pg_temp.com_anon();
 select is((public.elements_bbox(9.9, 49.9, 10.2, 50.2) -> 'features')::text, '[]',
           'elements_bbox respecta la RLS (anònim sense validats)');
+
+-- ─── Coordinación ──────────────────────────────────────────────────────────
+select pg_temp.com('00000000-0000-0000-0000-00000000000a');
+select throws_ok(
+  $$ select * from public.usuaris_coordinacio() $$,
+  '42501', null, 'Un ciutadà no pot llistar els usuaris');
+select pg_temp.com('00000000-0000-0000-0000-00000000000c');
+select ok(
+  (select count(*) >= 4 from public.usuaris_coordinacio()),
+  'La coordinació llista els usuaris');
+select lives_ok(
+  $$ select public.finalitzar_padrinatge(p.id) from public.padrinatges p
+      where p.perfil_id = '00000000-0000-0000-0000-00000000000d' $$,
+  'La coordinació finalitza un padrinatge');
+reset role;
+select is((select rol::text from public.perfils where id = '00000000-0000-0000-0000-00000000000d'),
+          'ciutada', 'Sense padrinatges vigents torna a ser ciutadà');
 
 -- ─── Carga del inventario de 2018 ──────────────────────────────────────────
 reset role;

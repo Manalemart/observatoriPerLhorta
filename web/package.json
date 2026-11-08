@@ -18,7 +18,8 @@
     "maplibre-gl": "^6.5.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-i18next": "^16.0.0"
+    "react-i18next": "^16.0.0",
+    "react-router-dom": "^7.18.5"
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.16",

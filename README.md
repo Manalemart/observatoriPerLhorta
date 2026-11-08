@@ -12,7 +12,7 @@ Supabase, una web React y una app Flutter. La documentación del proyecto está 
 | Carpeta | Contenido |
 |---------|-----------|
 | `supabase/` | Migraciones SQL (esquema, lógica, RLS), seed del catálogo y tests pgTAP |
-| `web/` | Mapa público — React + Vite + MapLibre. Aportaciones y validación *(pendientes)* |
+| `web/` | Mapa público, aportaciones y panel de validación — React + Vite + MapLibre |
 | `app/` | App de campo — Flutter *(pendiente)* |
 | `etl/` | Migración de los datos de 2017-2018 y de los límites oficiales del IGN |
 | `docs/` | Documentación técnica que acompaña al código |
@@ -59,3 +59,5 @@ npm install
 npm run dev                  # http://localhost:5173
 npm run build && npm run lint
 ```
+
+Para ver los correos de acceso en local, arrancar Supabase sin excluir `mailpit`: bandeja en http://127.0.0.1:64324.
