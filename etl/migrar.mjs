@@ -164,7 +164,8 @@ async function migrarElements() {
       descripcio: descripcio(r),
       geom: r.geom,
       partida_id: partida,
-      estat: r.validat ? 'validat' : 'pendent',
+      // Decisión 2026-11-09: todo el inventario de 2018 entra validado (ver marcarValidacioEnBloc)
+      estat: 'validat',
       legacy_varid: r.varid ?? `sense-varid:${r.taula}:${r.gid}`, // 6 polígonos de 2018 no tienen varid
       legacy_nid: r.nid,
       created_at: r.created_at,
@@ -190,6 +191,22 @@ async function migrarElements() {
     inserits += res.rowCount;
   }
   console.log(`elements: ${rows.length} en origen, ${inserits} nuevos`);
+
+  await marcarValidacioEnBloc(files.filter((_, i) => !rows[i].validat).map((f) => f.legacy_varid));
+}
+
+// Lo que en 2018 no llegó a validar ningún coordinador queda identificado en el historial
+async function marcarValidacioEnBloc(varids) {
+  const { rowCount } = await target.query(
+    `insert into public.element_historial (element_id, accio, detall)
+     select e.id, 'validat', jsonb_build_object('motiu', $2::text)
+       from public.elements e
+      where e.legacy_varid = any($1)
+        and not exists (select 1 from public.element_historial h
+                         where h.element_id = e.id and h.accio = 'validat')`,
+    [varids, 'Validació en bloc del inventari 2017-2018: no revisat en 2018'],
+  );
+  console.log(`validación en bloque: ${varids.length} sin revisar en 2018, ${rowCount} marcados`);
 }
 
 // ─── Fotos: se recodifican (sin EXIF ni GPS) y se suben a Storage ──────────

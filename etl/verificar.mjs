@@ -24,10 +24,14 @@ comprova('partides', await un(target, 'select count(*) from public.partides'),
   await un(legacy, 'select count(*) from plhcat.partides_unides_v3'));
 comprova('elements', await un(target, `select count(*) from public.elements where origen = 'legacy_2018'`),
   await un(legacy, `select count(*) from ${ELEMENTS_LEGACY}`));
-comprova('validats', await un(target, `select count(*) from public.elements where estat = 'validat'`),
-  await un(legacy, `select count(*) from ${ELEMENTS_LEGACY}
+const totalLegacy = await un(legacy, `select count(*) from ${ELEMENTS_LEGACY}`);
+const validats2018 = await un(legacy, `select count(*) from ${ELEMENTS_LEGACY}
     join plhcat.plh_variable_nodo n on n.varid = e.varid
-    join pldrupal.plhm_field_data_field_validat v on v.entity_id = n.nid and v.field_validat_value = 1`));
+    join pldrupal.plhm_field_data_field_validat v on v.entity_id = n.nid and v.field_validat_value = 1`);
+comprova('validats (en bloque)', await un(target, `select count(*) from public.elements where estat = 'validat'`), totalLegacy);
+comprova('sin revisar en 2018, identificados', await un(target,
+  `select count(*) from public.element_historial where accio = 'validat' and detall ->> 'motiu' like 'Validació en bloc%'`),
+  Number(totalLegacy) - Number(validats2018));
 comprova('elementos con autor (RGPD)', await un(target, `select count(*) from public.elements where autor_id is not null`), 0);
 comprova('elements sin partida', await un(target, `select count(*) from public.elements where partida_id is null`), 0);
 comprova('elements sin municipio', await un(target, `select count(*) from public.elements where codcat is null`), 0);
