@@ -2,15 +2,16 @@
 -- Ejecutar: npx supabase test db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(20);
+select plan(21);
 
 -- ─── Fixtures ──────────────────────────────────────────────────────────────
--- Municipio y dos partidas cuadradas cerca de València (EPSG:4326)
+-- Municipio y dos partidas en una zona ficticia, lejos de l'Horta: los tests no dependen
+-- de que la BD esté vacía o ya tenga los datos cargados (EPSG:4326)
 insert into public.municipis (codcat, nom, geom) values
-  (900, 'València', extensions.st_multi(extensions.st_makeenvelope(-0.40, 39.45, -0.30, 39.55, 4326)));
+  (99900, 'Municipi de prova', extensions.st_multi(extensions.st_makeenvelope(10.00, 50.00, 10.10, 50.10, 4326)));
 insert into public.partides (id, codcat, nom, geom) values
-  (1, 900, 'Partida A', extensions.st_multi(extensions.st_makeenvelope(-0.40, 39.45, -0.35, 39.50, 4326))),
-  (2, 900, 'Partida B', extensions.st_multi(extensions.st_makeenvelope(-0.35, 39.45, -0.30, 39.50, 4326)));
+  (99001, 99900, 'Partida A', extensions.st_multi(extensions.st_makeenvelope(10.00, 50.00, 10.05, 50.05, 4326))),
+  (99002, 99900, 'Partida B', extensions.st_multi(extensions.st_makeenvelope(10.05, 50.00, 10.10, 50.05, 4326)));
 
 -- Usuarios (el trigger crea los perfils)
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -20,12 +21,12 @@ insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-00000000000d', 'padri2@test.local',  '{}');
 update public.perfils set rol = 'coordinador' where id = '00000000-0000-0000-0000-00000000000c';
 insert into public.padrinatges (perfil_id, partida_id) values
-  ('00000000-0000-0000-0000-00000000000b', 1),
-  ('00000000-0000-0000-0000-00000000000d', 1);
+  ('00000000-0000-0000-0000-00000000000b', 99001),
+  ('00000000-0000-0000-0000-00000000000d', 99001);
 
 select is((select rol::text from public.perfils where id = '00000000-0000-0000-0000-00000000000b'),
           'padri', 'Un padrinatge vigent converteix l''usuari en padrí');
-select is((select count(*)::int from public.perfils), 4, 'El registre crea el perfil');
+select is((select count(*)::int from public.perfils where id::text like '00000000-0000-0000-0000-00000000000_'), 4, 'El registre crea el perfil');
 
 create function pg_temp.com(p_uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object('sub', p_uid, 'role', 'authenticated')::text, true);
@@ -49,7 +50,7 @@ select pg_temp.com('00000000-0000-0000-0000-00000000000a');
 
 insert into public.elements (id, variable_id, categoria_id, geom, estat, autor_id)
 select '10000000-0000-0000-0000-000000000001', var_punt, cat_punt,
-       extensions.st_setsrid(extensions.st_point(-0.38, 39.47), 4326),
+       extensions.st_setsrid(extensions.st_point(10.02, 50.02), 4326),
        'validat', '00000000-0000-0000-0000-00000000000c'      -- intenta colarse como validado y con otro autor
   from ids;
 
@@ -59,14 +60,14 @@ select is((select estat::text from public.elements where id = '10000000-0000-000
 select is((select autor_id from public.elements where id = '10000000-0000-0000-0000-000000000001'),
           '00000000-0000-0000-0000-00000000000a'::uuid, 'L''autor és qui aporta, no el que envia el client');
 select is((select partida_id from public.elements where id = '10000000-0000-0000-0000-000000000001'),
-          1, 'La partida s''assigna per posició');
+          99001, 'La partida s''assigna per posició');
 
 select pg_temp.com('00000000-0000-0000-0000-00000000000a');
 select throws_ok(
   $$ insert into public.elements (variable_id, geom) select var_punt, extensions.st_setsrid(extensions.st_point(2.0, 41.0), 4326) from ids $$,
   '22023', null, 'No es pot aportar fora de l''àmbit');
 select throws_ok(
-  $$ insert into public.elements (variable_id, geom) select var_linia, extensions.st_setsrid(extensions.st_point(-0.38, 39.47), 4326) from ids $$,
+  $$ insert into public.elements (variable_id, geom) select var_linia, extensions.st_setsrid(extensions.st_point(10.02, 50.02), 4326) from ids $$,
   '22023', null, 'El tipus de geometria ha de correspondre a la variable');
 select throws_ok(
   $$ update public.elements set estat = 'validat' where id = '10000000-0000-0000-0000-000000000001' $$,
@@ -80,10 +81,10 @@ select throws_ok(
 
 -- ─── Visibilidad ───────────────────────────────────────────────────────────
 select pg_temp.com_anon();
-select is((select count(*)::int from public.elements), 0, 'Els anònims no veuen elements pendents');
+select is((select count(*)::int from public.elements where partida_id in (99001, 99002)), 0, 'Els anònims no veuen elements pendents');
 
 select pg_temp.com('00000000-0000-0000-0000-00000000000b');
-select is((select count(*)::int from public.elements), 1, 'El padrí veu els pendents de la seua partida');
+select is((select count(*)::int from public.elements where partida_id in (99001, 99002)), 1, 'El padrí veu els pendents de la seua partida');
 
 -- ─── Validación por padrí ──────────────────────────────────────────────────
 select lives_ok(
@@ -113,7 +114,7 @@ select throws_ok(
 reset role;
 insert into public.elements (id, variable_id, geom, autor_id, origen)
 select '10000000-0000-0000-0000-000000000002', var_punt,
-       extensions.st_setsrid(extensions.st_point(-0.32, 39.47), 4326),
+       extensions.st_setsrid(extensions.st_point(10.08, 50.02), 4326),
        '00000000-0000-0000-0000-00000000000a', 'web' from ids;
 select pg_temp.com('00000000-0000-0000-0000-00000000000b');
 select throws_ok(
@@ -127,8 +128,18 @@ select lives_ok(
   'La coordinació reobri un element validat');
 
 select pg_temp.com_anon();
-select is((public.elements_bbox(-0.5, 39.4, -0.2, 39.6) -> 'features')::text, '[]',
+select is((public.elements_bbox(9.9, 49.9, 10.2, 50.2) -> 'features')::text, '[]',
           'elements_bbox respecta la RLS (anònim sense validats)');
+
+-- ─── Carga del inventario de 2018 ──────────────────────────────────────────
+reset role;
+select set_config('request.jwt.claims', '', true);
+insert into public.elements (id, variable_id, geom, origen, estat, partida_id, legacy_varid)
+select '10000000-0000-0000-0000-000000000003', var_punt,
+       extensions.st_setsrid(extensions.st_point(10.08, 50.02), 4326),   -- por posición sería la partida B
+       'legacy_2018', 'validat', 99001, 'test-legacy' from ids;
+select is((select partida_id from public.elements where id = '10000000-0000-0000-0000-000000000003'),
+          99001, 'L''inventari de 2018 conserva la partida original');
 
 select * from finish();
 rollback;

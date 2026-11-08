@@ -155,11 +155,16 @@ begin
     end if;
   end if;
 
-  -- Partida y municipio por posición
-  select p.id, p.codcat into new.partida_id, new.codcat
-    from public.partides p
-   where st_intersects(p.geom, st_pointonsurface(new.geom))
-   limit 1;
+  -- Partida y municipio por posición. El inventario de 2018 conserva la partida en la
+  -- que se dibujó: una parcela que cruza un límite podría caer en otra por posición.
+  if new.origen = 'legacy_2018' and new.partida_id is not null then
+    select p.codcat into new.codcat from public.partides p where p.id = new.partida_id;
+  else
+    select p.id, p.codcat into new.partida_id, new.codcat
+      from public.partides p
+     where st_intersects(p.geom, st_pointonsurface(new.geom))
+     limit 1;
+  end if;
   if new.codcat is null then
     select m.codcat into new.codcat
       from public.municipis m

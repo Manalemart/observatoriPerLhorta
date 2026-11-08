@@ -1,0 +1,14 @@
+{
+  "name": "observatori-etl",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "migrar": "node --env-file=.env migrar.mjs",
+    "verificar": "node --env-file=.env verificar.mjs"
+  },
+  "dependencies": {
+    "pg": "8.13.1",
+    "sharp": "0.33.5"
+  }
+}

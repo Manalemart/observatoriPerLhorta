@@ -14,7 +14,7 @@ Supabase, una web React y una app Flutter. La documentación del proyecto está 
 | `supabase/` | Migraciones SQL (esquema, lógica, RLS), seed del catálogo y tests pgTAP |
 | `web/` | Web pública y panel de validación — React + Vite + MapLibre *(pendiente)* |
 | `app/` | App de campo — Flutter *(pendiente)* |
-| `etl/` | Migración de los datos de 2017-2018 *(pendiente)* |
+| `etl/` | Migración de los datos de 2017-2018 y de los límites oficiales del IGN |
 | `docs/` | Documentación técnica que acompaña al código |
 
 ## Desarrollo local
@@ -35,3 +35,17 @@ están reservados por Hyper-V en la máquina de desarrollo.
 - Código: [AGPL-3.0](LICENSE)
 - Datos: [CC BY 4.0](DATA_LICENSE.md) — «Observatori Ciutadà de l'Horta — Per l'Horta»
 - Fotos aportadas: CC BY-SA 4.0
+
+## Cargar los datos de 2017-2018
+
+Requiere la BD legacy restaurada (`observatori-revival`) y sus ficheros.
+
+```bash
+cd etl
+cp .env.example .env      # rellenar con npx supabase status -o env
+npm install
+npm run migrar            # se puede repetir; --reset recarga el inventario de 2018
+npm run verificar         # compara el resultado con el origen
+```
+
+Los usuarios de 2018 no se migran (RGPD). Las fotos se recodifican para eliminar EXIF y GPS.
