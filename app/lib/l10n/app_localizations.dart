@@ -237,12 +237,6 @@ abstract class L {
   /// **'PNOA màxima actualitat'**
   String get fonsPnoa;
 
-  /// No description provided for @fonsOsm.
-  ///
-  /// In ca, this message translates to:
-  /// **'OpenStreetMap'**
-  String get fonsOsm;
-
   /// No description provided for @mapaAportar.
   ///
   /// In ca, this message translates to:

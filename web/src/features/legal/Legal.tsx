@@ -45,8 +45,8 @@ export function Legal() {
           CC BY 4.0 i les fotografies aportades, amb CC BY-SA 4.0.
         </p>
         <p>
-          La cartografia de fons és de l'Instituto Geográfico Nacional, l'Institut Cartogràfic Valencià,
-          OpenStreetMap i el SIGPAC (FEGA), cadascuna amb les seues condicions. Les parcel·les de l'inventari
+          La cartografia de fons és de l'Instituto Geográfico Nacional, l'Institut Cartogràfic Valencià
+          i el SIGPAC (FEGA), cadascuna amb les seues condicions. Les parcel·les de l'inventari
           2017-2018 provenen de la Direcció General del Cadastre.
         </p>
       </Seccio>

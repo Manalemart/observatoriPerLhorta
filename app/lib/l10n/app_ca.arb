@@ -25,7 +25,6 @@
   "mapaFons": "Mapa de fons",
   "fonsTopo": "Topogràfic IGN",
   "fonsPnoa": "PNOA màxima actualitat",
-  "fonsOsm": "OpenStreetMap",
   "mapaAportar": "Aporta",
   "mapaLaMeuaPosicio": "La meua posició",
   "gpsNoDisponible": "No s'ha pogut obtindre la posició. Comprova el GPS i els permisos.",

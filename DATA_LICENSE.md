@@ -18,6 +18,5 @@ Las capas siguientes **no** se redistribuyen: solo se muestran con su atribució
 | Fuente | Atribución |
 |--------|-----------|
 | Mapa topográfico y PNOA | © Instituto Geográfico Nacional |
-| OpenStreetMap | © OpenStreetMap contributors |
 | SIGPAC | SIGPAC © FEGA |
 | Polígonos de uso del suelo 2017-2018 | Font: Direcció General del Cadastre |

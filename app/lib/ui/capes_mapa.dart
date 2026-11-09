@@ -6,7 +6,8 @@ import 'package:latlong2/latlong.dart';
 import '../core/config.dart';
 import '../l10n/app_localizations.dart';
 
-enum Fons { topo, pnoa, osm }
+// Sin OpenStreetMap: sus servidores públicos no admiten el tráfico de una app en producción
+enum Fons { topo, pnoa }
 
 String _wmts(String servei, String capa) =>
     'https://www.ign.es/wmts/$servei?service=WMTS&request=GetTile&version=1.0.0&layer=$capa'
@@ -24,23 +25,16 @@ Widget capaFons(Fons fons) => switch (fons) {
           userAgentPackageName: Config.paquet,
           maxNativeZoom: 19,
         ),
-      Fons.osm => TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: Config.paquet,
-          maxNativeZoom: 19,
-        ),
     };
 
 String atribucio(Fons fons) => switch (fons) {
       Fons.topo => '© Instituto Geográfico Nacional',
       Fons.pnoa => 'PNOA © Instituto Geográfico Nacional',
-      Fons.osm => '© OpenStreetMap contributors',
     };
 
 String nomFons(L t, Fons f) => switch (f) {
       Fons.topo => t.fonsTopo,
       Fons.pnoa => t.fonsPnoa,
-      Fons.osm => t.fonsOsm,
     };
 
 /// Posición actual, pidiendo permiso si hace falta. Null si no se puede obtener.

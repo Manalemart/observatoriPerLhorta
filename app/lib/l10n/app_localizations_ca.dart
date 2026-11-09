@@ -85,9 +85,6 @@ class LCa extends L {
   String get fonsPnoa => 'PNOA màxima actualitat';
 
   @override
-  String get fonsOsm => 'OpenStreetMap';
-
-  @override
   String get mapaAportar => 'Aporta';
 
   @override

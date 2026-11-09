@@ -50,5 +50,5 @@ export interface Fitxa {
   fotos: { id: string; storage_path: string }[];
 }
 
-export type Fons = 'topo' | 'pnoa' | 'osm';
+export type Fons = 'topo' | 'pnoa';
 export type Esborrany = Feature<Geometry> | null;

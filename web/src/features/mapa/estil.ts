@@ -8,7 +8,8 @@ const wmts = (servei: string, capa: string) =>
 
 const IGN = '© <a href="https://www.ign.es" target="_blank" rel="noreferrer">Instituto Geográfico Nacional</a>';
 
-export const FONS: Fons[] = ['topo', 'pnoa', 'osm'];
+// Sin OpenStreetMap: sus servidores públicos no admiten el tráfico de una web en producción
+export const FONS: Fons[] = ['topo', 'pnoa'];
 export const FONS_INICIAL: Fons = 'topo';
 
 // Vista inicial: los 37 municipios del ámbito
@@ -22,13 +23,6 @@ export function estilBase(): StyleSpecification {
     sources: {
       topo: { type: 'raster', tiles: [wmts('mapa-raster', 'MTN')], tileSize: 256, maxzoom: 17, attribution: IGN },
       pnoa: { type: 'raster', tiles: [wmts('pnoa-ma', 'OI.OrthoimageCoverage')], tileSize: 256, maxzoom: 19, attribution: `PNOA ${IGN}` },
-      osm: {
-        type: 'raster',
-        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-        tileSize: 256,
-        maxzoom: 19,
-        attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>',
-      },
       sigpac: {
         type: 'vector',
         tiles: ['https://sigpac-hubcloud.es/mvt/recinto@3857@pbf/{z}/{x}/{y}.pbf'],

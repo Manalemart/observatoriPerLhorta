@@ -11,7 +11,6 @@ Las cuentas, los proyectos y los pagos van a nombre de Per l'Horta o de MAM: dec
 - [ ] Per l'Horta confirma la licencia de los datos y fotos de 2017-2018.
 - [ ] Las 10 fotos de 2018 revisadas (sin personas ni matrículas).
 - [ ] Un proveedor de correo (SMTP): Resend, Brevo…, con el dominio verificado.
-- [ ] Decidir el mapa de OpenStreetMap: sus servidores públicos no admiten tráfico de una web en producción. O se quita la opción, o se usa un proveedor (MapTiler, Stadia…) y se cambia la URL en `web/src/features/mapa/estil.ts`.
 
 ## 1 · GitHub
 
