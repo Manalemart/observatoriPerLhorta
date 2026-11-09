@@ -7,7 +7,7 @@ class Config {
   static const supabaseUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: 'http://127.0.0.1:64321');
   static const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
 
-  static const paquet = 'org.perlhorta.observatori_horta';
+  static const paquet = 'com.mamlabsfera.observatori_perlhorta';
 
   static const centreInicial = LatLng(39.48, -0.40);
   static const zoomInicial = 11.0;

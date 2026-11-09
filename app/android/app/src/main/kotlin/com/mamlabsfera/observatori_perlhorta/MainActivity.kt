@@ -1,4 +1,4 @@
-package org.perlhorta.observatori_horta
+package com.mamlabsfera.observatori_perlhorta
 
 import io.flutter.embedding.android.FlutterActivity
 
