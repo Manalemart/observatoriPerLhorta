@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import type { FeatureCollection } from 'geojson';
 import { FONS } from './estil';
 import type { Dades, Fons, Tema } from './tipus';
@@ -179,7 +180,7 @@ export function Panell({
       </section>
 
       <footer className="peu">
-        {t('llicencia.dades')} · {t('llicencia.codi')}
+        {t('llicencia.dades')} · {t('llicencia.codi')} · <Link to="/legal">{t('legal.enllac')}</Link>
       </footer>
     </div>
   );

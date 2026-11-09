@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 
@@ -49,6 +50,9 @@ export function DialegEntrada({ onTancar }: { onTancar: () => void }) {
       ) : (
         <form onSubmit={(e) => void enviar(e)}>
           <p>{t('auth.explicacio')}</p>
+          <p className="nota">
+            {t('legal.enEntrar')} <Link to="/legal#privacitat" target="_blank">{t('legal.privacitat')}</Link>.
+          </p>
           <label className="camp">
             <span>{t('auth.correu')}</span>
             <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />

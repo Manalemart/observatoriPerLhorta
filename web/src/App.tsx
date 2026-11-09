@@ -11,6 +11,7 @@ import { Comparador } from './features/comparador/Comparador';
 import { DadesObertes } from './features/dades/DadesObertes';
 import { DetallNoticia, EditorNoticia, LlistaNoticies } from './features/noticies/Noticies';
 import { Campana } from './features/notificacions/Campana';
+import { Legal } from './features/legal/Legal';
 import { Validacio } from './features/validacio/Validacio';
 
 export function App() {
@@ -99,6 +100,7 @@ export function App() {
           <Route path="/validacio" element={<Validacio dades={dades} onCanvi={recarregarElements} />} />
           <Route path="/dades" element={<DadesObertes dades={dades} />} />
           <Route path="/comparador" element={<Comparador />} />
+          <Route path="/legal" element={<Legal />} />
           <Route path="/noticies" element={<LlistaNoticies />} />
           <Route path="/noticies/nova" element={<EditorNoticia />} />
           <Route path="/noticies/:id" element={<DetallNoticia />} />

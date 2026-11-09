@@ -219,5 +219,11 @@
       "rebutjat": "Rebutjat",
       "reobert": "Torna a estar pendent"
     }
+  },
+  "legal": {
+    "enllac": "Avís legal i privacitat",
+    "condicions": "Condicions d'ús",
+    "privacitat": "la política de privacitat",
+    "enEntrar": "En entrar acceptes les condicions d'ús i"
   }
 }

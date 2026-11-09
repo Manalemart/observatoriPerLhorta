@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Si se empuja varias veces seguidas, cancela los runs viejos de la misma rama
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  base-de-dades:
+    name: Supabase (migraciones + pgTAP)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.0.0
+
+      # Solo lo que necesitan las migraciones y los tests
+      - name: Arrancar Supabase
+        run: supabase start -x studio,imgproxy,logflare,vector,supavisor,edge-runtime,realtime,postgres-meta,mailpit
+
+      - name: Tests de la base de datos
+        run: supabase test db
+
+  web:
+    name: Web (lint + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      # El build no se conecta a nada: basta con que las variables existan
+      - run: npm run build
+        env:
+          VITE_SUPABASE_URL: https://exemple.supabase.co
+          VITE_SUPABASE_ANON_KEY: ci
+
+  app:
+    name: App Flutter (analyze + tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Versión fija: una release nueva de Flutter podría romper el CI sin tocar el proyecto
+          flutter-version: '3.41.6'
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # El código generado (Drift, l10n) va en el repo: si alguien cambia la fuente y
+      # no lo regenera, que falle aquí y no en el móvil
+      - name: Código generado al día
+        run: |
+          dart run build_runner build --delete-conflicting-outputs
+          flutter gen-l10n
+          git diff --exit-code -- lib
+
+      - run: flutter analyze
+      # Los tests de integración necesitan claves de Supabase: sin ellas se saltan
+      - run: flutter test

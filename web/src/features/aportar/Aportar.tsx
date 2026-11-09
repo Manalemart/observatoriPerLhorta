@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import type { Feature, Geometry, Position } from 'geojson';
 import { useAuth } from '../../auth/AuthContext';
 import { pujarFoto } from '../../lib/fotos';
@@ -226,7 +227,9 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
               />
             </label>
             {fotos.length > 0 && <p className="nota">{t('aportar.fotosTriades', { count: fotos.length })}</p>}
-            <p className="nota">{t('aportar.llicencia')}</p>
+            <p className="nota">
+              {t('aportar.llicencia')} <Link to="/legal#condicions" target="_blank">{t('legal.condicions')}</Link>
+            </p>
           </>
         )}
 
