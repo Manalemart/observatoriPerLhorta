@@ -17,6 +17,10 @@ Supabase, una web React y una app Flutter. La documentación del proyecto está 
 | `etl/` | Migración de los datos de 2017-2018 y de los límites oficiales del IGN |
 | `docs/` | Documentación técnica que acompaña al código |
 
+## Despliegue
+
+Guía paso a paso en [`docs/DESPLEGAMENT.md`](docs/DESPLEGAMENT.md). La CI está en `.github/workflows/ci.yml`.
+
 ## Desarrollo local
 
 Requisitos: Docker Desktop y Node 20+.
