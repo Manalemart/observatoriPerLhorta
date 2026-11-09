@@ -173,7 +173,8 @@
   "comparador": {
     "esquerra": "Esquerra",
     "dreta": "Dreta",
-    "tall": "Posició de la línia de comparació"
+    "tall": "Posició de la línia de comparació",
+    "actual": "Màxima actualitat (PNOA)"
   },
   "partides": {
     "titol": "Les meues partides",
