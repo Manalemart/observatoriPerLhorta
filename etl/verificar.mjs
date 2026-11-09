@@ -32,6 +32,8 @@ comprova('validats (en bloque)', await un(target, `select count(*) from public.e
 comprova('sin revisar en 2018, identificados', await un(target,
   `select count(*) from public.element_historial where accio = 'validat' and detall ->> 'motiu' like 'Validació en bloc%'`),
   Number(totalLegacy) - Number(validats2018));
+comprova('noticias y salidas', await un(target, 'select count(*) from public.noticies where legacy_nid is not null'),
+  await un(legacy, "select count(*) from pldrupal.plhm_node where type in ('not_act', 'eixida')"));
 comprova('elementos con autor (RGPD)', await un(target, `select count(*) from public.elements where autor_id is not null`), 0);
 comprova('elements sin partida', await un(target, `select count(*) from public.elements where partida_id is null`), 0);
 comprova('elements sin municipio', await un(target, `select count(*) from public.elements where codcat is null`), 0);

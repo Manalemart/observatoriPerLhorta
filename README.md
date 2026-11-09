@@ -12,7 +12,7 @@ Supabase, una web React y una app Flutter. La documentación del proyecto está 
 | Carpeta | Contenido |
 |---------|-----------|
 | `supabase/` | Migraciones SQL (esquema, lógica, RLS), seed del catálogo y tests pgTAP |
-| `web/` | Mapa público, aportaciones y panel de validación — React + Vite + MapLibre |
+| `web/` | Mapa público, aportaciones, validación, datos abiertos, comparador y noticias — React + Vite + MapLibre |
 | `app/` | App de campo — Flutter (ver `app/README.md`) |
 | `etl/` | Migración de los datos de 2017-2018 y de los límites oficiales del IGN |
 | `docs/` | Documentación técnica que acompaña al código |

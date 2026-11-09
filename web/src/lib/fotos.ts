@@ -4,7 +4,7 @@ const COSTAT_MAX = 1600;
 const QUALITAT = 0.8;
 
 /** Redimensiona y recodifica en JPEG: pesa menos y elimina EXIF y GPS. */
-async function comprimir(fitxer: File): Promise<Blob> {
+export async function comprimir(fitxer: File): Promise<Blob> {
   const imatge = await createImageBitmap(fitxer, { imageOrientation: 'from-image' });
   const escala = Math.min(1, COSTAT_MAX / Math.max(imatge.width, imatge.height));
   const canvas = document.createElement('canvas');

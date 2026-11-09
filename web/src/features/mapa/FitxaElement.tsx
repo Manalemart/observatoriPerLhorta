@@ -26,7 +26,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
   const [text, setText] = useState('');
   const [errorAccio, setErrorAccio] = useState(false);
 
-  const carregar = () => carregarFitxa(id);
+  const carregar = () => carregarFitxa(id, !!uid);
 
   useEffect(() => {
     let vigent = true;
@@ -39,7 +39,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
       .catch(() => { if (vigent) setError(true); });
     return () => { vigent = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, uid]);
 
   const esMeu = !!uid && fitxa?.autor_id === uid;
   const editable = esMeu && fitxa?.estat !== 'validat';

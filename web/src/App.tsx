@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import type { FeatureCollection } from 'geojson';
 import { useAuth } from './auth/AuthContext';
 import { DialegAlies, DialegEntrada } from './auth/Dialegs';
 import { carregarDades, carregarElements } from './features/mapa/dades';
 import type { Dades } from './features/mapa/tipus';
 import { VistaMapa } from './features/mapa/VistaMapa';
+import { Comparador } from './features/comparador/Comparador';
+import { DadesObertes } from './features/dades/DadesObertes';
+import { DetallNoticia, EditorNoticia, LlistaNoticies } from './features/noticies/Noticies';
+import { Campana } from './features/notificacions/Campana';
 import { Validacio } from './features/validacio/Validacio';
 
 export function App() {
@@ -40,7 +44,13 @@ export function App() {
     <div className="app">
       <header className="capcalera">
         <Link to="/"><img src="/logo.png" alt={t('app.titol')} className="logo" /></Link>
-        <span className="promou">{t('app.promou')}</span>
+        <nav className="nav-principal" aria-label={t('nav.titol')}>
+          <NavLink to="/" end>{t('nav.mapa')}</NavLink>
+          <NavLink to="/noticies">{t('nav.noticies')}</NavLink>
+          <NavLink to="/comparador">{t('nav.comparador')}</NavLink>
+          <NavLink to="/dades">{t('nav.dades')}</NavLink>
+          {potValidar && <NavLink to="/validacio">{t('validacio.titol')}</NavLink>}
+        </nav>
         <div className="capcalera-accions">
           {llest && esMapa && (
             <button
@@ -52,13 +62,9 @@ export function App() {
               {panellObert ? t('panell.tancar') : t('panell.obrir')}
             </button>
           )}
-          {potValidar && (
-            <Link className="boto" to={esMapa ? '/validacio' : '/'}>
-              {esMapa ? t('validacio.titol') : t('validacio.tornar')}
-            </Link>
-          )}
           {uid ? (
             <>
+              <Campana onCanvi={recarregarElements} />
               <span className="usuari">{perfil?.nom_public}</span>
               <button type="button" className="boto" onClick={() => void eixir()}>{t('auth.eixir')}</button>
             </>
@@ -91,6 +97,12 @@ export function App() {
             )}
           />
           <Route path="/validacio" element={<Validacio dades={dades} onCanvi={recarregarElements} />} />
+          <Route path="/dades" element={<DadesObertes dades={dades} />} />
+          <Route path="/comparador" element={<Comparador />} />
+          <Route path="/noticies" element={<LlistaNoticies />} />
+          <Route path="/noticies/nova" element={<EditorNoticia />} />
+          <Route path="/noticies/:id" element={<DetallNoticia />} />
+          <Route path="/noticies/:id/edita" element={<EditorNoticia />} />
           <Route path="*" element={<div className="avis"><p>{t('estat.noTrobat')}</p><Link className="boto" to="/">{t('validacio.tornar')}</Link></div>} />
         </Routes>
       )}

@@ -40,7 +40,7 @@ export interface Fitxa {
   estat: Estat;
   origen: 'legacy_2018' | 'web' | 'app';
   created_at: string;
-  autor_id: string | null;
+  autor_id?: string | null;
   motiu_rebuig: string | null;
   sigpac_ref: string | null;
   variable: { nom: string; tema: { nom: string; color: string } };

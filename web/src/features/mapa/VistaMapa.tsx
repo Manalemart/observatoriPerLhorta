@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import type { FeatureCollection } from 'geojson';
 import { useAuth } from '../../auth/AuthContext';
 import { Aportar } from '../aportar/Aportar';
@@ -50,6 +51,12 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
     clicCaptura.current = f;
   }, []);
   const onClicCaptura = useCallback((lng: number, lat: number) => clicCaptura.current?.(lng, lat), []);
+
+  const { key: claveNavegacio } = useLocation();
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('element');
+    if (id) onSeleccionar([id]);
+  }, [claveNavegacio, onSeleccionar]);
 
   const seleccionat = seleccio[posicio] ?? null;
 

@@ -30,10 +30,11 @@ export function carregarElements(): Promise<FeatureCollection> {
   return rpc('elements_bbox', AMBIT);
 }
 
-export async function carregarFitxa(id: string): Promise<Fitxa> {
+/** autor_id solo se puede pedir con sesión: la API se lo niega a los anónimos. */
+export async function carregarFitxa(id: string, ambSessio: boolean): Promise<Fitxa> {
   const { data, error } = await supabase
     .from('elements')
-    .select(`id, descripcio, text_lliure, estat, origen, created_at, autor_id, motiu_rebuig, sigpac_ref,
+    .select(`id, descripcio, text_lliure, estat, origen, created_at, ${ambSessio ? 'autor_id, ' : ''}motiu_rebuig, sigpac_ref,
       variable:variables(nom, tema:temes(nom, color)),
       categoria:categories(nom),
       partida:partides(nom),

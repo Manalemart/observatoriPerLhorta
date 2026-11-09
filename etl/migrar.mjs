@@ -255,6 +255,91 @@ async function migrarFotos() {
   console.log(`fotos: ${pujades}`);
 }
 
+// ─── Noticias y salidas de 2017-2018 ───────────────────────────────────────
+
+const ENTITATS = { amp: '&', lt: '<', gt: '>', quot: '"', nbsp: ' ', aacute: 'á', eacute: 'é', iacute: 'í', oacute: 'ó', uacute: 'ú', agrave: 'à', egrave: 'è', ograve: 'ò', ccedil: 'ç', iuml: 'ï', uuml: 'ü', ntilde: 'ñ', middot: '·', laquo: '«', raquo: '»', ndash: '–', mdash: '—', hellip: '…', rsquo: '’', lsquo: '‘', ldquo: '“', rdquo: '”', euro: '€', acute: "'", apos: "'", ouml: 'ö', auml: 'ä', Agrave: 'À', Eacute: 'É', Oacute: 'Ó', iexcl: '¡', iquest: '¿', ordf: 'ª', ordm: 'º', deg: '°' };
+
+function htmlATextPla(html) {
+  return (html ?? '')
+    .replace(/<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, (_, url, text) => {
+      const net = text.replace(/<[^>]+>/g, '').trim();
+      return /^https?:/.test(url) && !net.includes(url) ? `${net} (${url})` : net;
+    })
+    .replace(/<\/(p|div|h[1-6]|ul|ol)>/gi, '\n\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<li\b[^>]*>/gi, '- ')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&([a-z]+);/gi, (m, n) => ENTITATS[n] ?? ENTITATS[n.toLowerCase()] ?? m)
+    .replace(/[ \t\u00a0]+/g, ' ')
+    .replace(/ *\n */g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+// Quedan sin publicar: la coordinación las revisa antes (pueden salir nombres y personas).
+// Solo una imagen por noticia (la principal o la primera de la galería): las galerías
+// enteras son 512 MB, más que el Storage del plan gratuito.
+async function migrarNoticies() {
+  const { rows } = await legacy.query(`
+    select distinct on (n.nid) n.nid, n.type, n.title, n.created, b.body_value, coalesce(f.uri, g.uri) as uri,
+           coalesce(a.field_act_fecha_value::text, e.field_eix_data_value::text) as data_event
+      from pldrupal.plhm_node n
+      left join pldrupal.plhm_field_data_body b on b.entity_id = n.nid and b.entity_type = 'node'
+      left join pldrupal.plhm_field_data_field_imatge_not i on i.entity_id = n.nid
+      left join pldrupal.plhm_file_managed f on f.fid = i.field_imatge_not_fid
+      left join lateral (
+        select ff.uri from pldrupal.plhm_field_data_field_gal_act ga
+          join pldrupal.plhm_file_managed ff on ff.fid = ga.field_gal_act_fid
+         where ga.entity_id = n.nid order by ga.delta limit 1) g on true
+      left join pldrupal.plhm_field_data_field_act_fecha a on a.entity_id = n.nid
+      left join pldrupal.plhm_field_data_field_eix_data e on e.entity_id = n.nid
+     where n.type in ('not_act', 'eixida')
+     order by n.nid`);
+
+  let imatges = 0;
+  for (const r of rows) {
+    let imatge = null;
+    if (r.uri) {
+      try {
+        const original = await readFile(path.join(LEGACY_FILES_DIR, r.uri.replace('public://', '')));
+        const foto = await sharp(original)
+          .rotate()
+          .resize({ width: FOTO_COSTAT_MAX, height: FOTO_COSTAT_MAX, fit: 'inside', withoutEnlargement: true })
+          .jpeg({ quality: 80 })
+          .toBuffer();
+        imatge = `legacy_2018/${r.nid}.jpg`;
+        const res = await fetch(`${SUPABASE_URL}/storage/v1/object/contingut/${imatge}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+            apikey: SUPABASE_SERVICE_ROLE_KEY,
+            'Content-Type': 'image/jpeg',
+            'x-upsert': 'true',
+          },
+          body: foto,
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        imatges++;
+      } catch (err) {
+        console.warn(`  nid ${r.nid}: sin imagen (${err.message})`);
+        imatge = null;
+      }
+    }
+    // Lo ya publicado no se pisa
+    await target.query(
+      `insert into public.noticies (tipus, titol, cos, imatge_path, data_event, legacy_nid, created_at, updated_at)
+       values ($1, $2, $3, $4, $5::date, $6, to_timestamp($7), to_timestamp($7))
+       on conflict (legacy_nid) do update
+         set titol = excluded.titol, cos = excluded.cos, imatge_path = excluded.imatge_path, data_event = excluded.data_event
+       where not public.noticies.publicat`,
+      [r.type === 'eixida' ? 'eixida' : 'noticia', r.title, htmlATextPla(r.body_value), imatge, r.data_event?.slice(0, 10) ?? null, r.nid, r.created],
+    );
+  }
+  console.log(`noticies: ${rows.length} (${imatges} con imagen)`);
+}
+
 await legacy.connect();
 await target.connect();
 try {
@@ -264,6 +349,7 @@ try {
   await migrarElements();
   await target.query('commit');
   await migrarFotos(); // fuera de la transacción: Storage no participa en ella
+  await migrarNoticies();
 } catch (err) {
   await target.query('rollback');
   throw err;

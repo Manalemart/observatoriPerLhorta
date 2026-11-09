@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabase';
 import { urlFoto } from '../mapa/dades';
 import type { Dades } from '../mapa/tipus';
 import { MiniMapa } from './MiniMapa';
+import { LesMeuesPartides } from './LesMeuesPartides';
 import { Padrinatges } from './Padrinatges';
 
 const MIDA_PAGINA = 25;
@@ -25,10 +26,10 @@ interface Pendent {
   fotos: { id: string; storage_path: string }[];
 }
 
-function Pendents({ dades, onCanvi }: { dades: Dades; onCanvi: () => void }) {
+function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: () => void; partidaInicial: number | '' }) {
   const { t, i18n } = useTranslation();
   const { uid, esCoordinador } = useAuth();
-  const [partidaId, setPartidaId] = useState<number | ''>('');
+  const [partidaId, setPartidaId] = useState<number | ''>(partidaInicial);
   const [pagina, setPagina] = useState(0);
   const [files, setFiles] = useState<Pendent[]>([]);
   const [total, setTotal] = useState(0);
@@ -215,24 +216,45 @@ function Pendents({ dades, onCanvi }: { dades: Dades; onCanvi: () => void }) {
 export function Validacio({ dades, onCanvi }: { dades: Dades; onCanvi: () => void }) {
   const { t } = useTranslation();
   const { uid, perfil, potValidar, esCoordinador } = useAuth();
-  const [pestanya, setPestanya] = useState<'pendents' | 'padrinatges'>('pendents');
+  const [pestanya, setPestanya] = useState<'pendents' | 'partides' | 'padrinatges'>('pendents');
+  const [partidaFiltre, setPartidaFiltre] = useState<number | ''>('');
 
   if (uid && !perfil) return <div className="avis"><p>{t('comu.carregant')}</p></div>;
   if (!potValidar) return <div className="avis"><p>{t('validacio.senseAcces')}</p></div>;
 
   return (
     <main className="cos-validacio">
-      {esCoordinador && (
-        <div className="pestanyes" role="tablist">
-          <button type="button" role="tab" aria-selected={pestanya === 'pendents'} onClick={() => setPestanya('pendents')}>
-            {t('validacio.pendents')}
-          </button>
+      <div className="pestanyes" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={pestanya === 'pendents'}
+          onClick={() => {
+            setPartidaFiltre('');
+            setPestanya('pendents');
+          }}
+        >
+          {t('validacio.pendents')}
+        </button>
+        <button type="button" role="tab" aria-selected={pestanya === 'partides'} onClick={() => setPestanya('partides')}>
+          {t('partides.titol')}
+        </button>
+        {esCoordinador && (
           <button type="button" role="tab" aria-selected={pestanya === 'padrinatges'} onClick={() => setPestanya('padrinatges')}>
             {t('padrinatges.titol')}
           </button>
-        </div>
+        )}
+      </div>
+      {pestanya === 'pendents' && <Pendents key={partidaFiltre} dades={dades} onCanvi={onCanvi} partidaInicial={partidaFiltre} />}
+      {pestanya === 'partides' && (
+        <LesMeuesPartides
+          onVeurePendents={(id) => {
+            setPartidaFiltre(id);
+            setPestanya('pendents');
+          }}
+        />
       )}
-      {pestanya === 'pendents' ? <Pendents dades={dades} onCanvi={onCanvi} /> : <Padrinatges dades={dades} />}
+      {pestanya === 'padrinatges' && <Padrinatges dades={dades} />}
     </main>
   );
 }

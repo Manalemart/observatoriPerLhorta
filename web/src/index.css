@@ -172,11 +172,92 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .padrinatges-form .camp { flex: 1 1 16rem; margin: 0; min-width: 0; }
 .padrinatges-llista li { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-top: 1px solid var(--vora); }
 
+/* Navegación */
+.nav-principal { display: flex; gap: 0.25rem; margin-left: 0.5rem; }
+.nav-principal a { padding: 0.45rem 0.6rem; border-radius: 6px; color: var(--text-2); font-size: 0.9rem; text-decoration: none; white-space: nowrap; }
+.nav-principal a:hover { background: var(--superficie-2); }
+.nav-principal a.active { color: var(--text); font-weight: 600; box-shadow: inset 0 -2px 0 var(--marca); }
+
+/* Páginas de contenido */
+.pagina { flex: 1; min-height: 0; overflow-y: auto; padding: 1.5rem; width: 100%; max-width: 72rem; margin: 0 auto; line-height: 1.5; }
+.pagina-estreta { max-width: 46rem; }
+.pagina h1 { font-size: 1.6rem; margin: 0.25rem 0 0.75rem; }
+.pagina a { color: var(--marca-fosc); }
+.pagina a.boto { color: var(--text); }
+.pagina a.boto.primari { color: #fff; }
+.pagina-cap { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.targeta { padding: 1rem; margin-bottom: 1rem; border: 1px solid var(--vora); border-radius: 8px; background: var(--superficie); }
+.targeta h2 { margin-bottom: 0.5rem; }
+.filtres { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.filtres .camp { flex: 1 1 14rem; }
+.filtre-curt { max-width: 16rem; }
+.visualment-amagat { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.targeta pre { overflow-x: auto; padding: 0.75rem; border-radius: 6px; background: var(--superficie-2); font-size: 0.78rem; }
+
+/* Gráficas de datos abiertos */
+.grafiques { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; align-items: start; }
+.grafica { padding: 1rem; border: 1px solid var(--vora); border-radius: 8px; min-width: 0; }
+.grafica table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.grafica th { font-weight: 400; text-align: left; padding: 0.2rem 0.5rem 0.2rem 0; white-space: nowrap; }
+.grafica td { padding: 0.2rem 0; }
+.grafica td.recompte { text-align: right; padding-left: 0.5rem; width: 1%; }
+.barra-cel { width: 100%; min-width: 3rem; }
+.barra { display: block; height: 10px; min-width: 2px; border-radius: 0 4px 4px 0; }
+
+/* Comparador */
+.comparador { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.comparador-barra { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; flex: none; }
+.comparador-any { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-2); }
+.comparador-any select { min-height: 40px; padding: 0.25rem 0.4rem; border: 1px solid var(--vora); border-radius: 6px; background: var(--superficie); color: var(--text); font: inherit; }
+.comparador-tall { flex: 1; min-width: 0; display: flex; }
+.comparador-tall input { width: 100%; min-height: 32px; accent-color: var(--marca); }
+.comparador-mapes { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.comparador-mapes .comparador-mapa { position: absolute; inset: 0; }
+.comparador-mapes .comparador-mapa-dalt { pointer-events: none; }
+.comparador-linia { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: #fff; box-shadow: 0 0 4px rgb(0 0 0 / 0.6); pointer-events: none; }
+
+/* Partidas del padrí */
+.partides { flex: 1; overflow-y: auto; padding: 1rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 1rem; align-content: start; }
+.partides .targeta { margin: 0; }
+.xifres { display: flex; gap: 1.25rem; margin: 0.5rem 0; }
+.xifres dt { font-size: 0.75rem; color: var(--text-2); }
+.xifres dd { margin: 0; font-size: 1.3rem; font-weight: 600; }
+.temes-partida { margin-bottom: 0.5rem; font-size: 0.85rem; }
+.temes-partida li { display: flex; align-items: center; gap: 0.4rem; }
+
+/* Noticias */
+.noticies { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); gap: 1rem; }
+.noticia-targeta { display: flex; gap: 0.75rem; margin: 0; min-width: 0; }
+.noticia-targeta > div { min-width: 0; }
+.noticia-targeta img { width: 110px; height: 110px; object-fit: cover; border-radius: 6px; flex: none; }
+.noticia-targeta h2 { font-size: 1rem; letter-spacing: 0; text-transform: none; color: var(--text); margin: 0 0 0.25rem; }
+.noticia-targeta .nota { margin-bottom: 0.25rem; }
+.resum-noticia { margin: 0; font-size: 0.85rem; color: var(--text-2); overflow-wrap: anywhere; }
+.noticia-imatge { display: block; width: 100%; max-height: 26rem; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; }
+.cos-parraf { white-space: pre-line; overflow-wrap: anywhere; }
+.esborrany { color: #d9534f; }
+.opcio-publicar { display: flex; align-items: center; gap: 0.5rem; min-height: 40px; }
+
+/* Avisos */
+.campana { position: relative; }
+.insignia { margin-left: 0.3rem; padding: 0 0.35rem; border-radius: 999px; background: #b3261e; color: #fff; font-size: 0.72rem; font-weight: 700; }
+.campana-llista { position: absolute; top: calc(100% + 0.4rem); right: 0; z-index: 5; width: 20rem; max-height: 24rem; overflow-y: auto; padding: 0.25rem; border-radius: 8px; background: var(--superficie); box-shadow: var(--ombra); }
+.campana-llista .nota { margin: 0.5rem; }
+
 /* Móvil: el panel y la ficha flotan sobre el mapa */
 @media (max-width: 767px) {
   .capcalera { padding: 0.35rem 16px; gap: 0.5rem; }
   .logo { height: 32px; }
-  .promou { display: none; }
+  .capcalera { flex-wrap: wrap; }
+  .comparador-barra { flex-wrap: wrap; justify-content: space-between; padding: 0.5rem 16px; }
+  .comparador-tall { order: 3; flex: 1 0 100%; }
+  .comparador-tall input { min-height: 44px; }
+  .nav-principal { order: 3; width: 100%; overflow-x: auto; }
+  .grafiques { grid-template-columns: 1fr; }
+  .pagina { padding: 1rem 16px; }
+  .noticia-targeta { flex-direction: column; }
+  .noticia-targeta img { width: 100%; height: 160px; }
+  .campana-llista { position: fixed; top: 6.5rem; left: 16px; right: 16px; width: auto; }
   .capcalera .obrir-panell { display: inline-flex; }
   .usuari { display: none; }
   .capcalera-accions { gap: 0.25rem; }

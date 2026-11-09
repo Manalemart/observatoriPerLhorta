@@ -147,5 +147,76 @@
     "buit": "Encara no hi ha cap padrinatge.",
     "desDe": "des del {{data}}",
     "finalitzar": "Finalitza"
+  },
+  "nav": {
+    "titol": "Seccions",
+    "mapa": "Mapa",
+    "noticies": "Notícies",
+    "comparador": "Abans i ara",
+    "dades": "Dades"
+  },
+  "dades": {
+    "titol": "Dades obertes",
+    "intro": "L'inventari de l'Observatori és públic: {{total}} elements validats, per a descarregar i reutilitzar.",
+    "descarrega": "Descàrrega",
+    "tots": "Tots",
+    "baixant": "Preparant…",
+    "errorBaixada": "No s'ha pogut preparar la descàrrega. Torna-ho a provar.",
+    "error": "No s'han pogut carregar les dades.",
+    "llicencia": "Llicència CC BY 4.0: pots reutilitzar-les citant «Observatori Ciutadà de l'Horta — Per l'Horta». Les parcel·les de 2017-2018 provenen de la Direcció General del Cadastre.",
+    "perTema": "Elements per tema",
+    "perMunicipi": "Elements per municipi",
+    "api": "API pública",
+    "apiIntro": "Les mateixes dades, de només lectura, en JSON, CSV o GeoJSON:",
+    "apiPaginacio": "Cada petició retorna 1.000 files com a màxim: usa limit i offset per a paginar."
+  },
+  "comparador": {
+    "esquerra": "Esquerra",
+    "dreta": "Dreta",
+    "tall": "Posició de la línia de comparació"
+  },
+  "partides": {
+    "titol": "Les meues partides",
+    "buit": "Encara no tens cap partida apadrinada.",
+    "error": "No s'han pogut carregar les teues partides.",
+    "area": "{{ha}} ha",
+    "validats": "Validats",
+    "pendents": "Pendents",
+    "rebutjats": "Rebutjats",
+    "darrera": "Última aportació: {{data}}",
+    "veurePendents": "Veure els pendents"
+  },
+  "noticies": {
+    "titol": "Notícies i eixides",
+    "nova": "Nova notícia",
+    "editar": "Edita la notícia",
+    "mostrar": "Mostra",
+    "mostrarTipus": "Tipus",
+    "totes": "Totes",
+    "tipus": {
+      "noticia": "Notícia",
+      "eixida": "Eixida de camp"
+    },
+    "esborrany": "Sense publicar",
+    "buit": "Encara no hi ha res publicat.",
+    "error": "No s'han pogut carregar les notícies.",
+    "tornar": "← Totes les notícies",
+    "titolCamp": "Títol",
+    "data": "Data de l'activitat (opcional)",
+    "cos": "Text",
+    "imatge": "Imatge (opcional)",
+    "publicar": "Publica-la: serà visible per a tothom",
+    "senseAcces": "Esta pàgina és per a la coordinació.",
+    "confirmarEsborrar": "Vols esborrar esta notícia? No es pot desfer."
+  },
+  "notificacions": {
+    "titol_one": "Avisos: {{count}} sense llegir",
+    "titol_other": "Avisos: {{count}} sense llegir",
+    "buit": "No tens cap avís.",
+    "accio": {
+      "validat": "Validat",
+      "rebutjat": "Rebutjat",
+      "reobert": "Torna a estar pendent"
+    }
   }
 }
