@@ -8,7 +8,7 @@ import { FitxaElement } from './FitxaElement';
 import { FONS_INICIAL } from './estil';
 import { Mapa } from './Mapa';
 import { Panell } from './Panell';
-import type { Dades, Esborrany, Fons, Variable } from './tipus';
+import type { Dades, Epoca, Esborrany, Fons, Variable } from './tipus';
 
 interface Props {
   dades: Dades;
@@ -25,6 +25,7 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
   const [variablesActives, setVariablesActives] = useState<Set<number>>(
     () => new Set(dades.temes.flatMap((x) => x.variables.map((v) => v.id))),
   );
+  const [epoca, setEpoca] = useState<Epoca>('tot');
   const [veurePartides, setVeurePartides] = useState(true);
   const [veureMunicipis, setVeureMunicipis] = useState(true);
   const [veureSigpac, setVeureSigpac] = useState(false);
@@ -33,7 +34,10 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
     return id ? [id] : [];
   });
   const [posicio, setPosicio] = useState(0);
-  const [aportant, setAportant] = useState(false);
+  // Desde la portada: /mapa?aportar=1 abre directamente el formulario
+  const [aportant, setAportant] = useState(
+    () => !!uid && new URLSearchParams(window.location.search).get('aportar') === '1',
+  );
   const [variableCaptura, setVariableCaptura] = useState<Variable | null>(null);
   const [esborrany, setEsborrany] = useState<Esborrany>(null);
   const clicCaptura = useRef<((lng: number, lat: number) => void) | null>(null);
@@ -65,8 +69,18 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
     const url = new URL(window.location.href);
     if (seleccionat) url.searchParams.set('element', seleccionat);
     else url.searchParams.delete('element');
+    url.searchParams.delete('aportar');
     window.history.replaceState(null, '', url);
   }, [seleccionat]);
+
+  const comencarAportacio = () => {
+    if (!uid) {
+      onDemanarEntrada();
+      return;
+    }
+    onSeleccionar([]);
+    setAportant(true);
+  };
 
   return (
     <main className="cos">
@@ -78,6 +92,8 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
           onFons={setFons}
           variablesActives={variablesActives}
           onVariablesActives={setVariablesActives}
+          epoca={epoca}
+          onEpoca={setEpoca}
           veurePartides={veurePartides}
           onPartides={setVeurePartides}
           veureMunicipis={veureMunicipis}
@@ -92,6 +108,7 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
           elements={elements}
           fons={fons}
           variablesActives={variablesActives}
+          epoca={epoca}
           veurePartides={veurePartides}
           veureMunicipis={veureMunicipis}
           veureSigpac={veureSigpac}
@@ -105,15 +122,8 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
         {!aportant && (
           <button
             type="button"
-            className="boto primari boto-aportar"
-            onClick={() => {
-              if (!uid) {
-                onDemanarEntrada();
-                return;
-              }
-              onSeleccionar([]);
-              setAportant(true);
-            }}
+            className="boto lima boto-aportar"
+            onClick={comencarAportacio}
           >
             {t('aportar.boto')}
           </button>
@@ -140,6 +150,8 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
             onMoure={(d) => setPosicio((p) => p + d)}
             onTancar={() => onSeleccionar([])}
             onCanvi={recarregarElements}
+            onDemanarEntrada={onDemanarEntrada}
+            onHaCanviat={comencarAportacio}
           />
         )}
       </div>

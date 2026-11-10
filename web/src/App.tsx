@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import type { FeatureCollection } from 'geojson';
 import { useAuth } from './auth/AuthContext';
 import { DialegAlies, DialegEntrada } from './auth/Dialegs';
@@ -12,6 +12,7 @@ import { DadesObertes } from './features/dades/DadesObertes';
 import { DetallNoticia, EditorNoticia, LlistaNoticies } from './features/noticies/Noticies';
 import { Campana } from './features/notificacions/Campana';
 import { Legal } from './features/legal/Legal';
+import { Portada } from './features/portada/Portada';
 import { Validacio } from './features/validacio/Validacio';
 
 export function App() {
@@ -24,29 +25,38 @@ export function App() {
   const [panellObert, setPanellObert] = useState(false);
   const [entrant, setEntrant] = useState(false);
 
+  // La portada, los textos legales y las noticias no necesitan el inventario (~10 MB):
+  // se descarga la primera vez que se entra en una página que lo usa.
+  const necessitaDades = !(pathname === '/' || pathname === '/legal' || pathname.startsWith('/noticies'));
+  const [demanat, setDemanat] = useState(necessitaDades);
+  useEffect(() => { if (necessitaDades) setDemanat(true); }, [necessitaDades]);
+
   const carregar = useCallback(() => {
     setError(false);
     carregarDades().then(setDades).catch(() => setError(true));
   }, []);
-  useEffect(carregar, [carregar]);
+  useEffect(() => { if (demanat) carregar(); }, [demanat, carregar]);
 
   const recarregarElements = useCallback(() => {
     carregarElements().then(setElements).catch(() => setError(true));
   }, []);
   // Quien inicia sesión ve además sus aportaciones y lo que le toca validar
-  useEffect(recarregarElements, [recarregarElements, uid]);
+  useEffect(() => { if (demanat) recarregarElements(); }, [demanat, recarregarElements, uid]);
 
   useEffect(() => { if (uid) setEntrant(false); }, [uid]);
 
-  const esMapa = pathname === '/';
+  const esMapa = pathname === '/mapa';
   const llest = dades && elements;
+  // Enlaces anteriores a la portada: el mapa estaba en / (vista en el hash o ?element=)
+  const enllacAntic = pathname === '/' && (/^#[\d.]+\//.test(window.location.hash) || window.location.search.includes('element='));
 
   return (
     <div className="app">
       <header className="capcalera">
         <Link to="/"><img src="/logo.png" alt={t('app.titol')} className="logo" /></Link>
         <nav className="nav-principal" aria-label={t('nav.titol')}>
-          <NavLink to="/" end>{t('nav.mapa')}</NavLink>
+          <NavLink to="/" end>{t('nav.inici')}</NavLink>
+          <NavLink to="/mapa">{t('nav.mapa')}</NavLink>
           <NavLink to="/noticies">{t('nav.noticies')}</NavLink>
           <NavLink to="/comparador">{t('nav.comparador')}</NavLink>
           <NavLink to="/dades">{t('nav.dades')}</NavLink>
@@ -75,18 +85,31 @@ export function App() {
         </div>
       </header>
 
-      {error && (
+      {necessitaDades && error && (
         <div className="avis" role="alert">
           <p>{t('estat.error')}</p>
           <button type="button" className="boto" onClick={() => { carregar(); recarregarElements(); }}>{t('estat.reintentar')}</button>
         </div>
       )}
-      {!error && !llest && <div className="avis" role="status"><p>{t('estat.carregant')}</p></div>}
+      {necessitaDades && !error && !llest && <div className="avis" role="status"><p>{t('estat.carregant')}</p></div>}
 
-      {!error && llest && (
+      {enllacAntic && <Navigate to={`/mapa${window.location.search}${window.location.hash}`} replace />}
+
+      {!necessitaDades && !enllacAntic && (
+        <Routes>
+          <Route path="/" element={<Portada onEntrar={() => setEntrant(true)} />} />
+          <Route path="/legal" element={<Legal />} />
+          <Route path="/noticies" element={<LlistaNoticies />} />
+          <Route path="/noticies/nova" element={<EditorNoticia />} />
+          <Route path="/noticies/:id" element={<DetallNoticia />} />
+          <Route path="/noticies/:id/edita" element={<EditorNoticia />} />
+        </Routes>
+      )}
+
+      {necessitaDades && !error && llest && (
         <Routes>
           <Route
-            path="/"
+            path="/mapa"
             element={(
               <VistaMapa
                 dades={dades}
@@ -100,11 +123,6 @@ export function App() {
           <Route path="/validacio" element={<Validacio dades={dades} onCanvi={recarregarElements} />} />
           <Route path="/dades" element={<DadesObertes dades={dades} />} />
           <Route path="/comparador" element={<Comparador />} />
-          <Route path="/legal" element={<Legal />} />
-          <Route path="/noticies" element={<LlistaNoticies />} />
-          <Route path="/noticies/nova" element={<EditorNoticia />} />
-          <Route path="/noticies/:id" element={<DetallNoticia />} />
-          <Route path="/noticies/:id/edita" element={<EditorNoticia />} />
           <Route path="*" element={<div className="avis"><p>{t('estat.noTrobat')}</p><Link className="boto" to="/">{t('validacio.tornar')}</Link></div>} />
         </Routes>
       )}

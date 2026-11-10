@@ -40,6 +40,7 @@ export interface Fitxa {
   estat: Estat;
   origen: 'legacy_2018' | 'web' | 'app';
   created_at: string;
+  revisat_at: string | null;
   autor_id?: string | null;
   motiu_rebuig: string | null;
   sigpac_ref: string | null;
@@ -51,4 +52,6 @@ export interface Fitxa {
 }
 
 export type Fons = 'topo' | 'pnoa';
+/** Qué parte del inventario se ve: lo de 2017-2018 sin revisar, lo nuevo o revisado, o todo. */
+export type Epoca = 'tot' | '2018' | 'noves';
 export type Esborrany = Feature<Geometry> | null;

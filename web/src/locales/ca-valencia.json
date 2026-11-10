@@ -21,7 +21,16 @@
     "desplegar": "Mostra les variables de {{tema}}",
     "plegar": "Amaga les variables de {{tema}}",
     "noValidats_one": "i {{count}} no validat que pots veure (contorn negre)",
-    "noValidats_other": "i {{count}} no validats que pots veure (contorn negre)"
+    "noValidats_other": "i {{count}} no validats que pots veure (contorn negre)",
+    "epoca": "Època de les dades",
+    "epoques": {
+      "tot": "Tot",
+      "2018": "2017-2018",
+      "noves": "Noves"
+    },
+    "llegenda2018": "2017-2018 · per revisar",
+    "llegendaNoves": "Noves o revisades",
+    "llegendaNota": "Els punts buits són de l’inventari de 2017-2018 i encara no s’han tornat a revisar."
   },
   "fons": {
     "topo": "Topogràfic IGN",
@@ -55,7 +64,17 @@
     "reobrir": "Torna a pendent",
     "posicio": "Element {{n}} de {{total}} en este punt",
     "anterior": "Element anterior",
-    "seguent": "Element següent"
+    "seguent": "Element següent",
+    "inventari2018": "Inventari 2018",
+    "ultimaRevisio": "Última revisió",
+    "revisio2018_one": "2017-2018 · fa {{count}} any",
+    "revisio2018_other": "2017-2018 · fa {{count}} anys",
+    "encaraAixi": "És encara així?",
+    "encaraAixiText": "Si hi passes, confirma-ho o conta què ha canviat.",
+    "continuaIgual": "Sí, continua igual",
+    "haCanviat": "Ha canviat",
+    "gracies": "Gràcies! Queda registrat que continua igual.",
+    "errorConfirmar": "No s’ha pogut registrar la revisió. Torna-ho a provar."
   },
   "estat": {
     "carregant": "Carregant l'inventari…",
@@ -152,7 +171,8 @@
     "mapa": "Mapa",
     "noticies": "Notícies",
     "comparador": "Abans i ara",
-    "dades": "Dades"
+    "dades": "Dades",
+    "inici": "Inici"
   },
   "dades": {
     "titol": "Dades obertes",
@@ -224,5 +244,62 @@
     "condicions": "Condicions d'ús",
     "privacitat": "la política de privacitat",
     "enEntrar": "En entrar acceptes les condicions d'ús i"
+  },
+  "portada": {
+    "titol": "Mirem l’horta de prop",
+    "subtitol": "Per l’Horta · ciència ciutadana",
+    "intro": "és un inventari obert de l’Horta de València: què s’hi cultiva, què s’hi construeix i què l’amenaça, partida a partida.",
+    "explora": "Explora el mapa",
+    "aporta": "Aporta una observació",
+    "previsio": "Vista prèvia del mapa amb partides i elements",
+    "revisio": {
+      "etiqueta": "L’inventari de 2017-2018",
+      "titol": "L’horta ha canviat. Tornem a mirar-la?",
+      "text": "Entre 2017 i 2018, 80 padrins i padrines van inventariar {{n}} elements. És el punt de partida, no la foto d’avui: cada partida s’ha de tornar a revisar, i cada canvi que trobem és una dada nova.",
+      "revisa": "Revisa una partida",
+      "consulta": "Consulta l’inventari de 2018",
+      "progres": "Partides amb revisions des de 2026",
+      "de": "de {{n}}",
+      "progresEtiqueta": "{{fet}} de {{total}} partides amb revisions",
+      "revisats": "Elements de 2018 confirmats",
+      "noves": "Observacions noves validades",
+      "apadrinades": "Partides amb padrí o padrina",
+      "ultima": "Última activitat",
+      "mai": "encara cap",
+      "directe": "Xifres en directe."
+    },
+    "funciona": {
+      "titol": "Com funciona",
+      "intro": "Qualsevol persona pot aportar. Les padrines i els padrins de cada partida validen, i el resultat és de tothom.",
+      "observa": "1 · Observa",
+      "observaText": "Camina l’horta i registra el que veus: una parcel·la sense cultivar, una alqueria, un abocament. L’app funciona sense cobertura.",
+      "valida": "2 · Valida",
+      "validaText": "Qui apadrina una partida revisa el que s’hi aporta. Ningú no valida les seues pròpies observacions.",
+      "comparteix": "3 · Comparteix",
+      "comparteixText": "Tot el que es valida és dada oberta amb llicència CC BY 4.0: descarrega-la per municipi i tema."
+    },
+    "abansAra": {
+      "titol": "Abans i ara",
+      "text": "Tria una data i mira què s’ha perdut. 18 ortofotos, del vol de 1956 a la màxima actualitat del PNOA, per a qualsevol punt de l’horta.",
+      "obri": "Obri el comparador",
+      "tria": "Tria l’any de la foto antiga",
+      "hui": "Hui · PNOA",
+      "perdudes": "Des de {{any}}, la zona ha perdut {{n}} de 24 parcel·les d’horta",
+      "senseCanvis": "Sense canvis des de {{any}}",
+      "abansEtiqueta": "Meitat esquerra de la zona, l’any {{any}}",
+      "araEtiqueta": "Meitat dreta de la zona, hui",
+      "anys": "Any de l’ortofoto",
+      "nota": "Il·lustració. Al comparador, ortofotos reals de l’ICV i l’IGN."
+    },
+    "apadrina": {
+      "titol": "Apadrina una partida",
+      "text": "Tria una partida que conegues, fes-ne el seguiment i valida el que s’hi aporta. Entra amb el teu correu i la coordinació te l’assignarà.",
+      "boto": "Vull apadrinar",
+      "jaDins": "Ja tens compte: la coordinació et pot assignar una partida."
+    },
+    "peu": {
+      "iniciativa": "Una iniciativa de",
+      "tecnic": "Desenvolupament: MAM — Mediambient i Mapes"
+    }
   }
 }

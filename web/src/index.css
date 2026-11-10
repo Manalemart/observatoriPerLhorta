@@ -1,35 +1,52 @@
+/* Identidad: Manual d'identitat corporativa de L'observatori (2017).
+   Verde #348E00, lima #9ED100 y marrón #574F46. El verde del manual da 4,2:1 sobre blanco:
+   para texto y botones se usa un paso más oscuro (#2C7A00, 5,4:1). El lima nunca es texto
+   sobre claro: solo fondos con texto oscuro encima (9,4:1). */
 :root {
-  --superficie: #fcfcfb;
-  --superficie-2: #f3f2ee;
-  --vora: #dedcd5;
-  --text: #2b2822;
-  --text-2: #5c584f;
-  --marca: #5f8f1f;
-  --marca-fosc: #4a7016;
-  --marca-boto: #4a7016;
-  --ombra: 0 2px 12px rgb(0 0 0 / 0.18);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --superficie: #ffffff;
+  --superficie-2: #f3f1ea;
+  --paper: #f7f5ef;
+  --vora: #e4e0d6;
+  --text: #3b352f;
+  --text-2: #574f46;
+  --marca: #2c7a00;
+  --marca-fosc: #215c00;
+  --marca-boto: #2c7a00;
+  --verd-logo: #348e00;
+  --lima: #9ed100;
+  --lima-suau: #eaf5cc;
+  --marro: #574f46;
+  --sobre-lima: #1e1c19;
+  --ombra: 0 6px 24px rgb(59 53 47 / 0.18);
+  --titols: 'Montserrat Variable', system-ui, sans-serif;
+  --serif: 'Source Serif 4 Variable', Georgia, serif;
+  font-family: var(--titols);
   color: var(--text);
   background: var(--superficie);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --superficie: #1f1e1b;
-    --superficie-2: #2a2925;
-    --vora: #45433c;
-    --text: #f0efec;
-    --text-2: #c3c2b7;
-    --marca: #a5d65a;
-    --marca-fosc: #bfe582;
-    --marca-boto: #4a7016;
+    --superficie: #1e1c19;
+    --superficie-2: #2a2723;
+    --paper: #23201c;
+    --vora: #45403a;
+    --text: #f1eee8;
+    --text-2: #cfc8bd;
+    --marca: #9ed100;
+    --marca-fosc: #b8e04a;
+    --marca-boto: #2c7a00;
+    --lima-suau: #2f3a1a;
+    --marro: #cfc8bd;
   }
-  .logo { background: #fcfcfb; border-radius: 6px; padding: 2px 6px; }
+  /* El manual pide el logo sobre blanco */
+  .logo { background: #ffffff; border-radius: 8px; padding: 3px 8px; }
 }
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
-h2 { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-2); margin: 0 0 0.5rem; }
+h1, h2, h3 { font-family: var(--titols); }
+h2 { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); margin: 0 0 0.5rem; }
 h3 { font-size: 0.85rem; margin: 1rem 0 0.5rem; }
 button { font: inherit; color: inherit; cursor: pointer; }
 ul { list-style: none; margin: 0; padding: 0; }
@@ -41,10 +58,10 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 /* Cabecera */
 .capcalera {
   display: flex; align-items: center; gap: 1rem;
-  padding: 0.4rem 1rem; border-bottom: 3px solid var(--marca); background: var(--superficie);
-  flex: none;
+  padding: 0.5rem 1.25rem; border-bottom: 4px solid var(--lima); background: var(--superficie);
+  flex: none; position: relative; z-index: 3;
 }
-.logo { height: 40px; display: block; }
+.logo { height: 42px; width: auto; display: block; }
 .promou { font-size: 0.8rem; color: var(--text-2); }
 .capcalera-accions { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; }
 .usuari { font-size: 0.85rem; color: var(--text-2); max-width: 12rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -119,13 +136,18 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 
 /* Botones y formularios */
 .boto {
-  display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0.45rem 0.75rem;
-  border: 1px solid var(--vora); border-radius: 6px; background: var(--superficie-2); color: var(--text);
-  font-size: 0.875rem; text-decoration: none; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 40px; padding: 0.45rem 1rem;
+  border: 1.5px solid var(--vora); border-radius: 999px; background: var(--superficie); color: var(--text);
+  font-size: 0.875rem; font-weight: 600; text-decoration: none; white-space: nowrap;
 }
 .boto:hover:not(:disabled) { border-color: var(--text-2); }
 .boto:disabled { opacity: 0.5; cursor: not-allowed; }
-.boto.primari { background: var(--marca-boto); border-color: var(--marca-boto); color: #fff; font-weight: 600; }
+.boto.primari { background: var(--marca-boto); border-color: var(--marca-boto); color: #fff; font-weight: 700; }
+.boto.primari:hover:not(:disabled) { background: var(--marca-fosc); border-color: var(--marca-fosc); }
+.boto.lima { background: var(--lima); border-color: var(--lima); color: var(--sobre-lima); font-weight: 800; }
+.boto.lima:hover:not(:disabled) { border-color: var(--sobre-lima); }
+.boto.contorn { border: 2px solid var(--marca); color: var(--marca); background: transparent; font-weight: 700; }
+.boto.gran { min-height: 52px; padding: 0.8rem 1.5rem; font-size: 1rem; }
 .boto.perill { background: #b3261e; border-color: #b3261e; color: #fff; font-weight: 600; }
 .boto.petit { min-height: 32px; min-width: 32px; padding: 0 0.5rem; }
 .boto-aportar { position: absolute; top: 0.625rem; right: 3.25rem; z-index: 1; box-shadow: var(--ombra); }
@@ -183,14 +205,16 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .padrinatges-llista li { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-top: 1px solid var(--vora); }
 
 /* Navegación */
-.nav-principal { display: flex; gap: 0.25rem; margin-left: 0.5rem; }
-.nav-principal a { padding: 0.45rem 0.6rem; border-radius: 6px; color: var(--text-2); font-size: 0.9rem; text-decoration: none; white-space: nowrap; }
-.nav-principal a:hover { background: var(--superficie-2); }
-.nav-principal a.active { color: var(--text); font-weight: 600; box-shadow: inset 0 -2px 0 var(--marca); }
+.nav-principal { display: flex; gap: 0.15rem; margin-left: 0.75rem; }
+.nav-principal a { padding: 0.6rem 0.7rem; border-radius: 8px; color: var(--text-2); font-size: 0.9rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.nav-principal a:hover { background: var(--superficie-2); color: var(--text); }
+.nav-principal a.active { color: var(--marca); box-shadow: inset 0 -3px 0 var(--marca); border-radius: 8px 8px 0 0; }
 
 /* Páginas de contenido */
 .pagina { flex: 1; min-height: 0; overflow-y: auto; padding: 1.5rem; width: 100%; max-width: 72rem; margin: 0 auto; line-height: 1.5; }
 .pagina-estreta { max-width: 46rem; }
+/* Textos largos en serif (manual: Gandhi Serif; en web, Source Serif 4) */
+.pagina-estreta p, .pagina-estreta li, .fitxa-descripcio { font-family: var(--serif); font-size: 1.05em; }
 .pagina h1 { font-size: 1.6rem; margin: 0.25rem 0 0.75rem; }
 .pagina a { color: var(--marca-fosc); }
 .pagina a.boto { color: var(--text); }
@@ -295,3 +319,37 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
   .validacio-info, .padrinatges { padding: 1rem 16px; }
   .boto { min-height: 44px; }
 }
+
+/* ─── Rediseño 2026: época de los datos, ficha ─────────────────────────── */
+.segmentat {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px;
+  background: var(--superficie-2); border-radius: 12px;
+}
+.segmentat button {
+  min-height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--text-2);
+  font-size: 0.82rem; font-weight: 700;
+}
+.segmentat button[aria-pressed='true'] { background: var(--superficie); color: var(--text); box-shadow: 0 1px 4px rgb(59 53 47 / 0.18); }
+.llegenda-epoca { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-2); }
+.llegenda-epoca li { display: flex; align-items: center; gap: 0.6rem; }
+.llegenda-epoca svg { color: var(--marro); flex: none; }
+.llegenda-epoca span { flex: 1; }
+.llegenda-epoca strong { color: var(--text); font-variant-numeric: tabular-nums; }
+
+.fitxa { border-radius: 18px; padding: 1.1rem; }
+.fitxa h2 { font-weight: 800; }
+.fitxa-xips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 2rem 0.5rem 0; }
+.xip {
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.6rem; border-radius: 999px;
+  background: var(--superficie-2); color: var(--text); font-size: 0.75rem; font-weight: 700;
+}
+.xip .mostra { width: 9px; height: 9px; border-radius: 50%; }
+.xip-2018 { background: var(--superficie); border: 1.5px solid var(--marro); }
+.encara-aixi { margin-top: 0.9rem; padding: 0.85rem; border-radius: 14px; background: var(--paper); display: flex; flex-direction: column; gap: 0.5rem; }
+.encara-aixi p { margin: 0; }
+.encara-aixi-titol { font-weight: 800; font-size: 0.92rem; }
+.encara-aixi-text { font-family: var(--serif); font-size: 0.92rem; line-height: 1.45; }
+.encara-aixi-botons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.encara-aixi-botons .boto { flex: 1 1 8rem; min-height: 44px; }
+.encara-aixi-fet { font-weight: 700; color: var(--marca); }
+.panell { background: var(--superficie); }

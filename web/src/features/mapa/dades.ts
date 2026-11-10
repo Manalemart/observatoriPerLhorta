@@ -34,7 +34,7 @@ export function carregarElements(): Promise<FeatureCollection> {
 export async function carregarFitxa(id: string, ambSessio: boolean): Promise<Fitxa> {
   const { data, error } = await supabase
     .from('elements')
-    .select(`id, descripcio, text_lliure, estat, origen, created_at, ${ambSessio ? 'autor_id, ' : ''}motiu_rebuig, sigpac_ref,
+    .select(`id, descripcio, text_lliure, estat, origen, created_at, revisat_at, ${ambSessio ? 'autor_id, ' : ''}motiu_rebuig, sigpac_ref,
       variable:variables(nom, tema:temes(nom, color)),
       categoria:categories(nom),
       partida:partides(nom),

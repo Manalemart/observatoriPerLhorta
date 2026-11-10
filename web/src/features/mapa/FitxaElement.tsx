@@ -15,9 +15,14 @@ interface Props {
   onTancar: () => void;
   /** Algo ha cambiado: hay que recargar los elementos del mapa. */
   onCanvi: () => void;
+  onDemanarEntrada: () => void;
+  /** «Ha canviat»: se aporta un elemento nuevo por el circuito normal. */
+  onHaCanviat: () => void;
 }
 
-export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }: Props) {
+const ARA = new Date();
+
+export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, onDemanarEntrada, onHaCanviat }: Props) {
   const { t, i18n } = useTranslation();
   const { uid, esCoordinador } = useAuth();
   const [fitxa, setFitxa] = useState<Fitxa | null>(null);
@@ -25,6 +30,8 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
   const [editant, setEditant] = useState(false);
   const [text, setText] = useState('');
   const [errorAccio, setErrorAccio] = useState(false);
+  const [confirmat, setConfirmat] = useState(false);
+  const [errorConfirmar, setErrorConfirmar] = useState(false);
 
   const carregar = () => carregarFitxa(id, !!uid);
 
@@ -34,6 +41,8 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
     setError(false);
     setEditant(false);
     setErrorAccio(false);
+    setConfirmat(false);
+    setErrorConfirmar(false);
     carregar()
       .then((f) => { if (vigent) setFitxa(f); })
       .catch(() => { if (vigent) setError(true); });
@@ -75,6 +84,22 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
     onCanvi();
   };
 
+  const confirmar = async () => {
+    if (!uid) {
+      onDemanarEntrada();
+      return;
+    }
+    setErrorConfirmar(false);
+    const { error: err } = await supabase.rpc('confirmar_element', { p_element_id: id });
+    if (err) {
+      setErrorConfirmar(true);
+      return;
+    }
+    setConfirmat(true);
+    setFitxa(await carregar());
+    onCanvi(); // el punto deja de estar «per revisar»
+  };
+
   const reobrir = async () => {
     setErrorAccio(false);
     const { error: err } = await supabase.rpc('canviar_estat', { p_element_id: id, p_estat: 'pendent' });
@@ -100,9 +125,17 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
       {!error && !fitxa && <p>{t('fitxa.carregant')}</p>}
       {fitxa && (
         <>
-          <p className="fitxa-tema">
-            <span className="mostra" style={{ background: fitxa.variable.tema.color }} aria-hidden="true" />
-            {fitxa.variable.tema.nom}
+          <p className="fitxa-xips">
+            <span className="xip">
+              <span className="mostra" style={{ background: fitxa.variable.tema.color }} aria-hidden="true" />
+              {fitxa.variable.tema.nom}
+            </span>
+            {fitxa.origen === 'legacy_2018' && (
+              <span className="xip xip-2018">
+                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18" /><path d="M8 3v4" /><path d="M16 3v4" /></svg>
+                {t('fitxa.inventari2018')}
+              </span>
+            )}
           </p>
           <h2>{fitxa.text_lliure ?? fitxa.variable.nom}</h2>
           {fitxa.estat === 'rebutjat' && fitxa.motiu_rebuig && (
@@ -129,7 +162,34 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi }:
             <dt>{t('fitxa.origen')}</dt><dd>{t(`fitxa.origens.${fitxa.origen}`)}</dd>
             <dt>{t('fitxa.data')}</dt>
             <dd>{new Date(fitxa.created_at).toLocaleDateString(i18n.language)}</dd>
+            {fitxa.origen === 'legacy_2018' && (
+              <>
+                <dt>{t('fitxa.ultimaRevisio')}</dt>
+                <dd>
+                  {fitxa.revisat_at
+                    ? new Date(fitxa.revisat_at).toLocaleDateString(i18n.language)
+                    : t('fitxa.revisio2018', { count: ARA.getFullYear() - 2018 })}
+                </dd>
+              </>
+            )}
           </dl>
+          {fitxa.origen === 'legacy_2018' && fitxa.estat === 'validat' && !editant && (
+            <div className="encara-aixi">
+              {confirmat ? (
+                <p role="status" className="encara-aixi-fet">{t('fitxa.gracies')}</p>
+              ) : (
+                <>
+                  <p className="encara-aixi-titol">{t('fitxa.encaraAixi')}</p>
+                  <p className="encara-aixi-text">{t('fitxa.encaraAixiText')}</p>
+                  <div className="encara-aixi-botons">
+                    <button type="button" className="boto contorn" onClick={() => void confirmar()}>{t('fitxa.continuaIgual')}</button>
+                    <button type="button" className="boto lima" onClick={onHaCanviat}>{t('fitxa.haCanviat')}</button>
+                  </div>
+                  {errorConfirmar && <p role="alert" className="error">{t('fitxa.errorConfirmar')}</p>}
+                </>
+              )}
+            </div>
+          )}
           {fitxa.fotos.length > 0 && (
             <div className="fotos">
               <h3>{t('fitxa.fotos')}</h3>

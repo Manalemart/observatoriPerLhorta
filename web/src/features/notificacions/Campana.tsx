@@ -64,7 +64,7 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
       await supabase.from('notificacions').update({ llegida: true }).eq('id', n.id);
       await carregar();
     }
-    navegar(`/?element=${n.element_id}`);
+    navegar(`/mapa?element=${n.element_id}`);
   };
 
   return (

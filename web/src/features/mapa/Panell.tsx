@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { FeatureCollection } from 'geojson';
 import { FONS } from './estil';
-import type { Dades, Fons, Tema } from './tipus';
+import type { Dades, Epoca, Fons, Tema } from './tipus';
+
+const EPOQUES: Epoca[] = ['tot', '2018', 'noves'];
 
 interface Props {
   dades: Dades;
@@ -12,6 +14,8 @@ interface Props {
   onFons: (f: Fons) => void;
   variablesActives: Set<number>;
   onVariablesActives: (v: Set<number>) => void;
+  epoca: Epoca;
+  onEpoca: (e: Epoca) => void;
   veurePartides: boolean;
   onPartides: (v: boolean) => void;
   veureMunicipis: boolean;
@@ -92,10 +96,10 @@ function FilaTema({ tema, recompte, actives, onCanvi }: {
 }
 
 export function Panell({
-  dades, elements, fons, onFons, variablesActives, onVariablesActives,
+  dades, elements, fons, onFons, variablesActives, onVariablesActives, epoca, onEpoca,
   veurePartides, onPartides, veureMunicipis, onMunicipis, veureSigpac, onSigpac,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const recompte = useMemo(() => {
     const m = new Map<number, number>();
@@ -115,10 +119,38 @@ export function Panell({
     () => [...recompte].reduce((s, [id, n]) => s + (variablesActives.has(id) ? n : 0), 0),
     [recompte, variablesActives],
   );
+  const perRevisar = useMemo(
+    () => elements.features.filter((f) => f.properties?.per_revisar === true).length,
+    [elements],
+  );
+  const fmt = new Intl.NumberFormat(i18n.language);
   const totes = useMemo(() => new Set(dades.temes.flatMap((x) => x.variables.map((v) => v.id))), [dades.temes]);
 
   return (
     <div className="panell-contingut">
+      <section className="epoca">
+        <h2 id="epoca-titol">{t('panell.epoca')}</h2>
+        <div className="segmentat" role="group" aria-labelledby="epoca-titol">
+          {EPOQUES.map((e) => (
+            <button key={e} type="button" aria-pressed={epoca === e} onClick={() => onEpoca(e)}>
+              {t(`panell.epoques.${e}`)}
+            </button>
+          ))}
+        </div>
+        <ul className="llegenda-epoca">
+          <li>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="6" fill="#fff" stroke="currentColor" strokeWidth="3" /></svg>
+            <span>{t('panell.llegenda2018')}</span>
+            <strong>{fmt.format(perRevisar)}</strong>
+          </li>
+          <li>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="currentColor" /></svg>
+            <span>{t('panell.llegendaNoves')}</span>
+            <strong>{fmt.format(total - perRevisar)}</strong>
+          </li>
+        </ul>
+      </section>
+
       <section>
         <div className="seccio-cap">
           <h2>{t('panell.inventari')}</h2>

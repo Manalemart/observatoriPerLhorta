@@ -6,13 +6,14 @@ import {
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection } from 'geojson';
 import { CAPES_ELEMENTS, colorPerTema, estilBase, FONS, LIMITS_AMBIT } from './estil';
-import type { Dades, Esborrany, Fons } from './tipus';
+import type { Dades, Epoca, Esborrany, Fons } from './tipus';
 
 interface Props {
   dades: Dades;
   elements: FeatureCollection;
   fons: Fons;
   variablesActives: Set<number>;
+  epoca: Epoca;
   veurePartides: boolean;
   veureMunicipis: boolean;
   veureSigpac: boolean;
@@ -38,6 +39,13 @@ const COLOR_ESBORRANY = '#0b0b0b';
 const HASH_INICIAL = /^#[\d.]+\/-?[\d.]+\/-?[\d.]+/.test(window.location.hash) ? window.location.hash : '';
 
 const NO_VALIDAT: ExpressionSpecification = ['!=', ['get', 'estat'], 'validat'];
+// Inventario de 2017-2018 sin confirmar desde entonces: puntos huecos, parcelas con borde discontinuo
+const PER_REVISAR: ExpressionSpecification = ['==', ['get', 'per_revisar'], true];
+const FILTRE_EPOCA: Record<Epoca, unknown> = {
+  tot: true,
+  '2018': PER_REVISAR,
+  noves: ['!', PER_REVISAR],
+};
 
 function visibilitat(mapa: MapaGL, capa: string, visible: boolean) {
   mapa.setLayoutProperty(capa, 'visibility', visible ? 'visible' : 'none');
@@ -65,16 +73,21 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
   });
   mapa.addLayer({
     id: 'partides-linies', type: 'line', source: 'partides', minzoom: 11,
-    paint: { 'line-color': '#5f8f1f', 'line-width': 1.25, 'line-opacity': 0.85 },
+    paint: { 'line-color': '#2c7a00', 'line-width': 1.25, 'line-opacity': 0.85 },
   });
   mapa.addLayer({
     id: 'elements-poligons', type: 'fill', source: 'elements',
     filter: ['==', ['geometry-type'], 'Polygon'],
     paint: {
       'fill-color': color,
-      'fill-opacity': ['case', NO_VALIDAT, 0.2, 0.4],
+      'fill-opacity': ['case', NO_VALIDAT, 0.2, PER_REVISAR, 0.18, 0.45],
       'fill-outline-color': ['case', NO_VALIDAT, '#0b0b0b', color],
     },
+  });
+  mapa.addLayer({
+    id: 'elements-poligons-revisar', type: 'line', source: 'elements', minzoom: 13,
+    filter: ['all', ['==', ['geometry-type'], 'Polygon'], PER_REVISAR] as unknown as FilterSpecification,
+    paint: { 'line-color': color, 'line-width': 1.5, 'line-dasharray': [3, 2] },
   });
   mapa.addLayer({
     id: 'elements-linies', type: 'line', source: 'elements',
@@ -86,10 +99,11 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     id: 'elements-punts', type: 'circle', source: 'elements',
     filter: ['==', ['geometry-type'], 'Point'],
     paint: {
-      'circle-color': color,
+      'circle-color': ['case', PER_REVISAR, '#ffffff', color],
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 15, 7],
-      'circle-stroke-color': ['case', NO_VALIDAT, '#0b0b0b', '#ffffff'],
-      'circle-stroke-width': 1.5,
+      'circle-stroke-color': ['case', NO_VALIDAT, '#0b0b0b', PER_REVISAR, color, '#ffffff'],
+      // zoom solo vale en un interpolate de primer nivel: el case va dentro de cada parada
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 10, ['case', PER_REVISAR, 1.5, 1.5], 15, ['case', PER_REVISAR, 3, 1.5]],
     },
   });
   mapa.addLayer({
@@ -127,7 +141,7 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
 }
 
 export function Mapa({
-  dades, elements, fons, variablesActives, veurePartides, veureMunicipis, veureSigpac,
+  dades, elements, fons, variablesActives, epoca, veurePartides, veureMunicipis, veureSigpac,
   seleccionat, onSeleccionar, capturant, ignorarClics, onClicCaptura, esborrany,
 }: Props) {
   const contenidor = useRef<HTMLDivElement>(null);
@@ -217,11 +231,13 @@ export function Mapa({
     const mapa = mapaRef.current;
     if (!mapa || !llest) return;
     const actives = ['in', ['get', 'variable_id'], ['literal', [...variablesActives]]];
-    const perTipus = (tipus: string) => ['all', ['==', ['geometry-type'], tipus], actives] as unknown as FilterSpecification;
+    const perTipus = (tipus: string, ...mes: unknown[]) =>
+      ['all', ['==', ['geometry-type'], tipus], actives, FILTRE_EPOCA[epoca], ...mes] as unknown as FilterSpecification;
     mapa.setFilter('elements-punts', perTipus('Point'));
     mapa.setFilter('elements-linies', perTipus('LineString'));
     mapa.setFilter('elements-poligons', perTipus('Polygon'));
-  }, [variablesActives, llest]);
+    mapa.setFilter('elements-poligons-revisar', perTipus('Polygon', PER_REVISAR));
+  }, [variablesActives, epoca, llest]);
 
   useEffect(() => {
     const mapa = mapaRef.current;

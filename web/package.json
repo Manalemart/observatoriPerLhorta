@@ -13,6 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/montserrat": "5.2.8",
+    "@fontsource-variable/source-serif-4": "5.2.9",
     "@supabase/supabase-js": "2.45.4",
     "i18next": "^25.0.0",
     "maplibre-gl": "^6.5.0",
