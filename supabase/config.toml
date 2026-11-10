@@ -256,6 +256,12 @@ otp_expiry = 3600
 # subject = "Your password has been changed"
 # content_path = "./supabase/templates/password_changed_notification.html"
 
+# Primer acceso de un correo nuevo: Supabase envía esta, no la de magic_link.
+# Las dos llevan enlace (web) y código (app).
+[auth.email.template.confirmation]
+subject = "Confirma el teu compte a l'Observatori Ciutadà de l'Horta"
+content_path = "./supabase/templates/confirmation.html"
+
 [auth.email.template.magic_link]
 subject = "Entra a l'Observatori Ciutadà de l'Horta"
 content_path = "./supabase/templates/magic_link.html"
