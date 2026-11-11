@@ -12,6 +12,7 @@
   --marca: #2c7a00;
   --marca-fosc: #215c00;
   --marca-boto: #2c7a00;
+  --marca-boto-hover: #215c00;
   --verd-logo: #348e00;
   --lima: #9ed100;
   --lima-suau: #eaf5cc;
@@ -23,10 +24,14 @@
   font-family: var(--titols);
   color: var(--text);
   background: var(--superficie);
+  color-scheme: light;
 }
 
+/* Tema oscuro: el del sistema, salvo que se haya elegido otro con el botón de la
+   cabecera (data-tema en <html>, lo pone index.html antes de pintar). Los dos bloques
+   llevan los mismos valores. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-tema='clar']) {
     --superficie: #1e1c19;
     --superficie-2: #2a2723;
     --paper: #23201c;
@@ -38,10 +43,32 @@
     --marca-boto: #2c7a00;
     --lima-suau: #2f3a1a;
     --marro: #cfc8bd;
+    color-scheme: dark;
   }
   /* El manual pide el logo sobre blanco */
-  .logo { background: #ffffff; border-radius: 8px; padding: 3px 8px; }
+  :root:not([data-tema='clar']) .logo { background: #ffffff; border-radius: 8px; padding: 3px 8px; }
 }
+:root[data-tema='fosc'] {
+  --superficie: #1e1c19;
+  --superficie-2: #2a2723;
+  --paper: #23201c;
+  --vora: #45403a;
+  --text: #f1eee8;
+  --text-2: #cfc8bd;
+  --marca: #9ed100;
+  --marca-fosc: #b8e04a;
+  --marca-boto: #2c7a00;
+  --lima-suau: #2f3a1a;
+  --marro: #cfc8bd;
+  color-scheme: dark;
+}
+:root[data-tema='fosc'] .logo { background: #ffffff; border-radius: 8px; padding: 3px 8px; }
+
+.boto-tema {
+  width: 40px; height: 40px; flex: none; display: inline-flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--vora); border-radius: 50%; background: var(--superficie); color: var(--text);
+}
+.boto-tema:hover { border-color: var(--text-2); }
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
@@ -143,7 +170,7 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .boto:hover:not(:disabled) { border-color: var(--text-2); }
 .boto:disabled { opacity: 0.5; cursor: not-allowed; }
 .boto.primari { background: var(--marca-boto); border-color: var(--marca-boto); color: #fff; font-weight: 700; }
-.boto.primari:hover:not(:disabled) { background: var(--marca-fosc); border-color: var(--marca-fosc); }
+.boto.primari:hover:not(:disabled) { background: var(--marca-boto-hover); border-color: var(--marca-boto-hover); }
 .boto.lima { background: var(--lima); border-color: var(--lima); color: var(--sobre-lima); font-weight: 800; }
 .boto.lima:hover:not(:disabled) { border-color: var(--sobre-lima); }
 .boto.contorn { border: 2px solid var(--marca); color: var(--marca); background: transparent; font-weight: 700; }

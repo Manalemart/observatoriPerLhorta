@@ -6,6 +6,13 @@
     <link rel="icon" href="/icon-64.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#ffffff" />
+    <!-- Tema triat amb el botó de la capçalera: s'aplica abans de pintar per a no parpellejar -->
+    <script>
+      try {
+        var t = localStorage.getItem('observatori-tema');
+        if (t === 'clar' || t === 'fosc') document.documentElement.dataset.tema = t;
+      } catch (e) { /* sense emmagatzematge: es queda el del sistema */ }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Inventari ciutadà de l'estat de l'Horta de València" />
     <title>Observatori Ciutadà de l'Horta</title>

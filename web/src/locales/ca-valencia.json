@@ -301,5 +301,9 @@
       "iniciativa": "Una iniciativa de",
       "tecnic": "Desenvolupament: MAM — Mediambient i Mapes"
     }
+  },
+  "tema": {
+    "aFosc": "Canvia al tema fosc",
+    "aClar": "Canvia al tema clar"
   }
 }

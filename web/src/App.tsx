@@ -13,12 +13,14 @@ import { DetallNoticia, EditorNoticia, LlistaNoticies } from './features/noticie
 import { Campana } from './features/notificacions/Campana';
 import { Legal } from './features/legal/Legal';
 import { Portada } from './features/portada/Portada';
+import { useTema } from './lib/tema';
 import { Validacio } from './features/validacio/Validacio';
 
 export function App() {
   const { t } = useTranslation();
   const { uid, perfil, potValidar, eixir } = useAuth();
   const { pathname } = useLocation();
+  const { tema, canviar: canviarTema } = useTema();
   const [dades, setDades] = useState<Dades | null>(null);
   const [elements, setElements] = useState<FeatureCollection | null>(null);
   const [error, setError] = useState(false);
@@ -63,6 +65,24 @@ export function App() {
           {potValidar && <NavLink to="/validacio">{t('validacio.titol')}</NavLink>}
         </nav>
         <div className="capcalera-accions">
+          <button
+            type="button"
+            className="boto-tema"
+            aria-label={t(tema === 'fosc' ? 'tema.aClar' : 'tema.aFosc')}
+            title={t(tema === 'fosc' ? 'tema.aClar' : 'tema.aFosc')}
+            onClick={canviarTema}
+          >
+            {tema === 'fosc' ? (
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.9 4.9 1.4 1.4" /><path d="m17.7 17.7 1.4 1.4" />
+                <path d="M2 12h2" /><path d="M20 12h2" /><path d="m4.9 19.1 1.4-1.4" /><path d="m17.7 6.3 1.4-1.4" />
+              </svg>
+            ) : (
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+              </svg>
+            )}
+          </button>
           {llest && esMapa && (
             <button
               type="button"
