@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../core/config.dart';
+
 /// Sesión y alias. Avisa a go_router cuando cambian.
 class Sessio extends ChangeNotifier {
   Sessio(this._client) {
@@ -38,7 +40,10 @@ class Sessio extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> demanarCodi(String email) => _client.auth.signInWithOtp(email: email);
+  /// El correo trae un enlace que vuelve a la app (y, si la plantilla lo incluye, un código).
+  /// supabase_flutter recoge el enlace y abre la sesión por su cuenta.
+  Future<void> demanarCodi(String email) =>
+      _client.auth.signInWithOtp(email: email, emailRedirectTo: Config.redireccioEntrada);
 
   Future<void> verificarCodi(String email, String codi) =>
       _client.auth.verifyOTP(type: OtpType.email, email: email, token: codi);

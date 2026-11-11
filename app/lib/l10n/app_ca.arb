@@ -5,11 +5,17 @@
   "comuTria": "Tria…",
   "comuError": "Alguna cosa ha fallat. Torna-ho a provar.",
   "entradaTitol": "Entra a l'Observatori",
-  "entradaExplicacio": "T'enviarem un codi al correu, sense contrasenya.",
+  "entradaExplicacio": "T'enviarem un enllaç al correu, sense contrasenya.",
   "entradaCorreu": "Correu electrònic",
-  "entradaEnviar": "Envia'm el codi",
-  "entradaCodiEnviat": "Hem enviat un codi a {email}.",
-  "@entradaCodiEnviat": { "placeholders": { "email": { "type": "String" } } },
+  "entradaEnviar": "Envia'm l'enllaç",
+  "entradaCodiEnviat": "Hem enviat un enllaç a {email}. Obri'l des d'este mòbil i entraràs directament.",
+  "@entradaCodiEnviat": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "entradaCodi": "Codi de 6 xifres",
   "entradaVerificar": "Entra",
   "entradaCodiErroni": "El codi no és correcte o ha caducat.",
@@ -46,16 +52,34 @@
   "aportarUsarPosicio": "Usa la meua posició",
   "aportarDesfer": "Desfés",
   "aportarVertexs": "{count, plural, =1{1 punt} other{{count} punts}}",
-  "@aportarVertexs": { "placeholders": { "count": { "type": "int" } } },
+  "@aportarVertexs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "aportarCercant": "Buscant el recinte SIGPAC…",
   "aportarRecinte": "Recinte SIGPAC: {ref}",
-  "@aportarRecinte": { "placeholders": { "ref": { "type": "String" } } },
+  "@aportarRecinte": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
   "aportarSenseRecinte": "Ací no hi ha cap recinte SIGPAC.",
   "aportarRecinteOffline": "Sense connexió: el recinte es buscarà en enviar-ho.",
   "aportarFerFoto": "Fes una foto",
   "aportarGaleria": "Galeria",
   "aportarFotos": "{count, plural, =0{Sense fotos} =1{1 foto} other{{count} fotos}}",
-  "@aportarFotos": { "placeholders": { "count": { "type": "int" } } },
+  "@aportarFotos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "aportarLlicencia": "En enviar-ho, acceptes publicar les dades amb llicència CC BY 4.0 i les fotos amb CC BY-SA 4.0. Evita que isquen persones o matrícules. Es revisarà abans de publicar-ho.",
   "aportarGuardar": "Guarda i envia",
   "aportarGuardat": "Guardat. Si no hi ha connexió, s'enviarà més tard.",
@@ -68,5 +92,14 @@
   "llistaReintentar": "Torna-ho a provar",
   "llistaEsborrar": "Esborra",
   "llistaMotiu": "Motiu: {motiu}",
-  "@llistaMotiu": { "placeholders": { "motiu": { "type": "String" } } }
+  "@llistaMotiu": {
+    "placeholders": {
+      "motiu": {
+        "type": "String"
+      }
+    }
+  },
+  "entradaEsperant": "Esperant que obris l'enllaç…",
+  "entradaTincCodi": "El correu porta un codi de 6 xifres",
+  "entradaNoArriba": "No t'arriba? Mira el correu brossa o torna-ho a provar d'ací a uns minuts."
 }

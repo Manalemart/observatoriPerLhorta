@@ -126,7 +126,7 @@ abstract class L {
   /// No description provided for @entradaExplicacio.
   ///
   /// In ca, this message translates to:
-  /// **'T\'enviarem un codi al correu, sense contrasenya.'**
+  /// **'T\'enviarem un enllaç al correu, sense contrasenya.'**
   String get entradaExplicacio;
 
   /// No description provided for @entradaCorreu.
@@ -138,13 +138,13 @@ abstract class L {
   /// No description provided for @entradaEnviar.
   ///
   /// In ca, this message translates to:
-  /// **'Envia\'m el codi'**
+  /// **'Envia\'m l\'enllaç'**
   String get entradaEnviar;
 
   /// No description provided for @entradaCodiEnviat.
   ///
   /// In ca, this message translates to:
-  /// **'Hem enviat un codi a {email}.'**
+  /// **'Hem enviat un enllaç a {email}. Obri\'l des d\'este mòbil i entraràs directament.'**
   String entradaCodiEnviat(String email);
 
   /// No description provided for @entradaCodi.
@@ -476,6 +476,24 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'Motiu: {motiu}'**
   String llistaMotiu(String motiu);
+
+  /// No description provided for @entradaEsperant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Esperant que obris l\'enllaç…'**
+  String get entradaEsperant;
+
+  /// No description provided for @entradaTincCodi.
+  ///
+  /// In ca, this message translates to:
+  /// **'El correu porta un codi de 6 xifres'**
+  String get entradaTincCodi;
+
+  /// No description provided for @entradaNoArriba.
+  ///
+  /// In ca, this message translates to:
+  /// **'No t\'arriba? Mira el correu brossa o torna-ho a provar d\'ací a uns minuts.'**
+  String get entradaNoArriba;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -9,6 +9,11 @@ class Config {
 
   static const paquet = 'com.mamlabsfera.observatori_perlhorta';
 
+  /// Vuelta a la app desde el enlace del correo. El esquema no puede ser el nombre del
+  /// paquete: los esquemas de URL no admiten «_». Tiene que estar en las Redirect URLs de
+  /// Supabase y en el intent-filter de AndroidManifest.xml.
+  static const redireccioEntrada = 'observatoriplh://login-callback';
+
   static const centreInicial = LatLng(39.48, -0.40);
   static const zoomInicial = 11.0;
 

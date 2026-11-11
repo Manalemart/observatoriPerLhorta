@@ -25,17 +25,17 @@ class LCa extends L {
 
   @override
   String get entradaExplicacio =>
-      'T\'enviarem un codi al correu, sense contrasenya.';
+      'T\'enviarem un enllaç al correu, sense contrasenya.';
 
   @override
   String get entradaCorreu => 'Correu electrònic';
 
   @override
-  String get entradaEnviar => 'Envia\'m el codi';
+  String get entradaEnviar => 'Envia\'m l\'enllaç';
 
   @override
   String entradaCodiEnviat(String email) {
-    return 'Hem enviat un codi a $email.';
+    return 'Hem enviat un enllaç a $email. Obri\'l des d\'este mòbil i entraràs directament.';
   }
 
   @override
@@ -233,4 +233,14 @@ class LCa extends L {
   String llistaMotiu(String motiu) {
     return 'Motiu: $motiu';
   }
+
+  @override
+  String get entradaEsperant => 'Esperant que obris l\'enllaç…';
+
+  @override
+  String get entradaTincCodi => 'El correu porta un codi de 6 xifres';
+
+  @override
+  String get entradaNoArriba =>
+      'No t\'arriba? Mira el correu brossa o torna-ho a provar d\'ací a uns minuts.';
 }

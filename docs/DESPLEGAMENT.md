@@ -37,6 +37,8 @@ Las cuentas, los proyectos y los pagos van a nombre de Per l'Horta o de MAM: dec
 3. **Authentication → URL Configuration**:
    - *Site URL*: `https://<domini>`
    - *Redirect URLs*: `https://<domini>/**` (y la URL de Vercel `https://<projecte>.vercel.app/**` mientras no esté el dominio). **Con `/**`**: sin comodín, el enlace mágico no vuelve a la página donde se pidió.
+     Añadir también **`observatoriplh://login-callback`**: es la vuelta a la app Android (`Config.redireccioEntrada`). Si falta, el enlace del correo abre la web en vez de la app.
+     Con el servidor de correo por defecto de Supabase las plantillas **no se pueden editar**: el correo solo trae el enlace, y la app entra con él. El código de 6 cifras llegará cuando haya SMTP propio.
 4. **Authentication → Emails → SMTP Settings**: los datos del proveedor de correo. Sin SMTP propio Supabase solo envía unos pocos correos por hora.
 5. **Authentication → Emails → Templates → Magic Link**: asunto `Entra a l'Observatori Ciutadà de l'Horta` y el contenido de `supabase/templates/magic_link.html`. La plantilla trae el enlace (web) y el código (app): las dos cosas hacen falta.
    **Y también Confirm signup**: asunto `Confirma el teu compte a l'Observatori Ciutadà de l'Horta` y el contenido de `supabase/templates/confirmation.html`. Es la que recibe un correo que entra por primera vez; sin `{{ .Token }}` la app no puede completar el alta. Comprobar que el cuerpo se ha guardado (no solo el asunto) pidiendo un código desde la app.
