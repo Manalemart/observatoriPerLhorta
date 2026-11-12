@@ -1,13 +1,12 @@
 // Hojas de una partida en PDF, generadas en el navegador. Dos tipos:
 //
-// · Full de camp: el plano lo más grande posible (A4 vertical o apaisado según la forma
-//   de la partida) sobre la ortofoto o el topográfico, con los recintos SIGPAC
-//   sobreimpresos y los elementos numerados. Para llevar en la mano.
-// · Full de revisió: el mismo plano con una cuadrícula (A1, B2…) y, detrás, la lista para
-//   marcar «igual / canviat / no el trobe», con el cuadro y el código de cada elemento.
-//
-// Las dos calculan el mismo encuadre y la misma numeración: el 12 del plano de campo es
-// el 12 de la hoja de revisión.
+// · Full de camp: hoja de trabajo en blanco. La partida lo más grande posible (A4
+//   vertical o apaisado según su forma) sobre la ortofoto o el topográfico, con los
+//   recintos SIGPAC sobreimpresos. Sin los elementos ya inventariados: es para anotar.
+// · Full de revisió: el plano con los elementos numerados y una cuadrícula (A1, B2…);
+//   si los números no se leen, una página de detalle ampliada por cada cuadro con
+//   elementos; y la lista para marcar «igual / canviat / no el trobe». La numeración es
+//   la misma en el plano general, en los detalles y en la lista.
 //
 // El plano se dibuja a mano en un canvas (teselas del IGN + vectores): MapLibre fuera de
 // pantalla no garantiza que las teselas estén cargadas al exportar. jsPDF se carga solo
@@ -41,8 +40,9 @@ export interface DadesFull {
 export type TipusFull = 'camp' | 'revisio';
 export type Pas = 'dades' | 'sigpac' | 'mapa' | 'pdf';
 
-const PPMM = 9;                    // píxeles del plano por mm de papel (~230 ppp)
+const PPMM = 7.5;                  // píxeles del plano por mm de papel (~190 ppp)
 const CEL_MM = 40;                 // lado aproximado de cada cuadro de la cuadrícula
+const SEPARACIO_MIN_MM = 6;        // números más juntos que esto en el general → detalles
 const VERD = '#215c00';
 const TEXT = '#3b352f';
 const GRIS = '#6b6258';
@@ -95,24 +95,24 @@ const net = (s: string) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"')
 interface Caixa { x: number; y: number; w: number; h: number }
 interface Pagina { w: number; h: number; apaisat: boolean; mapa: Caixa }
 
-/** Página A4 en la orientación de la partida. El recuadro deja sitio a los rótulos de la cuadrícula. */
+/** Página A4 en la orientación pedida. El recuadro deja sitio a los rótulos de la cuadrícula. */
 function maquetar(apaisat: boolean): Pagina {
   const w = apaisat ? 297 : 210;
   const h = apaisat ? 210 : 297;
   const marge = 8;
   const rotols = 5;
   const dalt = 27;
-  const peu = 15;
+  const peu = 17;
   return { w, h, apaisat, mapa: { x: marge + rotols, y: dalt + rotols, w: w - 2 * marge - rotols, h: h - dalt - rotols - peu } };
 }
 
-/** Encuadre: la partida, con un margen mínimo, ocupando todo el recuadro. Coordenadas Mercator 0..1. */
+/** Encuadre en coordenadas Mercator 0..1, ajustado al recuadro de su página. */
 interface Vista { ox: number; oy: number; w: number; h: number; pagina: Pagina; cols: number; files: number }
 
+/** La partida, con un margen mínimo, ocupando todo el recuadro; orientación según su forma. */
 function calcularVista(dades: DadesFull): Vista {
-  const pts = coordenades(dades.partida!.geometria);
   let [x0, x1, y0, y1] = [Infinity, -Infinity, Infinity, -Infinity];
-  for (const [lon, lat] of pts) {
+  for (const [lon, lat] of coordenades(dades.partida!.geometria)) {
     x0 = Math.min(x0, mx(lon)); x1 = Math.max(x1, mx(lon));
     y0 = Math.min(y0, my(lat)); y1 = Math.max(y1, my(lat));
   }
@@ -130,6 +130,29 @@ function calcularVista(dades: DadesFull): Vista {
   };
 }
 
+/** Encuadre ampliado de un cuadro de la cuadrícula, con un poco de margen, en su propia página. */
+function vistaDetall(v: Vista, c: number, f: number): Vista {
+  const cw = v.w / v.cols;
+  const ch = v.h / v.files;
+  const marge = 0.08;
+  let x0 = v.ox + c * cw - cw * marge;
+  let y0 = v.oy + f * ch - ch * marge;
+  let w = cw * (1 + 2 * marge);
+  let h = ch * (1 + 2 * marge);
+  const pagina = maquetar(w >= h);
+  const { mapa } = pagina;
+  if (w / h > mapa.w / mapa.h) {
+    const nh = (w * mapa.h) / mapa.w;
+    y0 -= (nh - h) / 2;
+    h = nh;
+  } else {
+    const nw = (h * mapa.w) / mapa.h;
+    x0 -= (nw - w) / 2;
+    w = nw;
+  }
+  return { ox: x0, oy: y0, w, h, pagina, cols: v.cols, files: v.files };
+}
+
 /** Posición relativa (0..1) dentro del recuadro. */
 const relativa = (v: Vista, [lon, lat]: Position): [number, number] => [(mx(lon) - v.ox) / v.w, (my(lat) - v.oy) / v.h];
 
@@ -139,13 +162,27 @@ function cela(v: Vista, [u, t]: [number, number]) {
   return { c, f, nom: `${lletra(c)}${f + 1}` };
 }
 
+interface Numerat { e: ElementFull; n: number; cela: string; c: number; f: number; pos: [number, number] }
+
 /** Por cuadros (fila a fila, de izquierda a derecha) y dentro de cada cuadro de arriba abajo. */
-function numerar(v: Vista, elements: ElementFull[]) {
+function numerar(v: Vista, elements: ElementFull[]): Numerat[] {
   return elements
     .map((e) => ({ e, pos: relativa(v, e.etiqueta) }))
     .map((x) => ({ ...x, cela: cela(v, x.pos) }))
     .sort((a, b) => a.cela.f - b.cela.f || a.cela.c - b.cela.c || a.pos[1] - b.pos[1] || a.pos[0] - b.pos[0])
-    .map(({ e, cela: c }) => ({ e, cela: c.nom }));
+    .map(({ e, pos, cela: c }, i) => ({ e, n: i + 1, cela: c.nom, c: c.c, f: c.f, pos }));
+}
+
+/** ¿Hay números demasiado juntos en el plano general para leerlos? */
+function calenDetalls(v: Vista, ordre: Numerat[]) {
+  const { mapa } = v.pagina;
+  const mm = ordre.map((x) => [x.pos[0] * mapa.w, x.pos[1] * mapa.h]);
+  for (let i = 0; i < mm.length; i++) {
+    for (let j = i + 1; j < mm.length; j++) {
+      if (Math.hypot(mm[i][0] - mm[j][0], mm[i][1] - mm[j][1]) < SEPARACIO_MIN_MM) return true;
+    }
+  }
+  return false;
 }
 
 // ─── SIGPAC ────────────────────────────────────────────────────────────────
@@ -177,7 +214,9 @@ async function recintesSigpac(v: Vista): Promise<RecinteSigpac[] | null> {
 }
 
 // ─── Plano ─────────────────────────────────────────────────────────────────
-async function dibuixarPla(v: Vista, ordre: { e: ElementFull }[], partida: Geometry, fons: Fons, sigpac: RecinteSigpac[] | null) {
+interface Pla { imatge: string; metresPerMm: number }
+
+async function dibuixarPla(v: Vista, ordre: Numerat[], partida: Geometry, fons: Fons, sigpac: RecinteSigpac[] | null): Promise<Pla> {
   const { mapa } = v.pagina;
   const objectiu = mapa.w * PPMM;
   const z = Math.max(10, Math.min(ZOOM_MAX_FONS[fons], Math.round(Math.log2(objectiu / (v.w * 256)))));
@@ -252,6 +291,7 @@ async function dibuixarPla(v: Vista, ordre: { e: ElementFull }[], partida: Geome
       area /= 2;
       if (Math.abs(area) < 3000 * u * u) continue;
       cx /= 6 * area; cy /= 6 * area;
+      if (cx < 0 || cy < 0 || cx > canvasW || cy > canvasH) continue;
       const text = r.recinto > 1 ? `${r.parcela}·${r.recinto}` : String(r.parcela);
       if (orto) {
         ctx.lineWidth = 3 * u;
@@ -265,7 +305,7 @@ async function dibuixarPla(v: Vista, ordre: { e: ElementFull }[], partida: Geome
     }
   }
 
-  // Fuera de la partida, velado: la vista va a lo que toca revisar
+  // Fuera de la partida, velado: la vista va a lo que toca
   ctx.beginPath();
   ctx.rect(0, 0, canvasW, canvasH);
   anells(partida).forEach(traçar);
@@ -307,13 +347,14 @@ async function dibuixarPla(v: Vista, ordre: { e: ElementFull }[], partida: Geome
   ctx.lineWidth = 5 * u;
   ctx.stroke();
 
-  // Números
+  // Números (los de toda la partida: en un detalle salen los mismos que en el general)
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = `bold ${Math.round(15 * u)}px Helvetica, Arial, sans-serif`;
-  ordre.forEach(({ e }, i) => {
+  for (const { e, n } of ordre) {
     const [px, py] = aCanvas(e.etiqueta);
-    const r = (i + 1 >= 100 ? 15 : 12) * u;
+    if (px < -20 || py < -20 || px > canvasW + 20 || py > canvasH + 20) continue;
+    const r = (n >= 100 ? 15 : 12) * u;
     ctx.beginPath();
     ctx.arc(px, py, r, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
@@ -322,12 +363,12 @@ async function dibuixarPla(v: Vista, ordre: { e: ElementFull }[], partida: Geome
     ctx.strokeStyle = e.color;
     ctx.stroke();
     ctx.fillStyle = TEXT;
-    ctx.fillText(String(i + 1), px, py + 0.5 * u);
-  });
+    ctx.fillText(String(n), px, py + 0.5 * u);
+  }
 
   const latCentre = latDe(v.oy + v.h / 2);
   const metresPerPixelCanvas = (40075016.686 * Math.cos((latCentre * Math.PI) / 180)) / (mon * escala);
-  return { imatge: canvas.toDataURL('image/jpeg', 0.86), metresPerMm: metresPerPixelCanvas * (canvasW / mapa.w) };
+  return { imatge: canvas.toDataURL('image/jpeg', 0.78), metresPerMm: metresPerPixelCanvas * (canvasW / mapa.w) };
 }
 
 function escalaBonica(metresPerMm: number) {
@@ -371,9 +412,7 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
   const p = dades.partida;
   const revisio = tipus === 'revisio';
   const v = calcularVista(dades);
-  const { pagina } = v;
-  const { mapa } = pagina;
-  const ordre = numerar(v, dades.elements);
+  const ordre = revisio ? numerar(v, dades.elements) : [];
 
   onPas('sigpac');
   const [sigpac, { jsPDF }, { default: autoTable }, logo] = await Promise.all([
@@ -381,14 +420,25 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
   ]);
 
   onPas('mapa');
-  const pla = await dibuixarPla(v, ordre, p.geometria, fons, sigpac);
+  const general = await dibuixarPla(v, ordre, p.geometria, fons, sigpac);
+  // Detalles: un cuadro por página, solo los que tienen elementos y solo si en el general no se leen
+  const detalls: { v: Vista; nom: string; pla: Pla; ns: number[] }[] = [];
+  if (revisio && calenDetalls(v, ordre)) {
+    const celes = new Map<string, Numerat[]>();
+    for (const x of ordre) celes.set(x.cela, [...(celes.get(x.cela) ?? []), x]);
+    for (const [nom, elems] of celes) {
+      const vd = vistaDetall(v, elems[0].c, elems[0].f);
+      detalls.push({ v: vd, nom, pla: await dibuixarPla(vd, ordre, p.geometria, fons, sigpac), ns: elems.map((x) => x.n) });
+    }
+  }
 
   onPas('pdf');
   const avui = new Date().toLocaleDateString(idioma);
-  const orientacio = pagina.apaisat ? 'landscape' : 'portrait';
-  const doc = new jsPDF({ orientation: orientacio, unit: 'mm', format: 'a4' });
+  const doc = new jsPDF({ orientation: v.pagina.apaisat ? 'landscape' : 'portrait', unit: 'mm', format: 'a4' });
   const titol = revisio ? 'FULL DE REVISIÓ' : 'FULL DE CAMP';
   doc.setProperties({ title: `${titol} · ${net(p.nom)}`, author: "Observatori Ciutadà de l'Horta", creator: "Observatori Ciutadà de l'Horta" });
+  const nomFons = fons === 'pnoa' ? 'ortofoto PNOA' : 'mapa topogràfic';
+  const area = `${new Intl.NumberFormat(idioma).format(p.area_ha)} ha`;
 
   const capcalera = (amplePagina: number, subtitol: string) => {
     if (logo) doc.addImage(logo, 'PNG', 8, 8, 39.5, 11);
@@ -407,80 +457,105 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
     doc.line(8, 25, amplePagina - 8, 25);
   };
 
-  // ── Plano
-  const nomFons = fons === 'pnoa' ? 'ortofoto PNOA' : 'mapa topogràfic';
-  capcalera(pagina.w, `${p.municipi} · ${new Intl.NumberFormat(idioma).format(p.area_ha)} ha · ${dades.elements.length} elements · sobre ${nomFons}${sigpac ? ' amb recintes SIGPAC' : ''} · ${avui}`);
-  doc.addImage(pla.imatge, 'JPEG', mapa.x, mapa.y, mapa.w, mapa.h);
-
-  if (revisio) {
+  /** Plano en su recuadro: imagen, cuadrícula opcional, norte, escala, leyenda y créditos. */
+  const pagPla = (vp: Vista, pla: Pla, ambQuadricula: boolean, ambElements: boolean, nota?: string) => {
+    const { pagina } = vp;
+    const { mapa } = pagina;
+    doc.addImage(pla.imatge, 'JPEG', mapa.x, mapa.y, mapa.w, mapa.h);
+    if (ambQuadricula) {
+      doc.setLineWidth(0.3);
+      doc.setDrawColor('#ffffff');
+      for (let c = 1; c < vp.cols; c++) {
+        const x = mapa.x + (mapa.w * c) / vp.cols;
+        doc.line(x, mapa.y, x, mapa.y + mapa.h);
+      }
+      for (let f = 1; f < vp.files; f++) {
+        const y = mapa.y + (mapa.h * f) / vp.files;
+        doc.line(mapa.x, y, mapa.x + mapa.w, y);
+      }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(TEXT);
+      for (let c = 0; c < vp.cols; c++) doc.text(lletra(c), mapa.x + (mapa.w * (c + 0.5)) / vp.cols, mapa.y - 1.6, { align: 'center' });
+      for (let f = 0; f < vp.files; f++) doc.text(String(f + 1), mapa.x - 2.8, mapa.y + (mapa.h * (f + 0.5)) / vp.files + 1.2, { align: 'center' });
+    }
+    doc.setDrawColor(TEXT);
     doc.setLineWidth(0.3);
-    doc.setDrawColor('#ffffff');
-    for (let c = 1; c < v.cols; c++) {
-      const x = mapa.x + (mapa.w * c) / v.cols;
-      doc.line(x, mapa.y, x, mapa.y + mapa.h);
-    }
-    for (let f = 1; f < v.files; f++) {
-      const y = mapa.y + (mapa.h * f) / v.files;
-      doc.line(mapa.x, y, mapa.x + mapa.w, y);
-    }
+    doc.rect(mapa.x, mapa.y, mapa.w, mapa.h);
+
+    // Norte
+    const nx = mapa.x + mapa.w - 7;
+    const ny = mapa.y + 7;
+    doc.setFillColor('#ffffff');
+    doc.circle(nx, ny, 4.2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(TEXT);
-    for (let c = 0; c < v.cols; c++) doc.text(lletra(c), mapa.x + (mapa.w * (c + 0.5)) / v.cols, mapa.y - 1.6, { align: 'center' });
-    for (let f = 0; f < v.files; f++) doc.text(String(f + 1), mapa.x - 2.8, mapa.y + (mapa.h * (f + 0.5)) / v.files + 1.2, { align: 'center' });
-  }
-  doc.setDrawColor(TEXT);
-  doc.setLineWidth(0.3);
-  doc.rect(mapa.x, mapa.y, mapa.w, mapa.h);
+    doc.text('N', nx, ny - 0.8, { align: 'center' });
+    doc.setLineWidth(0.5);
+    doc.line(nx, ny + 0.3, nx, ny + 3);
 
-  // Norte
-  const nx = mapa.x + mapa.w - 7;
-  const ny = mapa.y + 7;
-  doc.setFillColor('#ffffff');
-  doc.circle(nx, ny, 4.2, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(TEXT);
-  doc.text('N', nx, ny - 0.8, { align: 'center' });
-  doc.setLineWidth(0.5);
-  doc.line(nx, ny + 0.3, nx, ny + 3);
+    // Escala y leyenda (con salto de línea si no cabe)
+    const esc = escalaBonica(pla.metresPerMm);
+    let ly = mapa.y + mapa.h + 5.5;
+    doc.setLineWidth(0.6);
+    doc.line(mapa.x, ly, mapa.x + esc.mm, ly);
+    doc.line(mapa.x, ly - 1.2, mapa.x, ly + 1.2);
+    doc.line(mapa.x + esc.mm, ly - 1.2, mapa.x + esc.mm, ly + 1.2);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    const textEscala = esc.metres >= 1000 ? `${esc.metres / 1000} km` : `${esc.metres} m`;
+    doc.text(textEscala, mapa.x + esc.mm + 2, ly + 1);
+    let lx = mapa.x + esc.mm + 4 + doc.getTextWidth(textEscala) + 6;
+    const dreta = pagina.w - 8;
+    const entrada = (ample: number, dibuix: (x: number, y: number) => void, text: string) => {
+      if (lx + ample + 1.2 + doc.getTextWidth(text) > dreta) { lx = mapa.x; ly += 4.5; }
+      dibuix(lx, ly);
+      doc.setTextColor(TEXT);
+      doc.text(text, lx + ample + 1.2, ly + 0.7);
+      lx += ample + 1.2 + doc.getTextWidth(text) + 5;
+    };
+    entrada(5, (x, y) => { doc.setDrawColor(VERD); doc.setLineWidth(1); doc.line(x, y - 0.5, x + 5, y - 0.5); }, 'Partida');
+    if (sigpac) entrada(5, (x, y) => { doc.setDrawColor(fons === 'pnoa' ? '#e0b800' : '#b86e00'); doc.setLineWidth(0.6); doc.line(x, y - 0.5, x + 5, y - 0.5); }, 'Recinte SIGPAC (núm. de parcel·la)');
+    if (ambElements) {
+      for (const t of new Map(dades.elements.map((e) => [e.tema_id, e])).values()) {
+        entrada(3, (x, y) => { doc.setFillColor(t.color); doc.rect(x, y - 2, 3, 3, 'F'); }, net(t.tema));
+      }
+      entrada(3, (x, y) => { doc.setDrawColor(TEXT); doc.setLineWidth(0.3); doc.setLineDashPattern([0.8, 0.6], 0); doc.rect(x, y - 2, 3, 3); doc.setLineDashPattern([], 0); }, 'Discontinu: inventari 2017-2018 per revisar');
+    }
+    if (nota) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(TEXT);
+      doc.text(net(nota), mapa.x, ly + 5, { maxWidth: pagina.w - 30 });
+    }
 
-  // Escala y leyenda (con salto de línea si no cabe)
-  const esc = escalaBonica(pla.metresPerMm);
-  let ly = mapa.y + mapa.h + 5.5;
-  doc.setLineWidth(0.6);
-  doc.line(mapa.x, ly, mapa.x + esc.mm, ly);
-  doc.line(mapa.x, ly - 1.2, mapa.x, ly + 1.2);
-  doc.line(mapa.x + esc.mm, ly - 1.2, mapa.x + esc.mm, ly + 1.2);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  const textEscala = esc.metres >= 1000 ? `${esc.metres / 1000} km` : `${esc.metres} m`;
-  doc.text(textEscala, mapa.x + esc.mm + 2, ly + 1);
-  let lx = mapa.x + esc.mm + 4 + doc.getTextWidth(textEscala) + 6;
-  const dreta = pagina.w - 8;
-  const entrada = (ample: number, dibuix: (x: number, y: number) => void, text: string) => {
-    const total = 4.2 + doc.getTextWidth(text) + 5;
-    if (lx + total > dreta) { lx = mapa.x; ly += 4.5; }
-    dibuix(lx, ly);
-    doc.setTextColor(TEXT);
-    doc.text(text, lx + ample + 1.2, ly + 0.7);
-    lx += ample + 1.2 + doc.getTextWidth(text) + 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(GRIS);
+    doc.text(
+      net(`Fons: ${fons === 'pnoa' ? 'PNOA' : 'MTN'} © Instituto Geográfico Nacional${sigpac ? ' · Recintes SIGPAC © FEGA' : ''}${ambElements ? " · Parcel·les 2018: D. G. del Cadastre · Dades: Observatori Ciutadà de l'Horta — Per l'Horta (CC BY 4.0)" : ''}`),
+      8, pagina.h - 4, { maxWidth: pagina.w - 30 },
+    );
+    if (!sigpac) {
+      doc.setTextColor('#8f1f1a');
+      doc.text('No s\'ha pogut consultar el SIGPAC: el plànol va sense recintes.', 8, pagina.h - 7.5);
+    }
   };
-  for (const t of new Map(dades.elements.map((e) => [e.tema_id, e])).values()) {
-    entrada(3, (x, y) => { doc.setFillColor(t.color); doc.rect(x, y - 2, 3, 3, 'F'); }, net(t.tema));
-  }
-  entrada(3, (x, y) => { doc.setDrawColor(TEXT); doc.setLineWidth(0.3); doc.setLineDashPattern([0.8, 0.6], 0); doc.rect(x, y - 2, 3, 3); doc.setLineDashPattern([], 0); }, 'Discontinu: inventari 2017-2018 per revisar');
-  if (sigpac) entrada(5, (x, y) => { doc.setDrawColor(fons === 'pnoa' ? '#e0b800' : '#b86e00'); doc.setLineWidth(0.6); doc.line(x, y - 0.5, x + 5, y - 0.5); }, 'Recinte SIGPAC (núm. de parcel·la)');
 
-  doc.setFontSize(6.5);
-  doc.setTextColor(GRIS);
-  doc.text(
-    net(`Fons: ${fons === 'pnoa' ? 'PNOA' : 'MTN'} © Instituto Geográfico Nacional${sigpac ? ' · Recintes SIGPAC © FEGA' : ''} · Parcel·les 2018: D. G. del Cadastre · Dades: Observatori Ciutadà de l'Horta — Per l'Horta (CC BY 4.0)`),
-    8, pagina.h - 4, { maxWidth: pagina.w - 30 },
-  );
-  if (!sigpac) {
-    doc.setTextColor('#8f1f1a');
-    doc.text('No s\'ha pogut consultar el SIGPAC: el plànol va sense recintes.', 8, pagina.h - 7.5);
+  // ── Plano general
+  capcalera(v.pagina.w, revisio
+    ? `${p.municipi} · ${area} · ${dades.elements.length} elements · sobre ${nomFons} · ${avui}`
+    : `${p.municipi} · ${area} · full de treball en blanc sobre ${nomFons}${sigpac ? ' amb recintes SIGPAC' : ''} · ${avui}`);
+  pagPla(v, general, revisio, revisio,
+    detalls.length ? `Detalls ampliats a les pàgines següents: ${detalls.map((d) => d.nom).join(', ')}.` : undefined);
+
+  // ── Detalles
+  for (const d of detalls) {
+    doc.addPage('a4', d.v.pagina.apaisat ? 'landscape' : 'portrait');
+    const rang = d.ns.length > 1 ? `elements ${d.ns[0]} a ${d.ns[d.ns.length - 1]}` : `element ${d.ns[0]}`;
+    capcalera(d.v.pagina.w, `Detall del quadre ${d.nom} · ${rang} · ${p.municipi}`);
+    pagPla(d.v, d.pla, false, true);
   }
 
   // ── Lista (solo en la hoja de revisión)
@@ -491,7 +566,7 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
     doc.setFontSize(8.5);
     doc.setTextColor(TEXT);
     doc.text(
-      net("Per a cada element, marca una casella i apunta el que calga. El número i el quadre són els del plànol. Després, a la web o a l'app, obri l'element i respon «És encara així?»: si ha canviat, fes una aportació nova."),
+      net("Per a cada element, marca una casella i apunta el que calga. El número i el quadre són els del plànol i dels detalls. Després, a la web o a l'app, obri l'element i respon «És encara així?»: si ha canviat, fes una aportació nova."),
       8, 31, { maxWidth: 281 },
     );
     const caselles = new Set([6, 7, 8]);
@@ -499,8 +574,8 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
       startY: 38,
       margin: { left: 8, right: 8, top: 30, bottom: 12 },
       head: [['Núm.', 'Quadre', 'Element', 'Tema', 'Dada', 'Codi', 'Igual', 'Canviat', 'No el trobe', 'Notes']],
-      body: ordre.map(({ e, cela: c }, i) => [
-        String(i + 1), c,
+      body: ordre.map(({ e, n, cela: c }) => [
+        String(n), c,
         net(e.categoria && e.categoria !== 'Sense categoria' ? `${e.variable} · ${e.categoria}` : e.variable),
         net(e.tema), estatDada(e, idioma), e.id.slice(0, 8), '', '', '', '',
       ]),
@@ -519,10 +594,10 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
       },
       didDrawCell: (c) => {
         if (c.section === 'body' && caselles.has(c.column.index)) {
-          const s = 3.6;
+          const mida = 3.6;
           doc.setDrawColor(TEXT);
           doc.setLineWidth(0.3);
-          doc.rect(c.cell.x + (c.cell.width - s) / 2, c.cell.y + (c.cell.height - s) / 2, s, s);
+          doc.rect(c.cell.x + (c.cell.width - mida) / 2, c.cell.y + (c.cell.height - mida) / 2, mida, mida);
         }
       },
       didDrawPage: (d) => {
