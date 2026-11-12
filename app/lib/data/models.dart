@@ -105,6 +105,7 @@ class Aportacio {
     this.estat = EstatCola.pendent,
     this.error,
     this.fotos = const [],
+    this.substitueixId,
   });
 
   final String id;
@@ -125,6 +126,9 @@ class Aportacio {
   final EstatCola estat;
   final String? error;
   final List<Uint8List> fotos;
+
+  /// «Ha canviat» en la revisión: el elemento antiguo que este sustituirá al validarse.
+  final String? substitueixId;
 }
 
 /// Una aportación ya enviada, tal como la devuelve el servidor.

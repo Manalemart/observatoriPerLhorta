@@ -494,6 +494,168 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'No t\'arriba? Mira el correu brossa o torna-ho a provar d\'ací a uns minuts.'**
   String get entradaNoArriba;
+
+  /// No description provided for @comuTornarAProvar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Torna-ho a provar'**
+  String get comuTornarAProvar;
+
+  /// No description provided for @partidesTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Les meues partides'**
+  String get partidesTitol;
+
+  /// No description provided for @partidesBuit.
+  ///
+  /// In ca, this message translates to:
+  /// **'Encara no tens cap partida apadrinada. La coordinació te n\'assignarà.'**
+  String get partidesBuit;
+
+  /// No description provided for @partidesError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut carregar les teues partides.'**
+  String get partidesError;
+
+  /// No description provided for @partidesResum.
+  ///
+  /// In ca, this message translates to:
+  /// **'{municipi} · {ha} ha · {validats} elements'**
+  String partidesResum(String municipi, String ha, int validats);
+
+  /// No description provided for @revisioTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisió de la partida'**
+  String get revisioTitol;
+
+  /// No description provided for @revisioErrorCarrega.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut carregar la partida. Cal connexió.'**
+  String get revisioErrorCarrega;
+
+  /// No description provided for @revisioProgres.
+  ///
+  /// In ca, this message translates to:
+  /// **'{fets} de {total} revisats'**
+  String revisioProgres(int fets, int total);
+
+  /// No description provided for @revisioNomesPerRevisar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Només el que falta revisar'**
+  String get revisioNomesPerRevisar;
+
+  /// No description provided for @revisioElMesProper.
+  ///
+  /// In ca, this message translates to:
+  /// **'El més proper per revisar'**
+  String get revisioElMesProper;
+
+  /// No description provided for @revisioSenseSigpac.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut carregar el SIGPAC'**
+  String get revisioSenseSigpac;
+
+  /// No description provided for @revisioNumero.
+  ///
+  /// In ca, this message translates to:
+  /// **'Núm. {n} · quadre {q}'**
+  String revisioNumero(int n, String q);
+
+  /// No description provided for @revisioEstatPerRevisar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Inventari 2017-2018 · per revisar'**
+  String get revisioEstatPerRevisar;
+
+  /// No description provided for @revisioEstatIgual.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisat: continua igual'**
+  String get revisioEstatIgual;
+
+  /// No description provided for @revisioEstatCanviat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ha canviat: pendent de l\'aportació nova'**
+  String get revisioEstatCanviat;
+
+  /// No description provided for @revisioEstatNou.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aportació nova: no entra en la revisió'**
+  String get revisioEstatNou;
+
+  /// No description provided for @revisioNomesPadri.
+  ///
+  /// In ca, this message translates to:
+  /// **'Només el padrí o la padrina de la partida el revisa.'**
+  String get revisioNomesPadri;
+
+  /// No description provided for @revisioNoRevisable.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aquest element no és de l\'inventari de 2018 o encara no està validat.'**
+  String get revisioNoRevisable;
+
+  /// No description provided for @revisioNota.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nota (opcional)'**
+  String get revisioNota;
+
+  /// No description provided for @revisioIgual.
+  ///
+  /// In ca, this message translates to:
+  /// **'Continua igual'**
+  String get revisioIgual;
+
+  /// No description provided for @revisioCanviat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ha canviat'**
+  String get revisioCanviat;
+
+  /// No description provided for @revisioNoTrobat.
+  ///
+  /// In ca, this message translates to:
+  /// **'No el trobe'**
+  String get revisioNoTrobat;
+
+  /// No description provided for @revisioConfirmarNoTrobat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Segur que ja no hi és? Es donarà de baixa: deixarà de veure\'s al mapa, però queda a l\'historial.'**
+  String get revisioConfirmarNoTrobat;
+
+  /// No description provided for @revisioFet.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisió desada'**
+  String get revisioFet;
+
+  /// No description provided for @revisioError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut desar la revisió. Comprova la connexió.'**
+  String get revisioError;
+
+  /// No description provided for @revisioSubstitueix.
+  ///
+  /// In ca, this message translates to:
+  /// **'Substitueix l\'element {n}'**
+  String revisioSubstitueix(int n);
+
+  /// No description provided for @revisioSubstitueixNota.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quan es valide, l\'antic quedarà a l\'historial.'**
+  String get revisioSubstitueixNota;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

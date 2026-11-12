@@ -177,6 +177,11 @@ class _MapaScreenState extends State<MapaScreen> {
             itemBuilder: (_) => [for (final f in Fons.values) PopupMenuItem(value: f, child: Text(nomFons(t, f)))],
           ),
           IconButton(
+            tooltip: t.partidesTitol,
+            onPressed: () => context.push('/partides'),
+            icon: const Icon(Icons.fact_check_outlined),
+          ),
+          IconButton(
             tooltip: t.mapaAportacions,
             onPressed: () => context.push('/aportacions'),
             icon: Badge(

@@ -243,4 +243,100 @@ class LCa extends L {
   @override
   String get entradaNoArriba =>
       'No t\'arriba? Mira el correu brossa o torna-ho a provar d\'ací a uns minuts.';
+
+  @override
+  String get comuTornarAProvar => 'Torna-ho a provar';
+
+  @override
+  String get partidesTitol => 'Les meues partides';
+
+  @override
+  String get partidesBuit =>
+      'Encara no tens cap partida apadrinada. La coordinació te n\'assignarà.';
+
+  @override
+  String get partidesError => 'No s\'han pogut carregar les teues partides.';
+
+  @override
+  String partidesResum(String municipi, String ha, int validats) {
+    return '$municipi · $ha ha · $validats elements';
+  }
+
+  @override
+  String get revisioTitol => 'Revisió de la partida';
+
+  @override
+  String get revisioErrorCarrega =>
+      'No s\'ha pogut carregar la partida. Cal connexió.';
+
+  @override
+  String revisioProgres(int fets, int total) {
+    return '$fets de $total revisats';
+  }
+
+  @override
+  String get revisioNomesPerRevisar => 'Només el que falta revisar';
+
+  @override
+  String get revisioElMesProper => 'El més proper per revisar';
+
+  @override
+  String get revisioSenseSigpac => 'No s\'ha pogut carregar el SIGPAC';
+
+  @override
+  String revisioNumero(int n, String q) {
+    return 'Núm. $n · quadre $q';
+  }
+
+  @override
+  String get revisioEstatPerRevisar => 'Inventari 2017-2018 · per revisar';
+
+  @override
+  String get revisioEstatIgual => 'Revisat: continua igual';
+
+  @override
+  String get revisioEstatCanviat => 'Ha canviat: pendent de l\'aportació nova';
+
+  @override
+  String get revisioEstatNou => 'Aportació nova: no entra en la revisió';
+
+  @override
+  String get revisioNomesPadri =>
+      'Només el padrí o la padrina de la partida el revisa.';
+
+  @override
+  String get revisioNoRevisable =>
+      'Aquest element no és de l\'inventari de 2018 o encara no està validat.';
+
+  @override
+  String get revisioNota => 'Nota (opcional)';
+
+  @override
+  String get revisioIgual => 'Continua igual';
+
+  @override
+  String get revisioCanviat => 'Ha canviat';
+
+  @override
+  String get revisioNoTrobat => 'No el trobe';
+
+  @override
+  String get revisioConfirmarNoTrobat =>
+      'Segur que ja no hi és? Es donarà de baixa: deixarà de veure\'s al mapa, però queda a l\'historial.';
+
+  @override
+  String get revisioFet => 'Revisió desada';
+
+  @override
+  String get revisioError =>
+      'No s\'ha pogut desar la revisió. Comprova la connexió.';
+
+  @override
+  String revisioSubstitueix(int n) {
+    return 'Substitueix l\'element $n';
+  }
+
+  @override
+  String get revisioSubstitueixNota =>
+      'Quan es valide, l\'antic quedarà a l\'historial.';
 }

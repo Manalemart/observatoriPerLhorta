@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:observatori_horta/data/local/cola.dart';
 import 'package:observatori_horta/data/local/cola_drift.dart';
 import 'package:observatori_horta/data/models.dart';
+import 'package:observatori_horta/data/revisio.dart';
 import 'package:observatori_horta/data/remote/api_observatori.dart';
 import 'package:observatori_horta/services/fotos.dart';
 import 'package:observatori_horta/services/sigpac.dart';
@@ -210,5 +211,68 @@ void main() {
       expect(await cola.totes(), isEmpty);
       expect(await bd.select(bd.fotosCola).get(), isEmpty);
     });
+  });
+
+  group('Revisió de partida', () {
+    Map<String, dynamic> element({String origen = 'legacy_2018', bool perRevisar = true, Map<String, dynamic>? darrera, bool substitucio = false}) => {
+          'id': 'e1', 'numero': 12, 'quadre': 'B2', 'tema_id': 1, 'tema': 'Construccions', 'color': '#1f5fb0',
+          'variable_id': 7, 'variable': 'Alqueria', 'categoria': 'Mal conservat', 'estat': 'validat', 'origen': origen,
+          'per_revisar': perRevisar, 'darrera_revisio': darrera, 'substitucio_pendent': substitucio,
+          'geometria': {'type': 'Point', 'coordinates': [-0.35, 39.48]}, 'etiqueta': [-0.35, 39.48],
+        };
+
+    test('llegeix número, quadre i etiqueta (lon, lat → LatLng)', () {
+      final e = ElementRevisio.fromJson(element());
+      expect(e.numero, 12);
+      expect(e.quadre, 'B2');
+      expect(e.etiqueta, const LatLng(39.48, -0.35));
+    });
+
+    test('estat de revisió', () {
+      expect(ElementRevisio.fromJson(element()).estatRevisio, EstatRevisio.perRevisar);
+      expect(ElementRevisio.fromJson(element(perRevisar: false, darrera: {'resultat': 'igual', 'data': '2026-11-12T10:00:00Z'})).estatRevisio, EstatRevisio.igual);
+      expect(ElementRevisio.fromJson(element(perRevisar: false, darrera: {'resultat': 'canviat', 'data': '2026-11-12T10:00:00Z'})).estatRevisio, EstatRevisio.canviat);
+      expect(ElementRevisio.fromJson(element(substitucio: true)).estatRevisio, EstatRevisio.canviat);
+      expect(ElementRevisio.fromJson(element(origen: 'app', perRevisar: false)).estatRevisio, EstatRevisio.nou);
+    });
+
+    test('el progrés només compta el de 2018', () {
+      final p = PartidaRevisio.fromJson({
+        'partida': {'id': 1, 'nom': 'P', 'municipi': 'M', 'area_ha': 10, 'es_padri': true, 'geometria': {'type': 'Polygon', 'coordinates': []}},
+        'elements': [
+          element(),
+          element(perRevisar: false, darrera: {'resultat': 'igual', 'data': '2026-11-12T10:00:00Z'}),
+          element(origen: 'web', perRevisar: false),
+        ],
+      });
+      expect(p.revisables.length, 2);
+      expect(p.revisats, 1);
+    });
+
+    test('recintes SIGPAC per a dibuixar', () {
+      final r = recintesDeResposta({
+        'features': [
+          {
+            'geometry': {'type': 'Polygon', 'coordinates': [[[-0.35, 39.48], [-0.34, 39.48], [-0.34, 39.49], [-0.35, 39.48]]]},
+            'properties': {'parcela': 66, 'recinto': 2},
+          },
+          {'geometry': null, 'properties': {'parcela': 1, 'recinto': 1}},
+        ],
+      });
+      expect(r.length, 1);
+      expect(r.first.parcela, 66);
+      expect(r.first.anells.first.first, const LatLng(39.48, -0.35));
+    });
+  });
+
+  test("l'aportació que substitueix envia substitueix_id", () async {
+    final api = ApiFalsa();
+    final s = Sincronitzacio(cola: ColaMemoria(), api: api, recinte: (_) async => null, missatgeSenseRecinte: '');
+    await s.afegir(Aportacio(
+      id: 'a1', variableId: 7, titol: 'Alqueria', creadaEn: DateTime(2026),
+      geom: const {'type': 'Point', 'coordinates': [-0.35, 39.48]}, substitueixId: 'antic',
+    ));
+    await s.enviar();
+    expect(api.files.single['substitueix_id'], 'antic');
   });
 }

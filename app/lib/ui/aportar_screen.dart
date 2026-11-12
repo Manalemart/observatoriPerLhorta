@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 
 import '../core/config.dart';
 import '../data/models.dart';
+import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
 import '../services/cataleg.dart';
 import '../services/fotos.dart';
@@ -37,7 +38,10 @@ Map<String, dynamic>? geometriaDePunts(GeometriaVariable tipus, List<LatLng> pun
 }
 
 class AportarScreen extends StatefulWidget {
-  const AportarScreen({super.key});
+  const AportarScreen({super.key, this.substitut});
+
+  /// Desde «Ha canviat» en la revisión: tipo y lugar ya puestos, y el nuevo sustituirá al antiguo.
+  final AportacioSubstitut? substitut;
 
   @override
   State<AportarScreen> createState() => _AportarScreenState();
@@ -60,6 +64,23 @@ class _AportarScreenState extends State<AportarScreen> {
   String? _avisRecinte;
   bool _obtenintPosicio = false;
   bool _guardant = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final s = widget.substitut;
+    if (s == null) return;
+    // Mismo tipo que el elemento antiguo (se puede cambiar) y, si es un punto, en el mismo sitio
+    for (final tema in context.read<Cataleg>().temes) {
+      for (final v in tema.variables) {
+        if (v.id == s.variableId) {
+          _tema = tema;
+          _variable = v;
+          if (v.geometria == GeometriaVariable.punt) _punts.add(s.punt);
+        }
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -173,6 +194,7 @@ class _AportarScreenState extends State<AportarScreen> {
       recinteRef: _recinte?.ref,
       recinteDnPk: _recinte?.dnPk,
       fotos: List.of(_fotos),
+      substitueixId: widget.substitut?.substitueixId,
     );
     // No se espera al envío: en el campo puede tardar o no haber red
     sincronitzacio.afegir(aportacio);
@@ -216,8 +238,8 @@ class _AportarScreenState extends State<AportarScreen> {
               child: FlutterMap(
                 mapController: _mapa,
                 options: MapOptions(
-                  initialCenter: Config.centreInicial,
-                  initialZoom: Config.zoomInicial,
+                  initialCenter: widget.substitut?.punt ?? Config.centreInicial,
+                  initialZoom: widget.substitut == null ? Config.zoomInicial : 18,
                   onTap: (_, p) => _marcar(p),
                   interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
                 ),
@@ -252,6 +274,17 @@ class _AportarScreenState extends State<AportarScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  if (widget.substitut != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Card(
+                        child: ListTile(
+                          leading: const Icon(Icons.swap_horiz),
+                          title: Text(t.revisioSubstitueix(widget.substitut!.numero)),
+                          subtitle: Text(t.revisioSubstitueixNota),
+                        ),
+                      ),
+                    ),
                   if (temes.isEmpty) Text(t.aportarSenseCataleg),
                   DropdownButtonFormField<Tema>(
                     initialValue: _tema,

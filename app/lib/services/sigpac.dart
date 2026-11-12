@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
 import '../data/models.dart';
+import '../data/revisio.dart';
 
 /// Recinto SIGPAC bajo un punto, en vivo desde el OGC API del FEGA (campaña vigente).
 class Sigpac {
@@ -13,6 +14,25 @@ class Sigpac {
 
   static const _ogcapi = 'https://sigpac-hubcloud.es/ogcapi/collections/recintos/items';
   static const _margeGraus = 0.00002; // ~2 m: filtra por caja; el punto exacto se comprueba aquí
+
+  /// Recintos de una caja (oeste, sur, este, norte) para dibujarlos. El servicio da 250
+  /// por página: se siguen los enlaces «next» hasta [maxPagines].
+  Future<List<RecinteDibuix>> recintesEnCaixa(double w, double s, double e, double n, {int maxPagines = 16}) async {
+    String? url = '$_ogcapi?f=json&limit=250&bbox=${[w, s, e, n].map((x) => x.toStringAsFixed(6)).join(',')}';
+    final recintes = <RecinteDibuix>[];
+    for (var i = 0; url != null && i < maxPagines; i++) {
+      final res = await _client.get(Uri.parse(url)).timeout(const Duration(seconds: 25));
+      if (res.statusCode != 200) throw Exception('SIGPAC: HTTP ${res.statusCode}');
+      final j = jsonDecode(res.body) as Map<String, dynamic>;
+      recintes.addAll(recintesDeResposta(j));
+      url = ((j['links'] as List?) ?? const [])
+          .cast<Map<String, dynamic>>()
+          .where((l) => l['rel'] == 'next')
+          .map((l) => l['href'] as String)
+          .firstOrNull;
+    }
+    return recintes;
+  }
 
   Future<Recinte?> recinteEnPunt(LatLng p) async {
     final bbox = [
@@ -26,6 +46,20 @@ class Sigpac {
     return triarRecinte(jsonDecode(res.body) as Map<String, dynamic>, p);
   }
 }
+
+/// Público para los tests.
+List<RecinteDibuix> recintesDeResposta(Map<String, dynamic> resposta) => [
+      for (final f in (resposta['features'] as List).cast<Map<String, dynamic>>())
+        if ((f['geometry'] as Map<String, dynamic>?)?['type'] == 'Polygon')
+          RecinteDibuix(
+            anells: [
+              for (final anell in (f['geometry']['coordinates'] as List))
+                [for (final c in anell as List) LatLng(((c as List)[1] as num).toDouble(), (c[0] as num).toDouble())],
+            ],
+            parcela: (f['properties']['parcela'] as num).toInt(),
+            recinto: (f['properties']['recinto'] as num).toInt(),
+          ),
+    ];
 
 /// Público para los tests.
 Recinte? triarRecinte(Map<String, dynamic> resposta, LatLng p) {

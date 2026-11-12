@@ -8,7 +8,10 @@ import 'services/sessio.dart';
 import 'ui/aportacions_screen.dart';
 import 'ui/aportar_screen.dart';
 import 'ui/entrada_screen.dart';
+import 'data/revisio.dart';
 import 'ui/mapa_screen.dart';
+import 'ui/partides_screen.dart';
+import 'ui/revisio_screen.dart';
 
 class ObservatoriApp extends StatefulWidget {
   const ObservatoriApp({super.key, required this.sessio});
@@ -30,7 +33,12 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
     routes: [
       GoRoute(path: '/', builder: (_, _) => const MapaScreen()),
       GoRoute(path: '/entrada', builder: (_, _) => const EntradaScreen()),
-      GoRoute(path: '/aportar', builder: (_, _) => const AportarScreen()),
+      GoRoute(path: '/aportar', builder: (_, estat) => AportarScreen(substitut: estat.extra as AportacioSubstitut?)),
+      GoRoute(path: '/partides', builder: (_, _) => const PartidesScreen()),
+      GoRoute(
+        path: '/partides/:id',
+        builder: (_, estat) => RevisioScreen(partidaId: int.parse(estat.pathParameters['id']!)),
+      ),
       GoRoute(path: '/aportacions', builder: (_, _) => const AportacionsScreen()),
     ],
   );

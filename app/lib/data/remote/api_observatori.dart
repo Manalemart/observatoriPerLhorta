@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models.dart';
+import '../revisio.dart';
 
 /// Rechazo definitivo del servidor (fuera del ámbito, geometría no válida...): reintentar
 /// no sirve. Cualquier otro error se considera transitorio.
@@ -79,5 +80,27 @@ class ApiObservatori implements ApiAportacions {
         .order('created_at', ascending: false)
         .limit(100);
     return [for (final f in files) AportacioRemota.fromJson(f)];
+  }
+
+  // ─── Revisión del inventario (padrí) ───────────────────────────────────
+
+  Future<List<PartidaApadrinada>> lesMeuesPartides() async {
+    final r = await _client.rpc('resum_les_meues_partides');
+    return [for (final f in (r as List).cast<Map<String, dynamic>>()) PartidaApadrinada.fromJson(f)];
+  }
+
+  /// La partida con sus elementos numerados (los mismos números que el Full de revisió).
+  Future<PartidaRevisio> partidaRevisio(int partidaId) async {
+    final r = await _client.rpc('full_de_camp', params: {'p_partida_id': partidaId});
+    return PartidaRevisio.fromJson(r as Map<String, dynamic>);
+  }
+
+  /// [resultat]: igual, canviat o no_trobat. Solo el padrí de la partida (o la coordinación).
+  Future<void> revisarElement(String elementId, String resultat, {String? nota}) async {
+    await _client.rpc('revisar_element', params: {
+      'p_element_id': elementId,
+      'p_resultat': resultat,
+      'p_nota': (nota == null || nota.trim().isEmpty) ? null : nota.trim(),
+    });
   }
 }

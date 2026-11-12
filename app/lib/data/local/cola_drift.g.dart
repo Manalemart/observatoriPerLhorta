@@ -146,6 +146,17 @@ class $AportacionsColaTable extends AportacionsCola
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _substitueixIdMeta = const VerificationMeta(
+    'substitueixId',
+  );
+  @override
+  late final GeneratedColumn<String> substitueixId = GeneratedColumn<String>(
+    'substitueix_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -161,6 +172,7 @@ class $AportacionsColaTable extends AportacionsCola
     recinteRef,
     recinteDnPk,
     error,
+    substitueixId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -263,6 +275,15 @@ class $AportacionsColaTable extends AportacionsCola
         error.isAcceptableOrUnknown(data['error']!, _errorMeta),
       );
     }
+    if (data.containsKey('substitueix_id')) {
+      context.handle(
+        _substitueixIdMeta,
+        substitueixId.isAcceptableOrUnknown(
+          data['substitueix_id']!,
+          _substitueixIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -324,6 +345,10 @@ class $AportacionsColaTable extends AportacionsCola
         DriftSqlType.string,
         data['${effectivePrefix}error'],
       ),
+      substitueixId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}substitueix_id'],
+      ),
     );
   }
 
@@ -348,6 +373,7 @@ class AportacionsColaData extends DataClass
   final String? recinteRef;
   final int? recinteDnPk;
   final String? error;
+  final String? substitueixId;
   const AportacionsColaData({
     required this.id,
     required this.variableId,
@@ -362,6 +388,7 @@ class AportacionsColaData extends DataClass
     this.recinteRef,
     this.recinteDnPk,
     this.error,
+    this.substitueixId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -396,6 +423,9 @@ class AportacionsColaData extends DataClass
     }
     if (!nullToAbsent || error != null) {
       map['error'] = Variable<String>(error);
+    }
+    if (!nullToAbsent || substitueixId != null) {
+      map['substitueix_id'] = Variable<String>(substitueixId);
     }
     return map;
   }
@@ -433,6 +463,9 @@ class AportacionsColaData extends DataClass
       error: error == null && nullToAbsent
           ? const Value.absent()
           : Value(error),
+      substitueixId: substitueixId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(substitueixId),
     );
   }
 
@@ -455,6 +488,7 @@ class AportacionsColaData extends DataClass
       recinteRef: serializer.fromJson<String?>(json['recinteRef']),
       recinteDnPk: serializer.fromJson<int?>(json['recinteDnPk']),
       error: serializer.fromJson<String?>(json['error']),
+      substitueixId: serializer.fromJson<String?>(json['substitueixId']),
     );
   }
   @override
@@ -474,6 +508,7 @@ class AportacionsColaData extends DataClass
       'recinteRef': serializer.toJson<String?>(recinteRef),
       'recinteDnPk': serializer.toJson<int?>(recinteDnPk),
       'error': serializer.toJson<String?>(error),
+      'substitueixId': serializer.toJson<String?>(substitueixId),
     };
   }
 
@@ -491,6 +526,7 @@ class AportacionsColaData extends DataClass
     Value<String?> recinteRef = const Value.absent(),
     Value<int?> recinteDnPk = const Value.absent(),
     Value<String?> error = const Value.absent(),
+    Value<String?> substitueixId = const Value.absent(),
   }) => AportacionsColaData(
     id: id ?? this.id,
     variableId: variableId ?? this.variableId,
@@ -505,6 +541,9 @@ class AportacionsColaData extends DataClass
     recinteRef: recinteRef.present ? recinteRef.value : this.recinteRef,
     recinteDnPk: recinteDnPk.present ? recinteDnPk.value : this.recinteDnPk,
     error: error.present ? error.value : this.error,
+    substitueixId: substitueixId.present
+        ? substitueixId.value
+        : this.substitueixId,
   );
   AportacionsColaData copyWithCompanion(AportacionsColaCompanion data) {
     return AportacionsColaData(
@@ -537,6 +576,9 @@ class AportacionsColaData extends DataClass
           ? data.recinteDnPk.value
           : this.recinteDnPk,
       error: data.error.present ? data.error.value : this.error,
+      substitueixId: data.substitueixId.present
+          ? data.substitueixId.value
+          : this.substitueixId,
     );
   }
 
@@ -555,7 +597,8 @@ class AportacionsColaData extends DataClass
           ..write('parcelaLng: $parcelaLng, ')
           ..write('recinteRef: $recinteRef, ')
           ..write('recinteDnPk: $recinteDnPk, ')
-          ..write('error: $error')
+          ..write('error: $error, ')
+          ..write('substitueixId: $substitueixId')
           ..write(')'))
         .toString();
   }
@@ -575,6 +618,7 @@ class AportacionsColaData extends DataClass
     recinteRef,
     recinteDnPk,
     error,
+    substitueixId,
   );
   @override
   bool operator ==(Object other) =>
@@ -592,7 +636,8 @@ class AportacionsColaData extends DataClass
           other.parcelaLng == this.parcelaLng &&
           other.recinteRef == this.recinteRef &&
           other.recinteDnPk == this.recinteDnPk &&
-          other.error == this.error);
+          other.error == this.error &&
+          other.substitueixId == this.substitueixId);
 }
 
 class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
@@ -609,6 +654,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
   final Value<String?> recinteRef;
   final Value<int?> recinteDnPk;
   final Value<String?> error;
+  final Value<String?> substitueixId;
   final Value<int> rowid;
   const AportacionsColaCompanion({
     this.id = const Value.absent(),
@@ -624,6 +670,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
     this.recinteRef = const Value.absent(),
     this.recinteDnPk = const Value.absent(),
     this.error = const Value.absent(),
+    this.substitueixId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AportacionsColaCompanion.insert({
@@ -640,6 +687,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
     this.recinteRef = const Value.absent(),
     this.recinteDnPk = const Value.absent(),
     this.error = const Value.absent(),
+    this.substitueixId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        variableId = Value(variableId),
@@ -659,6 +707,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
     Expression<String>? recinteRef,
     Expression<int>? recinteDnPk,
     Expression<String>? error,
+    Expression<String>? substitueixId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -675,6 +724,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
       if (recinteRef != null) 'recinte_ref': recinteRef,
       if (recinteDnPk != null) 'recinte_dn_pk': recinteDnPk,
       if (error != null) 'error': error,
+      if (substitueixId != null) 'substitueix_id': substitueixId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -693,6 +743,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
     Value<String?>? recinteRef,
     Value<int?>? recinteDnPk,
     Value<String?>? error,
+    Value<String?>? substitueixId,
     Value<int>? rowid,
   }) {
     return AportacionsColaCompanion(
@@ -709,6 +760,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
       recinteRef: recinteRef ?? this.recinteRef,
       recinteDnPk: recinteDnPk ?? this.recinteDnPk,
       error: error ?? this.error,
+      substitueixId: substitueixId ?? this.substitueixId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -755,6 +807,9 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
     if (error.present) {
       map['error'] = Variable<String>(error.value);
     }
+    if (substitueixId.present) {
+      map['substitueix_id'] = Variable<String>(substitueixId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -777,6 +832,7 @@ class AportacionsColaCompanion extends UpdateCompanion<AportacionsColaData> {
           ..write('recinteRef: $recinteRef, ')
           ..write('recinteDnPk: $recinteDnPk, ')
           ..write('error: $error, ')
+          ..write('substitueixId: $substitueixId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1073,6 +1129,7 @@ typedef $$AportacionsColaTableCreateCompanionBuilder =
       Value<String?> recinteRef,
       Value<int?> recinteDnPk,
       Value<String?> error,
+      Value<String?> substitueixId,
       Value<int> rowid,
     });
 typedef $$AportacionsColaTableUpdateCompanionBuilder =
@@ -1090,6 +1147,7 @@ typedef $$AportacionsColaTableUpdateCompanionBuilder =
       Value<String?> recinteRef,
       Value<int?> recinteDnPk,
       Value<String?> error,
+      Value<String?> substitueixId,
       Value<int> rowid,
     });
 
@@ -1198,6 +1256,11 @@ class $$AportacionsColaTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get substitueixId => $composableBuilder(
+    column: $table.substitueixId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> fotosColaRefs(
     Expression<bool> Function($$FotosColaTableFilterComposer f) f,
   ) {
@@ -1297,6 +1360,11 @@ class $$AportacionsColaTableOrderingComposer
     column: $table.error,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get substitueixId => $composableBuilder(
+    column: $table.substitueixId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AportacionsColaTableAnnotationComposer
@@ -1362,6 +1430,11 @@ class $$AportacionsColaTableAnnotationComposer
 
   GeneratedColumn<String> get error =>
       $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<String> get substitueixId => $composableBuilder(
+    column: $table.substitueixId,
+    builder: (column) => column,
+  );
 
   Expression<T> fotosColaRefs<T extends Object>(
     Expression<T> Function($$FotosColaTableAnnotationComposer a) f,
@@ -1430,6 +1503,7 @@ class $$AportacionsColaTableTableManager
                 Value<String?> recinteRef = const Value.absent(),
                 Value<int?> recinteDnPk = const Value.absent(),
                 Value<String?> error = const Value.absent(),
+                Value<String?> substitueixId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AportacionsColaCompanion(
                 id: id,
@@ -1445,6 +1519,7 @@ class $$AportacionsColaTableTableManager
                 recinteRef: recinteRef,
                 recinteDnPk: recinteDnPk,
                 error: error,
+                substitueixId: substitueixId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -1462,6 +1537,7 @@ class $$AportacionsColaTableTableManager
                 Value<String?> recinteRef = const Value.absent(),
                 Value<int?> recinteDnPk = const Value.absent(),
                 Value<String?> error = const Value.absent(),
+                Value<String?> substitueixId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AportacionsColaCompanion.insert(
                 id: id,
@@ -1477,6 +1553,7 @@ class $$AportacionsColaTableTableManager
                 recinteRef: recinteRef,
                 recinteDnPk: recinteDnPk,
                 error: error,
+                substitueixId: substitueixId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

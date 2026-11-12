@@ -94,6 +94,7 @@ class Sincronitzacio extends ChangeNotifier {
       'sigpac_ref': ref,
       'sigpac_dn_pk': dnPk,
       'sigpac_data': ref == null ? null : DateTime.now().toIso8601String().substring(0, 10),
+      if (a.substitueixId != null) 'substitueix_id': a.substitueixId,
     });
     for (var i = 0; i < a.fotos.length; i++) {
       await api.pujarFoto(a.id, i, a.fotos[i]);

@@ -22,6 +22,7 @@ class AportacionsCola extends Table {
   TextColumn get recinteRef => text().nullable()();
   IntColumn get recinteDnPk => integer().nullable()();
   TextColumn get error => text().nullable()();
+  TextColumn get substitueixId => text().nullable()();   // v2
 
   @override
   Set<Column> get primaryKey => {id};
@@ -38,7 +39,14 @@ class BdCola extends _$BdCola {
   BdCola(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, de, a) async {
+          if (de < 2) await m.addColumn(aportacionsCola, aportacionsCola.substitueixId);
+        },
+      );
 }
 
 class ColaDrift implements ColaAportacions {
@@ -67,6 +75,7 @@ class ColaDrift implements ColaAportacions {
           estat: f.error == null ? EstatCola.pendent : EstatCola.error,
           error: f.error,
           fotos: [for (final x in fotos) if (x.aportacioId == f.id) x.bytes],
+          substitueixId: f.substitueixId,
         ),
     ];
   }
@@ -86,6 +95,7 @@ class ColaDrift implements ColaAportacions {
               parcelaLng: Value(a.puntParcela?.longitude),
               recinteRef: Value(a.recinteRef),
               recinteDnPk: Value(a.recinteDnPk),
+              substitueixId: Value(a.substitueixId),
             ));
         for (final f in a.fotos) {
           await _bd.into(_bd.fotosCola).insert(FotosColaCompanion.insert(aportacioId: a.id, bytes: f));

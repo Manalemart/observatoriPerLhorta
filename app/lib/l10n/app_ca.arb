@@ -101,5 +101,72 @@
   },
   "entradaEsperant": "Esperant que obris l'enllaç…",
   "entradaTincCodi": "El correu porta un codi de 6 xifres",
-  "entradaNoArriba": "No t'arriba? Mira el correu brossa o torna-ho a provar d'ací a uns minuts."
+  "entradaNoArriba": "No t'arriba? Mira el correu brossa o torna-ho a provar d'ací a uns minuts.",
+  "comuTornarAProvar": "Torna-ho a provar",
+  "partidesTitol": "Les meues partides",
+  "partidesBuit": "Encara no tens cap partida apadrinada. La coordinació te n'assignarà.",
+  "partidesError": "No s'han pogut carregar les teues partides.",
+  "partidesResum": "{municipi} · {ha} ha · {validats} elements",
+  "@partidesResum": {
+    "placeholders": {
+      "municipi": {
+        "type": "String"
+      },
+      "ha": {
+        "type": "String"
+      },
+      "validats": {
+        "type": "int"
+      }
+    }
+  },
+  "revisioTitol": "Revisió de la partida",
+  "revisioErrorCarrega": "No s'ha pogut carregar la partida. Cal connexió.",
+  "revisioProgres": "{fets} de {total} revisats",
+  "@revisioProgres": {
+    "placeholders": {
+      "fets": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "revisioNomesPerRevisar": "Només el que falta revisar",
+  "revisioElMesProper": "El més proper per revisar",
+  "revisioSenseSigpac": "No s'ha pogut carregar el SIGPAC",
+  "revisioNumero": "Núm. {n} · quadre {q}",
+  "@revisioNumero": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "revisioEstatPerRevisar": "Inventari 2017-2018 · per revisar",
+  "revisioEstatIgual": "Revisat: continua igual",
+  "revisioEstatCanviat": "Ha canviat: pendent de l'aportació nova",
+  "revisioEstatNou": "Aportació nova: no entra en la revisió",
+  "revisioNomesPadri": "Només el padrí o la padrina de la partida el revisa.",
+  "revisioNoRevisable": "Aquest element no és de l'inventari de 2018 o encara no està validat.",
+  "revisioNota": "Nota (opcional)",
+  "revisioIgual": "Continua igual",
+  "revisioCanviat": "Ha canviat",
+  "revisioNoTrobat": "No el trobe",
+  "revisioConfirmarNoTrobat": "Segur que ja no hi és? Es donarà de baixa: deixarà de veure's al mapa, però queda a l'historial.",
+  "revisioFet": "Revisió desada",
+  "revisioError": "No s'ha pogut desar la revisió. Comprova la connexió.",
+  "revisioSubstitueix": "Substitueix l'element {n}",
+  "@revisioSubstitueix": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "revisioSubstitueixNota": "Quan es valide, l'antic quedarà a l'historial."
 }
