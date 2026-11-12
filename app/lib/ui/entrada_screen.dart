@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import '../l10n/app_localizations.dart';
 import '../services/sessio.dart';
@@ -45,6 +46,10 @@ class _EntradaScreenState extends State<EntradaScreen> {
     });
     try {
       await accio();
+    } on AuthException catch (e) {
+      // Supabase limita los correos por hora (sin SMTP propio, muy pocos): que se sepa
+      final limit = e.statusCode == '429' || (e.code ?? '').contains('rate_limit');
+      if (mounted) setState(() => _error = limit ? L.of(context).entradaMassaPeticions : missatgeError);
     } catch (_) {
       if (mounted) setState(() => _error = missatgeError);
     } finally {

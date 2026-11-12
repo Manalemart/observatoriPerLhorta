@@ -339,4 +339,8 @@ class LCa extends L {
   @override
   String get revisioSubstitueixNota =>
       'Quan es valide, l\'antic quedarà a l\'historial.';
+
+  @override
+  String get entradaMassaPeticions =>
+      'S\'han enviat massa enllaços en poca estona. Espera una hora i torna-ho a provar, o fes servir l\'últim enllaç que t\'ha arribat.';
 }

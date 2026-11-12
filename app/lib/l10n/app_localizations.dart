@@ -656,6 +656,12 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'Quan es valide, l\'antic quedarà a l\'historial.'**
   String get revisioSubstitueixNota;
+
+  /// No description provided for @entradaMassaPeticions.
+  ///
+  /// In ca, this message translates to:
+  /// **'S\'han enviat massa enllaços en poca estona. Espera una hora i torna-ho a provar, o fes servir l\'últim enllaç que t\'ha arribat.'**
+  String get entradaMassaPeticions;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
