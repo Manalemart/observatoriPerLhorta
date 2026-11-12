@@ -150,7 +150,7 @@ abstract class L {
   /// No description provided for @entradaCodi.
   ///
   /// In ca, this message translates to:
-  /// **'Codi de 6 xifres'**
+  /// **'Codi del correu'**
   String get entradaCodi;
 
   /// No description provided for @entradaVerificar.
@@ -486,7 +486,7 @@ abstract class L {
   /// No description provided for @entradaTincCodi.
   ///
   /// In ca, this message translates to:
-  /// **'El correu porta un codi de 6 xifres'**
+  /// **'El correu porta un codi numèric'**
   String get entradaTincCodi;
 
   /// No description provided for @entradaNoArriba.

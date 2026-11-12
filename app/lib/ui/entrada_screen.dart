@@ -32,7 +32,8 @@ class _EntradaScreenState extends State<EntradaScreen> {
     super.dispose();
   }
 
-  bool get _valid => _codiEnviat ? _codi.text.trim().length == 6 : _correu.text.contains('@');
+  // La longitud del código la decide Supabase (Auth → Email OTP Length: de 6 a 10 cifras)
+  bool get _valid => _codiEnviat ? RegExp(r'^\d{6,10}$').hasMatch(_codi.text.trim()) : _correu.text.contains('@');
 
   Future<void> _enviar(Sessio sessio, L t) => _fer(() async {
         await sessio.demanarCodi(_correu.text.trim());
@@ -123,7 +124,7 @@ class _EntradaScreenState extends State<EntradaScreen> {
                         onChanged: (_) => setState(() {}),
                         keyboardType: TextInputType.number,
                         autofillHints: const [AutofillHints.oneTimeCode],
-                        maxLength: 6,
+                        maxLength: 10,
                         decoration: InputDecoration(labelText: t.entradaCodi),
                       ),
                       FilledButton(

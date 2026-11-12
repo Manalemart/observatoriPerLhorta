@@ -39,7 +39,7 @@ class LCa extends L {
   }
 
   @override
-  String get entradaCodi => 'Codi de 6 xifres';
+  String get entradaCodi => 'Codi del correu';
 
   @override
   String get entradaVerificar => 'Entra';
@@ -238,7 +238,7 @@ class LCa extends L {
   String get entradaEsperant => 'Esperant que obris l\'enllaç…';
 
   @override
-  String get entradaTincCodi => 'El correu porta un codi de 6 xifres';
+  String get entradaTincCodi => 'El correu porta un codi numèric';
 
   @override
   String get entradaNoArriba =>

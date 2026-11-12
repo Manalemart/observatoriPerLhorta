@@ -16,7 +16,7 @@
       }
     }
   },
-  "entradaCodi": "Codi de 6 xifres",
+  "entradaCodi": "Codi del correu",
   "entradaVerificar": "Entra",
   "entradaCodiErroni": "El codi no és correcte o ha caducat.",
   "entradaAltreCorreu": "Canvia el correu",
@@ -100,7 +100,7 @@
     }
   },
   "entradaEsperant": "Esperant que obris l'enllaç…",
-  "entradaTincCodi": "El correu porta un codi de 6 xifres",
+  "entradaTincCodi": "El correu porta un codi numèric",
   "entradaNoArriba": "No t'arriba? Mira el correu brossa o torna-ho a provar d'ací a uns minuts.",
   "comuTornarAProvar": "Torna-ho a provar",
   "partidesTitol": "Les meues partides",
