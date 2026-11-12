@@ -327,10 +327,11 @@ async function migrarNoticies() {
         imatge = null;
       }
     }
-    // Lo ya publicado no se pisa
+    // Se publican (decisión de Per l'Horta, 2026-11-12). Una noticia ya publicada puede
+    // haberse editado en la web: no se pisa.
     await target.query(
-      `insert into public.noticies (tipus, titol, cos, imatge_path, data_event, legacy_nid, created_at, updated_at)
-       values ($1, $2, $3, $4, $5::date, $6, to_timestamp($7), to_timestamp($7))
+      `insert into public.noticies (tipus, titol, cos, imatge_path, data_event, legacy_nid, created_at, updated_at, publicat)
+       values ($1, $2, $3, $4, $5::date, $6, to_timestamp($7), to_timestamp($7), true)
        on conflict (legacy_nid) do update
          set titol = excluded.titol, cos = excluded.cos, imatge_path = excluded.imatge_path, data_event = excluded.data_event
        where not public.noticies.publicat`,
