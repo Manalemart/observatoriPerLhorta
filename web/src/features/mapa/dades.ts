@@ -2,9 +2,22 @@ import type { FeatureCollection } from 'geojson';
 import { supabase } from '../../lib/supabase';
 import type { Dades, Fitxa, Tema } from './tipus';
 
-// El inventario cabe entero en memoria (~7.000 elementos). Lo público se pide por GET:
-// la base de datos lo devuelve ya serializado y el navegador lo puede reutilizar.
+// El inventario cabe entero en memoria (~7.000 elementos). En producción lo público sale
+// de la caché del CDN de Vercel (web/api/geo): servir varios MB desde Supabase en cada
+// visita satura la instancia. En desarrollo no hay funciones de Vercel: directo a Supabase.
+const CAPES_CDN: Record<string, string> = {
+  elements_publics: 'elements',
+  partides_geojson: 'partides',
+  municipis_geojson: 'municipis',
+};
+
 async function rpc(nom: string): Promise<FeatureCollection> {
+  const capa = CAPES_CDN[nom];
+  if (capa && !import.meta.env.DEV) {
+    const r = await fetch(`/api/geo/${capa}`);
+    if (r.ok) return (await r.json()) as FeatureCollection;
+    // Si el CDN falla, se intenta directamente
+  }
   const { data, error } = await supabase.rpc(nom, undefined, { get: true });
   if (error) throw error;
   return data as FeatureCollection;
