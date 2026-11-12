@@ -52,7 +52,8 @@ function FullsDeCamp({ fons, onFons, partides }: { fons: Fons; onFons: (f: Fons)
                 {opcions.map((o) => <option key={o.id} value={o.id}>{o.municipi} · {o.nom}</option>)}
               </select>
             </label>
-            <BotoFullDeCamp partidaId={triada} fons={fons} primari />
+            <BotoFullDeCamp partidaId={triada} tipus="camp" fons={fons} primari />
+            <BotoFullDeCamp partidaId={triada} tipus="revisio" fons={fons} />
           </div>
         )}
       </div>
@@ -105,7 +106,8 @@ export function LesMeuesPartides({ onVeurePendents, partides }: { onVeurePendent
           )}
           {p.darrera && <p className="nota">{t('partides.darrera', { data: data(p.darrera) })}</p>}
           <div className="accions-partida">
-            <BotoFullDeCamp partidaId={p.partida_id} fons={fons} primari />
+            <BotoFullDeCamp partidaId={p.partida_id} tipus="camp" fons={fons} primari />
+            <BotoFullDeCamp partidaId={p.partida_id} tipus="revisio" fons={fons} />
             <button type="button" className="boto" disabled={!p.pendents} onClick={() => onVeurePendents(p.partida_id)}>
               {t('partides.veurePendents')}
             </button>

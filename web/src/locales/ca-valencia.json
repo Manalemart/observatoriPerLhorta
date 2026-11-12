@@ -307,9 +307,8 @@
     "aClar": "Canvia al tema clar"
   },
   "fulls": {
-    "boto": "Full de camp (PDF)",
     "titol": "Fulls de camp",
-    "nota": "Un plànol A4 de la partida amb els elements numerats i una cuadrícula, i una llista per a marcar al camp què continua igual i què ha canviat.",
+    "nota": "Full de camp: el plànol de la partida, tan gran com càpia, amb els recintes SIGPAC i els elements numerats. Full de revisió: el mateix plànol amb una quadrícula i la llista per a marcar què continua igual i què ha canviat. Els números coincideixen.",
     "fons": "Fons del plànol",
     "fonsPnoa": "Ortofoto",
     "fonsTopo": "Topogràfic",
@@ -317,9 +316,12 @@
     "tria": "Tria una partida",
     "generant": {
       "dades": "Carregant la partida…",
+      "sigpac": "Consultant el SIGPAC…",
       "mapa": "Dibuixant el plànol…",
       "pdf": "Fent el PDF…"
     },
-    "error": "No s'ha pogut fer el full de camp. Torna-ho a provar."
+    "error": "No s'ha pogut fer el full de camp. Torna-ho a provar.",
+    "botoCamp": "Full de camp",
+    "botoRevisio": "Full de revisió"
   }
 }
