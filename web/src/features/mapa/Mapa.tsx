@@ -72,10 +72,6 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     paint: { 'line-color': '#3d3a33', 'line-width': 1.5, 'line-dasharray': [3, 2] },
   });
   mapa.addLayer({
-    id: 'partides-linies', type: 'line', source: 'partides', minzoom: 11,
-    paint: { 'line-color': '#2c7a00', 'line-width': 1.25, 'line-opacity': 0.85 },
-  });
-  mapa.addLayer({
     id: 'elements-poligons', type: 'fill', source: 'elements',
     filter: ['==', ['geometry-type'], 'Polygon'],
     paint: {
@@ -93,6 +89,18 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     id: 'elements-linies', type: 'line', source: 'elements',
     filter: ['==', ['geometry-type'], 'LineString'],
     paint: { 'line-color': color, 'line-width': 3 },
+  });
+  // Partidas por encima de las parcelas del inventario (que las tapaban) y con un borde
+  // blanco debajo: el topográfico ya tiene tramas verdes y en la ortofoto no se veían.
+  mapa.addLayer({
+    id: 'partides-vora', type: 'line', source: 'partides', minzoom: 10,
+    layout: { 'line-join': 'round' },
+    paint: { 'line-color': '#ffffff', 'line-opacity': 0.9, 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.5, 15, 5] },
+  });
+  mapa.addLayer({
+    id: 'partides-linies', type: 'line', source: 'partides', minzoom: 10,
+    layout: { 'line-join': 'round' },
+    paint: { 'line-color': '#215c00', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.2, 15, 2.5] },
   });
   // Lo no validado (solo lo ve quien tiene permiso) lleva contorno negro
   mapa.addLayer({
@@ -224,6 +232,7 @@ export function Mapa({
   useEffect(() => {
     const mapa = mapaRef.current;
     if (!mapa || !llest) return;
+    visibilitat(mapa, 'partides-vora', veurePartides);
     visibilitat(mapa, 'partides-linies', veurePartides);
     visibilitat(mapa, 'municipis-linies', veureMunicipis);
     visibilitat(mapa, 'sigpac-linies', veureSigpac);

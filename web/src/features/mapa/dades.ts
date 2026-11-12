@@ -14,9 +14,14 @@ const CAPES_CDN: Record<string, string> = {
 async function rpc(nom: string): Promise<FeatureCollection> {
   const capa = CAPES_CDN[nom];
   if (capa && !import.meta.env.DEV) {
-    const r = await fetch(`/api/geo/${capa}`);
-    if (r.ok) return (await r.json()) as FeatureCollection;
-    // Si el CDN falla, se intenta directamente
+    // Justo después de desplegar la caché está vacía y las primeras visitas pueden fallar
+    // a la vez: se reintenta una vez (para entonces otra ya la habrá llenado) y, si no,
+    // directo a Supabase.
+    for (const espera of [0, 2000]) {
+      if (espera) await new Promise((r) => setTimeout(r, espera));
+      const r = await fetch(`/api/geo/${capa}`).catch(() => null);
+      if (r?.ok) return (await r.json()) as FeatureCollection;
+    }
   }
   const { data, error } = await supabase.rpc(nom, undefined, { get: true });
   if (error) throw error;
