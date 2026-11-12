@@ -305,5 +305,21 @@
   "tema": {
     "aFosc": "Canvia al tema fosc",
     "aClar": "Canvia al tema clar"
+  },
+  "fulls": {
+    "boto": "Full de camp (PDF)",
+    "titol": "Fulls de camp",
+    "nota": "Un plànol A4 de la partida amb els elements numerats i una cuadrícula, i una llista per a marcar al camp què continua igual i què ha canviat.",
+    "fons": "Fons del plànol",
+    "fonsPnoa": "Ortofoto",
+    "fonsTopo": "Topogràfic",
+    "qualsevol": "De qualsevol partida (coordinació)",
+    "tria": "Tria una partida",
+    "generant": {
+      "dades": "Carregant la partida…",
+      "mapa": "Dibuixant el plànol…",
+      "pdf": "Fent el PDF…"
+    },
+    "error": "No s'ha pogut fer el full de camp. Torna-ho a provar."
   }
 }

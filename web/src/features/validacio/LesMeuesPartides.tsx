@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { FeatureCollection } from 'geojson';
+import { useAuth } from '../../auth/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { BotoFullDeCamp } from '../fulls/BotoFullDeCamp';
+import type { Fons } from '../mapa/tipus';
 
 interface ResumPartida {
   partida_id: number;
@@ -15,8 +19,50 @@ interface ResumPartida {
   darrera: string | null;
 }
 
-export function LesMeuesPartides({ onVeurePendents }: { onVeurePendents: (partidaId: number) => void }) {
+/** Fondo del plano y, para la coordinación, hoja de cualquier partida. */
+function FullsDeCamp({ fons, onFons, partides }: { fons: Fons; onFons: (f: Fons) => void; partides: FeatureCollection }) {
   const { t, i18n } = useTranslation();
+  const { esCoordinador } = useAuth();
+  const [triada, setTriada] = useState<number | null>(null);
+  const opcions = useMemo(
+    () => partides.features
+      .map((f) => ({ id: f.properties?.id as number, nom: f.properties?.nom as string, municipi: f.properties?.municipi as string }))
+      .sort((a, b) => a.municipi.localeCompare(b.municipi, i18n.language) || a.nom.localeCompare(b.nom, i18n.language)),
+    [partides, i18n.language],
+  );
+  return (
+    <section className="targeta fulls-camp" aria-labelledby="fulls-titol">
+      <h2 id="fulls-titol">{t('fulls.titol')}</h2>
+      <p className="nota">{t('fulls.nota')}</p>
+      <div className="fulls-controls">
+        <fieldset className="segmentat segmentat-2">
+          <legend className="visualment-amagat">{t('fulls.fons')}</legend>
+          {(['pnoa', 'topo'] as Fons[]).map((f) => (
+            <button key={f} type="button" aria-pressed={fons === f} onClick={() => onFons(f)}>
+              {t(f === 'pnoa' ? 'fulls.fonsPnoa' : 'fulls.fonsTopo')}
+            </button>
+          ))}
+        </fieldset>
+        {esCoordinador && (
+          <div className="fulls-qualsevol">
+            <label className="camp">
+              <span>{t('fulls.qualsevol')}</span>
+              <select value={triada ?? ''} onChange={(e) => setTriada(e.target.value ? Number(e.target.value) : null)}>
+                <option value="">{t('fulls.tria')}</option>
+                {opcions.map((o) => <option key={o.id} value={o.id}>{o.municipi} · {o.nom}</option>)}
+              </select>
+            </label>
+            <BotoFullDeCamp partidaId={triada} fons={fons} primari />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export function LesMeuesPartides({ onVeurePendents, partides }: { onVeurePendents: (partidaId: number) => void; partides: FeatureCollection }) {
+  const { t, i18n } = useTranslation();
+  const [fons, setFons] = useState<Fons>('pnoa');
   const [files, setFiles] = useState<ResumPartida[] | null>(null);
   const [error, setError] = useState(false);
   const data = (d: string) => new Date(d).toLocaleDateString(i18n.language);
@@ -28,12 +74,14 @@ export function LesMeuesPartides({ onVeurePendents }: { onVeurePendents: (partid
     });
   }, []);
 
-  if (error) return <div className="avis" role="alert"><p>{t('partides.error')}</p></div>;
+  const fulls = <FullsDeCamp fons={fons} onFons={setFons} partides={partides} />;
+  if (error) return <div className="partides">{fulls}<div className="avis" role="alert"><p>{t('partides.error')}</p></div></div>;
   if (!files) return <div className="avis" role="status"><p>{t('comu.carregant')}</p></div>;
-  if (!files.length) return <div className="avis"><p>{t('partides.buit')}</p></div>;
+  if (!files.length) return <div className="partides">{fulls}<div className="avis"><p>{t('partides.buit')}</p></div></div>;
 
   return (
     <div className="partides">
+      {fulls}
       {files.map((p) => (
         <article key={p.partida_id} className="targeta">
           <h2>{p.partida}</h2>
@@ -56,9 +104,12 @@ export function LesMeuesPartides({ onVeurePendents }: { onVeurePendents: (partid
             </ul>
           )}
           {p.darrera && <p className="nota">{t('partides.darrera', { data: data(p.darrera) })}</p>}
-          <button type="button" className="boto" disabled={!p.pendents} onClick={() => onVeurePendents(p.partida_id)}>
-            {t('partides.veurePendents')}
-          </button>
+          <div className="accions-partida">
+            <BotoFullDeCamp partidaId={p.partida_id} fons={fons} primari />
+            <button type="button" className="boto" disabled={!p.pendents} onClick={() => onVeurePendents(p.partida_id)}>
+              {t('partides.veurePendents')}
+            </button>
+          </div>
         </article>
       ))}
     </div>

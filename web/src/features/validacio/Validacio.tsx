@@ -248,6 +248,7 @@ export function Validacio({ dades, onCanvi }: { dades: Dades; onCanvi: () => voi
       {pestanya === 'pendents' && <Pendents key={partidaFiltre} dades={dades} onCanvi={onCanvi} partidaInicial={partidaFiltre} />}
       {pestanya === 'partides' && (
         <LesMeuesPartides
+          partides={dades.partides}
           onVeurePendents={(id) => {
             setPartidaFiltre(id);
             setPestanya('pendents');

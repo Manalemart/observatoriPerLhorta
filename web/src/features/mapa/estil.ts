@@ -6,7 +6,14 @@ const wmts = (servei: string, capa: string) =>
   '&style=default&format=image/jpeg&tilematrixset=GoogleMapsCompatible' +
   '&tilematrix={z}&tilerow={y}&tilecol={x}';
 
-const IGN = '© <a href="https://www.ign.es" target="_blank" rel="noreferrer">Instituto Geográfico Nacional</a>';
+/** URL de una tesela concreta del fondo (para dibujar mapas fuera de MapLibre, como en las hojas de campo). */
+export const urlTesela = (fons: Fons, z: number, x: number, y: number) =>
+  (fons === 'pnoa' ? wmts('pnoa-ma', 'OI.OrthoimageCoverage') : wmts('mapa-raster', 'MTN'))
+    .replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y));
+
+export const ZOOM_MAX_FONS: Record<Fons, number> = { topo: 17, pnoa: 19 };
+
+const IGN ='© <a href="https://www.ign.es" target="_blank" rel="noreferrer">Instituto Geográfico Nacional</a>';
 
 // Sin OpenStreetMap: sus servidores públicos no admiten el tráfico de una web en producción
 export const FONS: Fons[] = ['topo', 'pnoa'];

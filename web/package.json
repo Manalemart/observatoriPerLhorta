@@ -17,6 +17,8 @@
     "@fontsource-variable/source-serif-4": "5.2.9",
     "@supabase/supabase-js": "2.45.4",
     "i18next": "^25.0.0",
+    "jspdf": "4.2.1",
+    "jspdf-autotable": "5.0.9",
     "maplibre-gl": "^6.5.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
