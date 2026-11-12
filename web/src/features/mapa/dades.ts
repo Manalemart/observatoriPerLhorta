@@ -2,11 +2,10 @@ import type { FeatureCollection } from 'geojson';
 import { supabase } from '../../lib/supabase';
 import type { Dades, Fitxa, Tema } from './tipus';
 
-// Bbox del ámbito: el inventario cabe entero en memoria (~7.000 elementos)
-const AMBIT = { p_minx: -0.7, p_miny: 39.2, p_maxx: -0.1, p_maxy: 39.8 };
-
-async function rpc(nom: string, args?: Record<string, unknown>): Promise<FeatureCollection> {
-  const { data, error } = await supabase.rpc(nom, args);
+// El inventario cabe entero en memoria (~7.000 elementos). Lo público se pide por GET:
+// la base de datos lo devuelve ya serializado y el navegador lo puede reutilizar.
+async function rpc(nom: string): Promise<FeatureCollection> {
+  const { data, error } = await supabase.rpc(nom, undefined, { get: true });
   if (error) throw error;
   return data as FeatureCollection;
 }
@@ -25,9 +24,17 @@ export async function carregarDades(): Promise<Dades> {
   return { temes: temes.data as unknown as Tema[], partides, municipis };
 }
 
-/** Lo que devuelve depende de la sesión: la RLS decide qué elementos ve cada persona. */
-export function carregarElements(): Promise<FeatureCollection> {
-  return rpc('elements_bbox', AMBIT);
+/**
+ * Lo validado (igual para todo el mundo) y, con sesión, lo no validado que la RLS deja
+ * ver a esta persona: lo suyo, lo de sus partidas o todo si coordina.
+ */
+export async function carregarElements(ambSessio: boolean): Promise<FeatureCollection> {
+  const [publics, propis] = await Promise.all([
+    rpc('elements_publics'),
+    ambSessio ? rpc('elements_no_validats') : Promise.resolve(null),
+  ]);
+  if (!propis?.features.length) return publics;
+  return { type: 'FeatureCollection', features: [...publics.features, ...propis.features] };
 }
 
 /** autor_id solo se puede pedir con sesión: la API se lo niega a los anónimos. */

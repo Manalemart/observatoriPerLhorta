@@ -1,7 +1,7 @@
 -- Tests pgTAP de la caché de GeoJSON del mapa.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(16);
 
 -- ─── Fixtures (zona ficticia, como en los otros tests) ─────────────────────
 insert into public.municipis (codcat, nom, geom) values
@@ -26,10 +26,11 @@ create function pg_temp.reset_rol() returns void language sql as $$
   select set_config('request.jwt.claims', '', true);
   select set_config('role', 'postgres', true);
 $$;
--- Lo que pide el mapa: una bbox que lo abarca todo
+-- Lo que pide el mapa web: lo público (caché) + lo no validado que se puede ver
 create function pg_temp.mapa() returns setof text language sql as $$
-  select f -> 'properties' ->> 'id'
-  from jsonb_array_elements(public.elements_bbox(-180, -90, 180, 90) -> 'features') f;
+  select f -> 'properties' ->> 'id' from json_array_elements(public.elements_publics() -> 'features') f
+  union all
+  select f -> 'properties' ->> 'id' from jsonb_array_elements(public.elements_no_validats() -> 'features') f;
 $$;
 grant execute on function pg_temp.mapa() to anon, authenticated;
 
@@ -38,12 +39,12 @@ grant select on ids to authenticated, anon;
 
 -- ─── Territorio ────────────────────────────────────────────────────────────
 select ok(
-  exists (select 1 from jsonb_array_elements(public.partides_geojson() -> 'features') f
+  exists (select 1 from json_array_elements(public.partides_geojson() -> 'features') f
           where f -> 'properties' ->> 'nom' = 'Partida A'),
   'Una partida nova entra a la memòria cau');
 update public.municipis set nom = 'Municipi reanomenat' where codcat = 99900;
 select is(
-  (select f -> 'properties' ->> 'municipi' from jsonb_array_elements(public.partides_geojson() -> 'features') f
+  (select f -> 'properties' ->> 'municipi' from json_array_elements(public.partides_geojson() -> 'features') f
    where f -> 'properties' ->> 'nom' = 'Partida A'),
   'Municipi reanomenat', 'Reanomenar un municipi refresca també les partides');
 
@@ -69,7 +70,7 @@ select is(
   array['20000000-0000-0000-0000-000000000001'], 'Validar el posa a la memòria cau pública');
 select is(
   (select f -> 'properties' ->> 'estat'
-   from jsonb_array_elements(public.elements_bbox(-180, -90, 180, 90) -> 'features') f
+   from json_array_elements(public.elements_publics() -> 'features') f
    where f -> 'properties' ->> 'id' = '20000000-0000-0000-0000-000000000001'),
   'validat', 'La feature duu l''estat');
 
@@ -97,6 +98,13 @@ select pg_temp.com('00000000-0000-0000-0000-00000000000d');
 select public.canviar_estat('20000000-0000-0000-0000-000000000001', 'pendent');
 select pg_temp.com_anon();
 select is((select count(*)::int from pg_temp.mapa() where mapa like '20000000%'), 0, 'Reobrir el trau de la memòria cau');
+
+-- ─── Lo que se sirve tal cual ─────────────────────────────────────────────
+select pg_temp.com_anon();
+select is(json_typeof(public.partides_geojson() -> 'features'), 'array', 'Les partides surten com a FeatureCollection');
+select is(
+  (select count(*)::int from jsonb_array_elements(public.elements_no_validats() -> 'features')),
+  0, 'Un anònim no rep cap element no validat');
 
 -- ─── Permisos ──────────────────────────────────────────────────────────────
 select throws_ok($$ select public.refrescar_cache_geojson() $$, '42501', null, 'Un anònim no pot refrescar');
