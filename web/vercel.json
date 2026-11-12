@@ -1,4 +1,7 @@
 {
+  "regions": [
+    "lhr1"
+  ],
   "rewrites": [
     {
       "source": "/((?!api/).*)",
