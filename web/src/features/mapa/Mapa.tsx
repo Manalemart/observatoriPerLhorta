@@ -163,6 +163,8 @@ export function Mapa({
       hash: true,                       // la vista queda en la URL y se puede compartir
     });
     mapaRef.current = mapa;
+    // Solo en desarrollo: inspeccionar capas y fuentes desde la consola
+    if (import.meta.env.DEV) (window as unknown as { __mapa?: MapaGL }).__mapa = mapa;
     mapa.addControl(new NavigationControl({ showCompass: false }), 'top-right');
     mapa.addControl(new ScaleControl({ unit: 'metric' }), 'bottom-left');
 

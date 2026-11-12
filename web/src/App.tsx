@@ -40,10 +40,10 @@ export function App() {
   useEffect(() => { if (demanat) carregar(); }, [demanat, carregar]);
 
   const recarregarElements = useCallback(() => {
-    carregarElements().then(setElements).catch(() => setError(true));
-  }, []);
+    carregarElements(!!uid).then(setElements).catch(() => setError(true));
+  }, [uid]);
   // Quien inicia sesión ve además sus aportaciones y lo que le toca validar
-  useEffect(() => { if (demanat) recarregarElements(); }, [demanat, recarregarElements, uid]);
+  useEffect(() => { if (demanat) recarregarElements(); }, [demanat, recarregarElements]);
 
   useEffect(() => { if (uid) setEntrant(false); }, [uid]);
 
