@@ -9,7 +9,9 @@ insert into public.partides (id, codcat, nom, geom) values
   (99001, 99900, 'Partida A', extensions.st_multi(extensions.st_makeenvelope(10.00, 50.00, 10.05, 50.05, 4326)));
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'autora@test.local'),
-  ('00000000-0000-0000-0000-00000000000b', 'padri@test.local');
+  ('00000000-0000-0000-0000-00000000000b', 'padri@test.local'),
+  ('00000000-0000-0000-0000-00000000000c', 'coord@test.local');
+update public.perfils set rol = 'coordinador' where id = '00000000-0000-0000-0000-00000000000c';
 insert into public.padrinatges (perfil_id, partida_id) values ('00000000-0000-0000-0000-00000000000b', 99001);
 
 create function pg_temp.com(p_uid uuid) returns void language sql as $$
@@ -68,8 +70,11 @@ select is(
 select is(jsonb_array_length(public.full_de_camp(99001) -> 'elements'), 2, 'Ni a la fulla de la partida');
 select throws_ok($$ select public.revisar_element('50000000-0000-0000-0000-000000000002', 'igual') $$,
   '22023', null, 'Un element de baixa no es revisa');
-select throws_ok($$ update public.elements set baixa_at = null where id = '50000000-0000-0000-0000-000000000002' $$,
+-- La coordinación sí puede editar elementos (RLS): lo que lo impide es la protección
+select pg_temp.com('00000000-0000-0000-0000-00000000000c');
+select throws_ok($$ update public.elements set baixa_at = null, motiu_baixa = null where id = '50000000-0000-0000-0000-000000000002' $$,
   '42501', null, 'La baixa no es desfà a mà');
+select pg_temp.com('00000000-0000-0000-0000-00000000000b');
 
 -- ─── Ha canviat: sustituto que, al validarse, da de baja al antiguo ────────
 select public.revisar_element('50000000-0000-0000-0000-000000000003', 'canviat', 'Ara és un magatzem');
