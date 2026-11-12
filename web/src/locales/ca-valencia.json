@@ -70,11 +70,13 @@
     "revisio2018_one": "2017-2018 · fa {{count}} any",
     "revisio2018_other": "2017-2018 · fa {{count}} anys",
     "encaraAixi": "És encara així?",
-    "encaraAixiText": "Si hi passes, confirma-ho o conta què ha canviat.",
+    "encaraAixiText": "Com a padrí o padrina de la partida, confirma-ho, conta què ha canviat o marca'l si ja no hi és.",
     "continuaIgual": "Sí, continua igual",
     "haCanviat": "Ha canviat",
     "gracies": "Gràcies! Queda registrat que continua igual.",
-    "errorConfirmar": "No s’ha pogut registrar la revisió. Torna-ho a provar."
+    "errorConfirmar": "No s’ha pogut registrar la revisió. Torna-ho a provar.",
+    "noElTrobe": "No el trobe",
+    "confirmarNoElTrobe": "Segur que ja no hi és? L'element es donarà de baixa: deixarà de veure's al mapa, però queda a l'historial."
   },
   "estat": {
     "carregant": "Carregant l'inventari…",
@@ -136,7 +138,8 @@
     "errorSigpac": "No s'ha pogut consultar SIGPAC. Torna a fer clic d'ací a una estona.",
     "enviar": "Envia",
     "enviant": "Enviant…",
-    "errorFotos": "L'element s'ha guardat, però alguna foto no s'ha pogut pujar."
+    "errorFotos": "L'element s'ha guardat, però alguna foto no s'ha pogut pujar.",
+    "substitueix": "Aquesta aportació substituirà l'element anterior quan es valide. L'antic queda a l'historial."
   },
   "validacio": {
     "titol": "Validació",

@@ -73,11 +73,13 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
     window.history.replaceState(null, '', url);
   }, [seleccionat]);
 
-  const comencarAportacio = () => {
+  const [substituint, setSubstituint] = useState<string | null>(null);
+  const comencarAportacio = (substitueix: string | null = null) => {
     if (!uid) {
       onDemanarEntrada();
       return;
     }
+    setSubstituint(substitueix);
     onSeleccionar([]);
     setAportant(true);
   };
@@ -123,7 +125,7 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
           <button
             type="button"
             className="boto lima boto-aportar"
-            onClick={comencarAportacio}
+            onClick={() => comencarAportacio()}
           >
             {t('aportar.boto')}
           </button>
@@ -131,6 +133,7 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
         {aportant && (
           <Aportar
             temes={dades.temes}
+            substitueixId={substituint}
             onVariable={onVariable}
             onEsborrany={setEsborrany}
             registrarClic={registrarClic}
@@ -151,7 +154,7 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
             onTancar={() => onSeleccionar([])}
             onCanvi={recarregarElements}
             onDemanarEntrada={onDemanarEntrada}
-            onHaCanviat={comencarAportacio}
+            onHaCanviat={(id) => comencarAportacio(id)}
           />
         )}
       </div>

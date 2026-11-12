@@ -20,6 +20,8 @@ interface Props {
   registrarClic: (f: ((lng: number, lat: number) => void) | null) => void;
   onCancelar: () => void;
   onDesat: (id: string) => void;
+  /** «Ha canviat»: el elemento que esta aportación sustituirá cuando se valide. */
+  substitueixId?: string | null;
 }
 
 function geometria(variable: Variable | null, vertexs: Position[], recinte: Recinte | null): Geometry | null {
@@ -39,7 +41,7 @@ function dibuix(vertexs: Position[], g: Geometry | null): Esborrany {
   return { type: 'Feature', geometry: { type: 'MultiPoint', coordinates: vertexs }, properties: {} } as Feature<Geometry>;
 }
 
-export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCancelar, onDesat }: Props) {
+export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCancelar, onDesat, substitueixId = null }: Props) {
   const { t } = useTranslation();
   const { uid } = useAuth();
   const [temaId, setTemaId] = useState<number | ''>('');
@@ -108,6 +110,7 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
         descripcio: descripcio.trim() || null,
         geom,
         origen: 'web',
+        substitueix_id: substitueixId,
         sigpac_ref: recinte?.ref ?? null,
         sigpac_dn_pk: recinte?.dnPk ?? null,
         sigpac_data: recinte ? new Date().toISOString().slice(0, 10) : null,
@@ -131,6 +134,7 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
     <aside className="fitxa aportar" aria-label={t('aportar.titol')}>
       <button type="button" className="tancar" aria-label={t('comu.cancelar')} onClick={onCancelar}>×</button>
       <h2>{t('aportar.titol')}</h2>
+      {substitueixId && <p className="instruccio">{t('aportar.substitueix')}</p>}
       <form onSubmit={(e) => void enviar(e)}>
         <label className="camp">
           <span>{t('fitxa.tema')}</span>

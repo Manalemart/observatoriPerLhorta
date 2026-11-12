@@ -16,11 +16,26 @@ interface Valor {
   uid: string | null;
   esCoordinador: boolean;
   potValidar: boolean;
+  /** Partidas apadrinadas ahora (del token: las pone custom_access_token_hook). */
+  partides: number[];
+  /** Puede revisar el inventario de esta partida: su padrí o la coordinación. */
+  potRevisar: (partidaId: number | null | undefined) => boolean;
   recarregarPerfil: () => Promise<void>;
   eixir: () => Promise<void>;
 }
 
 const Context = createContext<Valor | null>(null);
+
+function partidesDelToken(token: string | undefined): number[] {
+  if (!token) return [];
+  try {
+    const carrega = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    const p = carrega?.app_metadata?.partides;
+    return Array.isArray(p) ? p.filter((x): x is number => typeof x === 'number') : [];
+  } catch {
+    return [];
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -46,12 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const valor = useMemo<Valor>(() => {
     const esCoordinador = perfil?.rol === 'coordinador' || perfil?.rol === 'admin';
+    const partides = partidesDelToken(session?.access_token);
     return {
       session,
       perfil,
       uid,
       esCoordinador,
       potValidar: esCoordinador || perfil?.rol === 'padri',
+      partides,
+      potRevisar: (id) => esCoordinador || (id != null && partides.includes(id)),
       recarregarPerfil,
       eixir: async () => { await supabase.auth.signOut(); },
     };

@@ -46,6 +46,7 @@ export interface Fitxa {
   sigpac_ref: string | null;
   variable: { nom: string; tema: { nom: string; color: string } };
   categoria: { nom: string } | null;
+  partida_id: number | null;
   partida: { nom: string } | null;
   municipi: { nom: string } | null;
   fotos: { id: string; storage_path: string }[];

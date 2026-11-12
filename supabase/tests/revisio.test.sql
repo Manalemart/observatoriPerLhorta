@@ -57,6 +57,7 @@ select throws_ok($$ select public.confirmar_element('30000000-0000-0000-0000-000
   'Un pendent no es confirma');
 select throws_ok($$ update public.elements set revisat_at = now() where id = '30000000-0000-0000-0000-000000000002' $$,
   '42501', null, 'revisat_at no es toca a mà');
+select pg_temp.com('00000000-0000-0000-0000-00000000000b');   -- només revisa el padrí
 select isnt(public.confirmar_element('30000000-0000-0000-0000-000000000001'), null, 'Confirmar torna la data');
 select is(
   pg_temp.confirmacions('30000000-0000-0000-0000-000000000001'),

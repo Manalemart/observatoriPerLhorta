@@ -16,15 +16,15 @@ interface Props {
   /** Algo ha cambiado: hay que recargar los elementos del mapa. */
   onCanvi: () => void;
   onDemanarEntrada: () => void;
-  /** «Ha canviat»: se aporta un elemento nuevo por el circuito normal. */
-  onHaCanviat: () => void;
+  /** «Ha canviat»: se aporta un elemento nuevo que sustituirá a este al validarse. */
+  onHaCanviat: (id: string) => void;
 }
 
 const ARA = new Date();
 
 export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, onDemanarEntrada, onHaCanviat }: Props) {
   const { t, i18n } = useTranslation();
-  const { uid, esCoordinador } = useAuth();
+  const { uid, esCoordinador, potRevisar } = useAuth();
   const [fitxa, setFitxa] = useState<Fitxa | null>(null);
   const [error, setError] = useState(false);
   const [editant, setEditant] = useState(false);
@@ -90,7 +90,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
       return;
     }
     setErrorConfirmar(false);
-    const { error: err } = await supabase.rpc('confirmar_element', { p_element_id: id });
+    const { error: err } = await supabase.rpc('revisar_element', { p_element_id: id, p_resultat: 'igual' });
     if (err) {
       setErrorConfirmar(true);
       return;
@@ -98,6 +98,28 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
     setConfirmat(true);
     setFitxa(await carregar());
     onCanvi(); // el punto deja de estar «per revisar»
+  };
+
+  const haCanviat = async () => {
+    setErrorConfirmar(false);
+    const { error: err } = await supabase.rpc('revisar_element', { p_element_id: id, p_resultat: 'canviat' });
+    if (err) {
+      setErrorConfirmar(true);
+      return;
+    }
+    onHaCanviat(id);
+  };
+
+  const noElTrobe = async () => {
+    if (!window.confirm(t('fitxa.confirmarNoElTrobe'))) return;
+    setErrorConfirmar(false);
+    const { error: err } = await supabase.rpc('revisar_element', { p_element_id: id, p_resultat: 'no_trobat' });
+    if (err) {
+      setErrorConfirmar(true);
+      return;
+    }
+    onTancar();
+    onCanvi(); // desaparece del mapa
   };
 
   const reobrir = async () => {
@@ -173,7 +195,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
               </>
             )}
           </dl>
-          {fitxa.origen === 'legacy_2018' && fitxa.estat === 'validat' && !editant && (
+          {fitxa.origen === 'legacy_2018' && fitxa.estat === 'validat' && !editant && potRevisar(fitxa.partida_id) && (
             <div className="encara-aixi">
               {confirmat ? (
                 <p role="status" className="encara-aixi-fet">{t('fitxa.gracies')}</p>
@@ -183,7 +205,8 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
                   <p className="encara-aixi-text">{t('fitxa.encaraAixiText')}</p>
                   <div className="encara-aixi-botons">
                     <button type="button" className="boto contorn" onClick={() => void confirmar()}>{t('fitxa.continuaIgual')}</button>
-                    <button type="button" className="boto lima" onClick={onHaCanviat}>{t('fitxa.haCanviat')}</button>
+                    <button type="button" className="boto lima" onClick={() => void haCanviat()}>{t('fitxa.haCanviat')}</button>
+                    <button type="button" className="boto" onClick={() => void noElTrobe()}>{t('fitxa.noElTrobe')}</button>
                   </div>
                   {errorConfirmar && <p role="alert" className="error">{t('fitxa.errorConfirmar')}</p>}
                 </>

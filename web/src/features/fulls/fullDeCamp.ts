@@ -19,6 +19,9 @@ import type { Fons } from '../mapa/tipus';
 
 interface ElementFull {
   id: string;
+  /** Número y cuadro calculados en la base de datos (full_de_camp): los mismos que en la app. */
+  numero?: number;
+  quadre?: string;
   tema_id: number;
   tema: string;
   color: string;
@@ -164,8 +167,16 @@ function cela(v: Vista, [u, t]: [number, number]) {
 
 interface Numerat { e: ElementFull; n: number; cela: string; c: number; f: number; pos: [number, number] }
 
-/** Por cuadros (fila a fila, de izquierda a derecha) y dentro de cada cuadro de arriba abajo. */
+/**
+ * Por cuadros (fila a fila, de izquierda a derecha) y dentro de cada cuadro de arriba abajo.
+ * Si la base de datos ya los trae numerados (full_de_camp), manda ella: así coinciden con la app.
+ */
 function numerar(v: Vista, elements: ElementFull[]): Numerat[] {
+  if (elements.length && elements.every((e) => e.numero && e.quadre)) {
+    return elements
+      .map((e) => ({ e, n: e.numero!, cela: e.quadre!, c: e.quadre!.charCodeAt(0) - 65, f: Number(e.quadre!.slice(1)) - 1, pos: relativa(v, e.etiqueta) }))
+      .sort((a, b) => a.n - b.n);
+  }
   return elements
     .map((e) => ({ e, pos: relativa(v, e.etiqueta) }))
     .map((x) => ({ ...x, cela: cela(v, x.pos) }))
