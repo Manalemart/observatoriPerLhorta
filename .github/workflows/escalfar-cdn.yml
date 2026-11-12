@@ -1,0 +1,28 @@
+# Calienta la caché del CDN de Vercel después de cada despliegue a producción.
+#
+# Cada despliegue empieza con la caché vacía. Si las primeras visitas piden a la vez las
+# capas del mapa (4-6 MB cada una), las peticiones llegan juntas a Supabase y algunas
+# superan el statement_timeout. Pidiéndolas una detrás de otra, sin concurrencia, la
+# caché queda llena antes de que llegue nadie; después se renueva sola en segundo plano
+# (stale-while-revalidate, ver web/api/geo).
+
+name: Escalfar CDN
+
+on:
+  deployment_status:
+
+jobs:
+  escalfar:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      WEB: ${{ vars.WEB_URL || 'https://observatoriplh.vercel.app' }}
+    steps:
+      - name: Demana les capes una per una
+        run: |
+          sleep 10   # el dominio de producción apunta al despliegue nuevo unos segundos después
+          for capa in municipis partides elements; do
+            curl -sS --fail --retry 4 --retry-delay 10 --retry-all-errors --max-time 60 \
+              -o /dev/null -w "$capa: %{http_code} en %{time_total}s\n" "$WEB/api/geo/$capa"
+          done
