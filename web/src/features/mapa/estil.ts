@@ -16,8 +16,9 @@ export const ZOOM_MAX_FONS: Record<Fons, number> = { topo: 17, pnoa: 19 };
 const IGN ='© <a href="https://www.ign.es" target="_blank" rel="noreferrer">Instituto Geográfico Nacional</a>';
 
 // Sin OpenStreetMap: sus servidores públicos no admiten el tráfico de una web en producción
-export const FONS: Fons[] = ['topo', 'pnoa'];
-export const FONS_INICIAL: Fons = 'topo';
+export const FONS: Fons[] = ['pnoa', 'topo'];
+// Por defecto, la ortofoto (decisión 2026-11-13): en la web, en la app y en las hojas de campo
+export const FONS_INICIAL: Fons = 'pnoa';
 
 // Vista inicial: los 37 municipios del ámbito
 export const LIMITS_AMBIT: [[number, number], [number, number]] = [[-0.56, 39.33], [-0.25, 39.63]];

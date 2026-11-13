@@ -7,7 +7,7 @@ import '../core/config.dart';
 import '../l10n/app_localizations.dart';
 
 // Sin OpenStreetMap: sus servidores públicos no admiten el tráfico de una app en producción
-enum Fons { topo, pnoa }
+enum Fons { pnoa, topo }
 
 String _wmts(String servei, String capa) =>
     'https://www.ign.es/wmts/$servei?service=WMTS&request=GetTile&version=1.0.0&layer=$capa'

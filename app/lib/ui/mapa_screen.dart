@@ -29,7 +29,7 @@ class _MapaScreenState extends State<MapaScreen> {
   final _mapa = MapController();
   final _toc = LayerHitNotifier<Map<String, dynamic>>(null);
   Timer? _espera;
-  Fons _fons = Fons.topo;
+  Fons _fons = Fons.pnoa; // por defecto, la ortofoto
   List<Map<String, dynamic>> _elements = const [];
   bool _massaLluny = true;
   bool _error = false;
