@@ -6,10 +6,12 @@ import 'package:image/image.dart' as img;
 import 'package:latlong2/latlong.dart';
 import 'package:observatori_horta/data/local/cola.dart';
 import 'package:observatori_horta/data/local/cola_drift.dart';
+import 'package:observatori_horta/data/local/magatzem.dart';
 import 'package:observatori_horta/data/models.dart';
 import 'package:observatori_horta/data/revisio.dart';
 import 'package:observatori_horta/data/remote/api_observatori.dart';
 import 'package:observatori_horta/services/fotos.dart';
+import 'package:observatori_horta/services/paquets.dart';
 import 'package:observatori_horta/services/sigpac.dart';
 import 'package:observatori_horta/services/sincronitzacio.dart';
 import 'package:observatori_horta/ui/aportar_screen.dart';
@@ -27,7 +29,19 @@ class ApiFalsa implements ApiAportacions {
 
   @override
   Future<void> pujarFoto(String elementId, int index, Uint8List bytes) async => fotos.add('$elementId/$index');
+
+  final revisions = <String>[];
+  Object? errorRevisar;
+
+  @override
+  Future<void> revisarElement(String elementId, String resultat, {String? nota}) async {
+    if (errorRevisar != null) throw errorRevisar!;
+    revisions.add('$elementId:$resultat');
+  }
 }
+
+RevisioLocal revisio(String id, String element, String resultat) => RevisioLocal(
+      id: id, elementId: element, partidaId: 89, resultat: resultat, creadaEn: DateTime(2026, 11, 13));
 
 Aportacio aportacio(String id, {Map<String, dynamic>? geom, LatLng? parcela, List<Uint8List> fotos = const []}) => Aportacio(
       id: id,
@@ -173,6 +187,38 @@ void main() {
       expect(s.items.single.error, 'sense recinte');
     });
 
+    test("una revisió sense xarxa es guarda i s'envia en tornar, abans que les aportacions", () async {
+      final s = sinc(cola, api);
+      api.errorRevisar = Exception('sense xarxa');
+      api.errorInserir = Exception('sense xarxa');
+      await s.revisar(revisio('r1', 'e1', 'canviat'));
+      await s.afegir(aportacio('a'));
+      expect(s.pendents, 2);
+      expect(s.revisions.single.elementId, 'e1');
+
+      api.errorRevisar = null;
+      api.errorInserir = null;
+      await s.enviar();
+      expect(api.revisions, ['e1:canviat']);
+      expect(api.files.single['id'], 'a');
+      expect(s.pendents, 0);
+      expect(s.revisions, isEmpty);
+    });
+
+    test('una revisió rebutjada queda marcada i no bloqueja', () async {
+      final s = sinc(cola, api);
+      api.errorRevisar = RebuigServidor('Ja està de baixa');
+      await s.revisar(revisio('r1', 'e1', 'no_trobat'));
+      expect(s.revisions.single.error, 'Ja està de baixa');
+      expect(s.pendents, 0);
+
+      api.errorRevisar = null;
+      await s.revisar(revisio('r2', 'e2', 'igual'));
+      expect(api.revisions, ['e2:igual']);
+      await s.esborrarRevisio('r1');
+      expect(s.revisions, isEmpty);
+    });
+
     test('dos enviaments alhora no dupliquen', () async {
       final s = sinc(cola, api);
       await cola.afegir(aportacio('a'));
@@ -210,6 +256,16 @@ void main() {
       await cola.esborrar('a');
       expect(await cola.totes(), isEmpty);
       expect(await bd.select(bd.fotosCola).get(), isEmpty);
+    });
+
+    test('revisions: guarda, marca error i esborra', () async {
+      await cola.afegirRevisio(revisio('r1', 'e1', 'igual'));
+      final r = (await cola.revisions()).single;
+      expect([r.elementId, r.partidaId, r.resultat], ['e1', 89, 'igual']);
+      await cola.errorRevisio('r1', 'motiu');
+      expect((await cola.revisions()).single.error, 'motiu');
+      await cola.esborrarRevisio('r1');
+      expect(await cola.revisions(), isEmpty);
     });
   });
 
@@ -274,5 +330,139 @@ void main() {
     ));
     await s.enviar();
     expect(api.files.single['substitueix_id'], 'antic');
+  });
+
+  group('Paquets sense connexió', () {
+    // Un triangle d'uns 1,7 × 2,2 km
+    const triangle = {
+      'type': 'Polygon',
+      'coordinates': [[[-0.36, 39.47], [-0.34, 39.47], [-0.36, 39.49], [-0.36, 39.47]]],
+    };
+    Map<String, dynamic> fullDeCamp(int id, Map<String, dynamic> geom) => {
+          'partida': {'id': id, 'nom': 'Partida $id', 'municipi': 'M', 'area_ha': 10, 'es_padri': true, 'geometria': geom},
+          'elements': [
+            {
+              'id': 'e1', 'numero': 1, 'quadre': 'A1', 'tema_id': 1, 'tema': 'T', 'color': '#1f5fb0', 'variable_id': 7,
+              'variable': 'Alqueria', 'categoria': null, 'estat': 'validat', 'origen': 'legacy_2018', 'per_revisar': true,
+              'darrera_revisio': null, 'substitucio_pendent': false,
+              'geometria': {'type': 'Point', 'coordinates': [-0.355, 39.475]}, 'etiqueta': [-0.355, 39.475],
+            },
+          ],
+        };
+    int x19(double lon) => ((lon + 180) / 360 * (1 << 19)).floor();
+    Paquets senseXarxa(Magatzem m) => Paquets(
+          magatzem: m,
+          partida: (_) => throw Exception(),
+          sigpac: (_, _, _, _) => throw Exception(),
+          tesela: (_) => throw Exception(),
+        );
+
+    test('teseles: cobreix la partida amb marge, però no tota la caixa', () {
+      final t = teselesDe(triangle, 14, 19);
+      expect(t.toSet().length, t.length, reason: 'sense repetides');
+      expect(t.map((e) => e.z).toSet(), {14, 15, 16, 17, 18, 19});
+      final z19 = t.where((e) => e.z == 19).toList();
+      final xs = z19.map((e) => e.x).toList()..sort();
+      final ys = z19.map((e) => e.y).toList()..sort();
+      expect(xs.first, x19(-0.36) - 1, reason: 'una de marge');
+      // La cantonada nord-est de la caixa queda fora del triangle
+      expect(z19.any((e) => e.x == xs.last - 2 && e.y == ys.first + 2), isFalse);
+      // Molt menys que la caixa sencera
+      final caixa = (xs.last - xs.first + 1) * (ys.last - ys.first + 1);
+      expect(z19.length, lessThan(caixa * 0.7));
+    });
+
+    test('baixa, es llig sense xarxa i esborra només les teseles pròpies', () async {
+      final m = MagatzemMemoria();
+      const quadratA = {'type': 'Polygon', 'coordinates': [[[-0.350, 39.480], [-0.348, 39.480], [-0.348, 39.482], [-0.350, 39.482], [-0.350, 39.480]]]};
+      const quadratB = {'type': 'Polygon', 'coordinates': [[[-0.348, 39.480], [-0.346, 39.480], [-0.346, 39.482], [-0.348, 39.482], [-0.348, 39.480]]]};
+      var baixades = 0;
+      final paquets = Paquets(
+        magatzem: m,
+        partida: (id) async => fullDeCamp(id, id == 1 ? quadratA : quadratB),
+        sigpac: (w, s, e, n) async => [
+          const RecinteDibuix(parcela: 66, recinto: 2, anells: [[LatLng(39.48, -0.35), LatLng(39.481, -0.349), LatLng(39.48, -0.35)]]),
+        ],
+        tesela: (t) async {
+          baixades++;
+          return Uint8List.fromList([1, 2, 3]);
+        },
+      );
+      final a = await paquets.preparar(1);
+      await paquets.descarregar(a);
+      expect(baixades, a.teseles.length);
+      expect(paquets.info(1)!.teseles, a.teseles.length);
+
+      final b = await paquets.preparar(2);
+      await paquets.descarregar(b);
+      final compartides = a.teseles.toSet().intersection(b.teseles.toSet());
+      expect(compartides, isNotEmpty);
+      expect(baixades, a.teseles.length + b.teseles.length - compartides.length, reason: 'les compartides no es tornen a baixar');
+
+      // Sense xarxa: la partida i el SIGPAC, del mòbil; i l'índex sobreviu a reobrir
+      final p = await paquets.partidaLocal(1);
+      expect(p!.elements.single.numero, 1);
+      expect((await paquets.sigpacLocal(1))!.single.parcela, 66);
+      final reoberts = senseXarxa(m);
+      await reoberts.carregar();
+      expect(reoberts.info(2)!.nom, 'Partida 2');
+
+      final t0 = a.teseles.firstWhere((t) => !compartides.contains(t));
+      expect(m.imatge('teseles/${t0.z}/${t0.x}/${t0.y}.jpg'), isNotNull);
+
+      await paquets.esborrar(1);
+      expect(paquets.info(1), isNull);
+      expect(await paquets.partidaLocal(1), isNull);
+      expect(m.imatge('teseles/${t0.z}/${t0.x}/${t0.y}.jpg'), isNull);
+      final c = compartides.first;
+      expect(m.imatge('teseles/${c.z}/${c.x}/${c.y}.jpg'), isNotNull, reason: 'la partida 2 encara la fa servir');
+    });
+
+    test('si fallen teseles, el que ha baixat es queda i es pot completar', () async {
+      var falla = true;
+      var baixades = 0;
+      final paquets = Paquets(
+        magatzem: MagatzemMemoria(),
+        partida: (id) async => fullDeCamp(id, triangle),
+        sigpac: (_, _, _, _) async => const [],
+        tesela: (t) async {
+          if (falla && t.z == 19 && t.x.isEven) throw Exception('sense xarxa');
+          baixades++;
+          return Uint8List(1);
+        },
+        zoomMin: 17,
+        espera: Duration.zero,
+      );
+      final prep = await paquets.preparar(1);
+      await expectLater(paquets.descarregar(prep), throwsA(isA<TeselesSenseBaixar>()));
+      expect(paquets.info(1), isNull);
+      final primeres = baixades;
+      falla = false;
+      await paquets.descarregar(prep);
+      expect(paquets.info(1)!.teseles, prep.teseles.length);
+      expect(baixades, prep.teseles.length, reason: 'només es baixen les que faltaven');
+      expect(primeres, greaterThan(0));
+    });
+
+    test('la llista de partides es guarda per a obrir-la sense xarxa', () async {
+      final paquets = senseXarxa(MagatzemMemoria());
+      expect(await paquets.llistaPartides(), isNull);
+      await paquets.desarLlistaPartides([
+        {'partida_id': 89, 'partida': 'Séquia de Picanya', 'municipi': 'Paiporta', 'area_ha': 12.5, 'validats': 30, 'pendents': 2},
+      ]);
+      expect((await paquets.llistaPartides())!.single.nom, 'Séquia de Picanya');
+    });
+
+    test('les revisions pendents es veuen al plànol', () {
+      final base = (fullDeCamp(1, triangle)['elements'] as List).single as Map<String, dynamic>;
+      final p = PartidaRevisio.fromJson({
+        ...fullDeCamp(1, triangle),
+        'elements': [for (final id in ['e1', 'e2', 'e3']) {...base, 'id': id}],
+      });
+      final v = p.ambRevisionsLocals([revisio('r1', 'e1', 'igual'), revisio('r2', 'e2', 'no_trobat')]);
+      expect(v.elements.map((e) => e.id), ['e1', 'e3'], reason: 'el que no es troba desapareix');
+      expect(v.elements.first.estatRevisio, EstatRevisio.igual);
+      expect(v.revisats, 1);
+    });
   });
 }

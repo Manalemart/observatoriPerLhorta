@@ -17,16 +17,34 @@ class Sincronitzacio extends ChangeNotifier {
   final String missatgeSenseRecinte;
 
   List<Aportacio> _items = const [];
+  List<RevisioLocal> _revisions = const [];
   bool _enviant = false;
   Future<void>? _enCurs;
 
   List<Aportacio> get items => _items;
+
+  /// Revisiones hechas en el campo que aún no han llegado al servidor (o que rechazó).
+  List<RevisioLocal> get revisions => _revisions;
   bool get enviant => _enviant;
-  int get pendents => _items.where((a) => a.estat == EstatCola.pendent).length;
+  int get pendents =>
+      _items.where((a) => a.estat == EstatCola.pendent).length + _revisions.where((r) => r.error == null).length;
 
   Future<void> carregar() async {
     _items = await cola.totes();
+    _revisions = await cola.revisions();
     notifyListeners();
+  }
+
+  /// Se guarda primero en el móvil (en el campo puede no haber red) y luego se intenta enviar.
+  Future<void> revisar(RevisioLocal r) async {
+    await cola.afegirRevisio(r);
+    await carregar();
+    await enviar();
+  }
+
+  Future<void> esborrarRevisio(String id) async {
+    await cola.esborrarRevisio(id);
+    await carregar();
   }
 
   Future<void> afegir(Aportacio a) async {
@@ -53,6 +71,19 @@ class Sincronitzacio extends ChangeNotifier {
     _enviant = true;
     notifyListeners();
     try {
+      // Primero las revisiones: son pequeñas y «Ha canviat» va antes que su sustituto
+      for (final r in await cola.revisions()) {
+        if (r.error != null) continue;
+        try {
+          await api.revisarElement(r.elementId, r.resultat, nota: r.nota);
+          await cola.esborrarRevisio(r.id);
+        } on RebuigServidor catch (e) {
+          await cola.errorRevisio(r.id, e.missatge);
+        } catch (e) {
+          debugPrint('Revisió sense enviar ${r.id}: $e');
+          return; // sin red: ni revisiones ni aportaciones
+        }
+      }
       for (final a in await cola.totes()) {
         if (a.estat != EstatCola.pendent) continue;
         try {

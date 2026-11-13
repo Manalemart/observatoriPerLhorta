@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../core/tema_app.dart';
+import '../data/models.dart';
 import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
+import '../services/paquets.dart';
 import '../services/sigpac.dart';
+import '../services/sincronitzacio.dart';
 import 'capes_mapa.dart';
 
 const _verd = Color(0xFF215C00);
@@ -19,7 +24,8 @@ const _groguSigpac = Color(0xFFFFD400);
 const _ocreSigpac = Color(0xFFB86E00);
 
 /// Revisión de una partida en el campo: el plano con los mismos números que el Full de
-/// revisió y, en cada elemento, «Igual / Ha canviat / No el trobe». Fase 1: con conexión.
+/// revisió y, en cada elemento, «Igual / Ha canviat / No el trobe». Sin cobertura funciona
+/// con el paquete descargado (Paquets) y las revisiones esperan en la cola del móvil.
 class RevisioScreen extends StatefulWidget {
   const RevisioScreen({super.key, required this.partidaId});
 
@@ -39,6 +45,9 @@ class _RevisioScreenState extends State<RevisioScreen> {
   bool _nomesPerRevisar = false;
   LatLng? _posicio;
 
+  /// Si no hay red y se trabaja con el paquete: cuándo se descargó.
+  DateTime? _dadesDe;
+
   @override
   void initState() {
     super.initState();
@@ -46,20 +55,38 @@ class _RevisioScreenState extends State<RevisioScreen> {
   }
 
   Future<void> _carregar({bool primera = false}) async {
+    final paquets = context.read<Paquets>();
+    PartidaRevisio p;
+    DateTime? dadesDe;
     try {
-      final p = await context.read<ApiObservatori>().partidaRevisio(widget.partidaId);
-      if (!mounted) return;
-      setState(() {
-        _p = p;
-        _error = null;
-      });
-      if (primera) _carregarSigpac(p);
+      final j = await context.read<ApiObservatori>().fullDeCamp(widget.partidaId);
+      await paquets.actualitzarPartida(widget.partidaId, j);
+      p = PartidaRevisio.fromJson(j);
     } catch (e) {
-      if (mounted) setState(() => _error = e);
+      final local = await paquets.partidaLocal(widget.partidaId);
+      if (local == null) {
+        if (mounted) setState(() => _error = e);
+        return;
+      }
+      p = local;
+      dadesDe = paquets.info(widget.partidaId)?.descarregat;
     }
+    if (!mounted) return;
+    setState(() {
+      _p = p;
+      _dadesDe = dadesDe;
+      _error = null;
+    });
+    if (primera) _carregarSigpac(p);
   }
 
   Future<void> _carregarSigpac(PartidaRevisio p) async {
+    final local = await context.read<Paquets>().sigpacLocal(widget.partidaId);
+    if (local != null) {
+      if (mounted) setState(() => _sigpac = local);
+      return;
+    }
+    if (!mounted) return;
     final b = LatLngBounds.fromPoints(_punts(p.contorn));
     try {
       final r = await context.read<Sigpac>().recintesEnCaixa(b.west, b.south, b.east, b.north);
@@ -83,8 +110,16 @@ class _RevisioScreenState extends State<RevisioScreen> {
   }
 
   /// El elemento sin revisar más cercano a donde se está (o al centro del mapa).
-  void _elMesProper() {
+  /// La partida tal como se ve: con lo revisado aquí que aún no ha llegado al servidor.
+  PartidaRevisio? get _vista {
     final p = _p;
+    if (p == null) return null;
+    final sinc = context.read<Sincronitzacio>();
+    return p.ambRevisionsLocals(sinc.revisions.where((r) => r.partidaId == widget.partidaId && r.error == null));
+  }
+
+  void _elMesProper() {
+    final p = _vista;
     if (p == null) return;
     final des = _posicio ?? _mapa.camera.center;
     const d = Distance();
@@ -106,13 +141,30 @@ class _RevisioScreenState extends State<RevisioScreen> {
     final t = L.of(context);
     final avis = ScaffoldMessenger.of(context);
     final router = GoRouter.of(context);
+    final sinc = context.read<Sincronitzacio>();
+    // Primero al móvil: en el campo puede no haber cobertura. Se envía en cuanto la haya
+    final r = RevisioLocal(
+      id: const Uuid().v4(),
+      elementId: e.id,
+      partidaId: widget.partidaId,
+      resultat: resultat,
+      creadaEn: DateTime.now(),
+      nota: nota.trim().isEmpty ? null : nota.trim(),
+    );
     try {
-      await context.read<ApiObservatori>().revisarElement(e.id, resultat, nota: nota);
+      await sinc.revisar(r);
     } catch (_) {
       avis.showSnackBar(SnackBar(content: Text(t.revisioError)));
       return;
     }
-    avis.showSnackBar(SnackBar(content: Text(t.revisioFet)));
+    final queda = sinc.revisions.where((x) => x.id == r.id).firstOrNull;
+    if (queda?.error != null) {
+      // El servidor la ha rechazado (p. ej. ya no es padrí): no tiene sentido guardarla
+      await sinc.esborrarRevisio(r.id);
+      avis.showSnackBar(SnackBar(content: Text(t.revisioRebutjada(queda!.error!))));
+      return;
+    }
+    avis.showSnackBar(SnackBar(content: Text(queda == null ? t.revisioFet : t.revisioGuardadaMobil)));
     if (resultat == 'canviat') {
       await router.push('/aportar', extra: AportacioSubstitut(
         substitueixId: e.id, numero: e.numero, variableId: e.variableId, punt: e.etiqueta,
@@ -123,13 +175,15 @@ class _RevisioScreenState extends State<RevisioScreen> {
 
   void _obrirFitxa(ElementRevisio e) {
     final p = _p!;
+    final pendent = context.read<Sincronitzacio>().revisions.any((r) => r.elementId == e.id && r.error == null);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (ctx) => _FitxaRevisio(
         element: e,
-        potRevisar: p.esPadri && e.revisable,
+        pendent: pendent,
+        potRevisar: p.esPadri && e.revisable && !pendent,
         onResultat: (resultat, nota) async {
           Navigator.of(ctx).pop();
           await _revisar(e, resultat, nota);
@@ -141,7 +195,8 @@ class _RevisioScreenState extends State<RevisioScreen> {
   @override
   Widget build(BuildContext context) {
     final t = L.of(context);
-    final p = _p;
+    context.watch<Sincronitzacio>(); // lo revisado aquí cambia el plano
+    final p = _vista;
     if (p == null) {
       return Scaffold(
         appBar: AppBar(title: Text(t.revisioTitol)),
@@ -223,7 +278,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
             interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
           ),
           children: [
-            capaFons(_fons),
+            capaFons(_fons, locals: context.read<Paquets>().teseles),
             if (_sigpac != null)
               PolygonLayer(polygons: [
                 for (final r in _sigpac!)
@@ -266,6 +321,24 @@ class _RevisioScreenState extends State<RevisioScreen> {
             SimpleAttributionWidget(source: Text('${atribucio(_fons)}${_sigpac != null ? ' · SIGPAC © FEGA' : ''}')),
           ],
         ),
+        if (_dadesDe != null)
+          Positioned(
+            top: 8, left: 8, right: 8,
+            child: Center(
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.cloud_off, size: 16),
+                    const SizedBox(width: 6),
+                    Text(t.revisioSenseXarxa(DateFormat('d/M/yyyy', 'ca').format(_dadesDe!))),
+                  ]),
+                ),
+              ),
+            ),
+          ),
         if (_errorSigpac)
           Positioned(
             top: 8, left: 8, right: 8,
@@ -334,9 +407,10 @@ class _NumeroElement extends StatelessWidget {
 }
 
 class _FitxaRevisio extends StatefulWidget {
-  const _FitxaRevisio({required this.element, required this.potRevisar, required this.onResultat});
+  const _FitxaRevisio({required this.element, required this.pendent, required this.potRevisar, required this.onResultat});
 
   final ElementRevisio element;
+  final bool pendent;
   final bool potRevisar;
   final Future<void> Function(String resultat, String nota) onResultat;
 
@@ -395,7 +469,7 @@ class _FitxaRevisioState extends State<_FitxaRevisio> {
           Text(e.variable, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           Text(detall),
           const SizedBox(height: 8),
-          Text(estat, style: Theme.of(context).textTheme.bodySmall),
+          Text(widget.pendent ? '$estat · ${t.revisioPendentEnviar}' : estat, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 16),
           if (!widget.potRevisar)
             Text(e.revisable ? t.revisioNomesPadri : t.revisioNoRevisable)

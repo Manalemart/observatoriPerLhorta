@@ -1,16 +1,20 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'core/config.dart';
 import 'data/local/crear_cola.dart';
+import 'data/local/magatzem.dart';
 import 'data/remote/api_observatori.dart';
 import 'services/cataleg.dart';
+import 'services/paquets.dart';
 import 'services/sessio.dart';
 import 'services/sigpac.dart';
 import 'services/sincronitzacio.dart';
+import 'ui/capes_mapa.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +31,14 @@ Future<void> main() async {
     recinte: sigpac.recinteEnPunt,
     missatgeSenseRecinte: 'Ací no hi ha cap recinte SIGPAC.',
   );
+  final clientTeseles = http.Client();
+  final paquets = Paquets(
+    magatzem: await crearMagatzem(),
+    partida: api.fullDeCamp,
+    sigpac: sigpac.recintesEnCaixa,
+    tesela: (t) => baixarTesela(clientTeseles, t),
+  );
+  await paquets.carregar();
 
   await sincronitzacio.carregar();
   // Al recuperar la red se envía lo pendiente. Sin sesión no se puede: se espera a entrar
@@ -51,6 +63,7 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: sessio),
       ChangeNotifierProvider.value(value: cataleg),
       ChangeNotifierProvider.value(value: sincronitzacio),
+      ChangeNotifierProvider.value(value: paquets),
     ],
     child: ObservatoriApp(sessio: sessio),
   ));

@@ -7,11 +7,18 @@ abstract class ColaAportacions {
   Future<void> marcarError(String id, String missatge);
   Future<void> marcarPendent(String id);
   Future<void> esborrar(String id);
+
+  // Revisiones del inventario hechas sin red
+  Future<List<RevisioLocal>> revisions();
+  Future<void> afegirRevisio(RevisioLocal r);
+  Future<void> errorRevisio(String id, String missatge);
+  Future<void> esborrarRevisio(String id);
 }
 
 /// Sin persistencia: para los tests y para la vista previa web, donde no hay SQLite.
 class ColaMemoria implements ColaAportacions {
   final _items = <String, Aportacio>{};
+  final _revisions = <String, RevisioLocal>{};
 
   @override
   Future<List<Aportacio>> totes() async => _items.values.toList();
@@ -34,6 +41,7 @@ class ColaMemoria implements ColaAportacions {
         fotos: a.fotos,
         estat: estat,
         error: error,
+        substitueixId: a.substitueixId,
       );
 
   @override
@@ -45,4 +53,22 @@ class ColaMemoria implements ColaAportacions {
 
   @override
   Future<void> esborrar(String id) async => _items.remove(id);
+
+  @override
+  Future<List<RevisioLocal>> revisions() async => _revisions.values.toList();
+
+  @override
+  Future<void> afegirRevisio(RevisioLocal r) async => _revisions[r.id] = r;
+
+  @override
+  Future<void> errorRevisio(String id, String missatge) async {
+    final r = _revisions[id]!;
+    _revisions[id] = RevisioLocal(
+      id: r.id, elementId: r.elementId, partidaId: r.partidaId, resultat: r.resultat,
+      creadaEn: r.creadaEn, nota: r.nota, error: missatge,
+    );
+  }
+
+  @override
+  Future<void> esborrarRevisio(String id) async => _revisions.remove(id);
 }

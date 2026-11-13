@@ -11,6 +11,7 @@ import '../core/tema_app.dart';
 import '../data/remote/api_observatori.dart';
 import '../l10n/app_localizations.dart';
 import '../services/cataleg.dart';
+import '../services/paquets.dart';
 import '../services/sessio.dart';
 import '../services/sincronitzacio.dart';
 import 'capes_mapa.dart';
@@ -205,7 +206,7 @@ class _MapaScreenState extends State<MapaScreen> {
               interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
             ),
             children: [
-              capaFons(_fons),
+              capaFons(_fons, locals: context.read<Paquets>().teseles),
               GestureDetector(
                 onTap: () {
                   final hit = _toc.value;

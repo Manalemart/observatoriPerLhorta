@@ -662,6 +662,96 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'S\'han enviat massa enllaços en poca estona. Espera una hora i torna-ho a provar, o fes servir l\'últim enllaç que t\'ha arribat.'**
   String get entradaMassaPeticions;
+
+  /// No description provided for @paquetPreparar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Preparar per al camp'**
+  String get paquetPreparar;
+
+  /// No description provided for @paquetPreparat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Al mòbil · {mida} · {data}'**
+  String paquetPreparat(String mida, String data);
+
+  /// No description provided for @paquetBaixant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Baixant el mapa… {percent} %'**
+  String paquetBaixant(int percent);
+
+  /// No description provided for @paquetConfirmar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Es baixaran unes {teseles} imatges d\'ortofoto (uns {mida}) per a treballar sense cobertura. Millor amb wifi.'**
+  String paquetConfirmar(int teseles, String mida);
+
+  /// No description provided for @paquetBaixar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Baixar'**
+  String get paquetBaixar;
+
+  /// No description provided for @paquetActualitzar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Actualitzar'**
+  String get paquetActualitzar;
+
+  /// No description provided for @paquetEsborrar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Esborrar del mòbil'**
+  String get paquetEsborrar;
+
+  /// No description provided for @paquetConfirmarEsborrar.
+  ///
+  /// In ca, this message translates to:
+  /// **'S\'esborrarà el mapa d\'aquesta partida del mòbil. Les revisions pendents d\'enviar no es perden.'**
+  String get paquetConfirmarEsborrar;
+
+  /// No description provided for @paquetIncomplet.
+  ///
+  /// In ca, this message translates to:
+  /// **'Han faltat {n} imatges. Torna-ho a provar per a completar-ho.'**
+  String paquetIncomplet(int n);
+
+  /// No description provided for @paquetError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut preparar. Cal connexió.'**
+  String get paquetError;
+
+  /// No description provided for @partidesSenseXarxa.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense connexió: es mostra l\'última llista guardada.'**
+  String get partidesSenseXarxa;
+
+  /// No description provided for @revisioSenseXarxa.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense connexió · dades del {data}'**
+  String revisioSenseXarxa(String data);
+
+  /// No description provided for @revisioGuardadaMobil.
+  ///
+  /// In ca, this message translates to:
+  /// **'Guardat al mòbil. S\'enviarà quan hi haja cobertura.'**
+  String get revisioGuardadaMobil;
+
+  /// No description provided for @revisioPendentEnviar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Pendent d\'enviar'**
+  String get revisioPendentEnviar;
+
+  /// No description provided for @revisioRebutjada.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut registrar: {motiu}'**
+  String revisioRebutjada(String motiu);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

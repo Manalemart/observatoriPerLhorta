@@ -155,3 +155,27 @@ class AportacioRemota {
   final DateTime creadaEn;
   final String? motiuRebuig;
 }
+
+/// «Igual / Ha canviat / No el trobe» hecho en el campo: se guarda en el móvil y se envía
+/// con `revisar_element()` al recuperar la red.
+class RevisioLocal {
+  const RevisioLocal({
+    required this.id,
+    required this.elementId,
+    required this.partidaId,
+    required this.resultat,
+    required this.creadaEn,
+    this.nota,
+    this.error,
+  });
+
+  final String id;
+  final String elementId;
+  final int partidaId;
+
+  /// igual, canviat o no_trobat
+  final String resultat;
+  final DateTime creadaEn;
+  final String? nota;
+  final String? error;
+}

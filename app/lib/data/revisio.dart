@@ -1,5 +1,7 @@
 import 'package:latlong2/latlong.dart';
 
+import 'models.dart' show RevisioLocal;
+
 /// Una partida apadrinada, como la resume `resum_les_meues_partides()`.
 class PartidaApadrinada {
   const PartidaApadrinada({
@@ -110,6 +112,14 @@ class ElementRevisio {
 
   bool get del2018 => origen == 'legacy_2018';
 
+  /// Como quedará cuando llegue al servidor una revisión hecha en el campo.
+  ElementRevisio ambResultat(String resultat, DateTime data) => ElementRevisio(
+        id: id, numero: numero, quadre: quadre, temaId: temaId, tema: tema, color: color,
+        variableId: variableId, variable: variable, categoria: categoria, estat: estat, origen: origen,
+        perRevisar: false, darreraRevisio: resultat, dataRevisio: data,
+        substitucioPendent: substitucioPendent, geometria: geometria, etiqueta: etiqueta,
+      );
+
   /// Solo se revisa lo de 2018 ya validado.
   bool get revisable => del2018 && estat == 'validat';
 
@@ -159,6 +169,23 @@ class PartidaRevisio {
   Iterable<ElementRevisio> get revisables => elements.where((e) => e.revisable);
 
   int get revisats => revisables.where((e) => e.estatRevisio != EstatRevisio.perRevisar).length;
+
+  /// Con lo revisado en el campo que aún no ha llegado al servidor. «No el trobe» lo
+  /// quita del plano, como hará la baja.
+  PartidaRevisio ambRevisionsLocals(Iterable<RevisioLocal> revisions) {
+    final per = {for (final r in revisions) r.elementId: r};
+    if (per.isEmpty) return this;
+    return PartidaRevisio(
+      id: id, nom: nom, municipi: municipi, areaHa: areaHa, esPadri: esPadri, contorn: contorn,
+      elements: [
+        for (final e in elements)
+          if (per[e.id] == null)
+            e
+          else if (per[e.id]!.resultat != 'no_trobat')
+            e.ambResultat(per[e.id]!.resultat, per[e.id]!.creadaEn),
+      ],
+    );
+  }
 }
 
 /// Para abrir el formulario de aportar desde «Ha canviat»: el nuevo sustituirá al antiguo.

@@ -343,4 +343,64 @@ class LCa extends L {
   @override
   String get entradaMassaPeticions =>
       'S\'han enviat massa enllaços en poca estona. Espera una hora i torna-ho a provar, o fes servir l\'últim enllaç que t\'ha arribat.';
+
+  @override
+  String get paquetPreparar => 'Preparar per al camp';
+
+  @override
+  String paquetPreparat(String mida, String data) {
+    return 'Al mòbil · $mida · $data';
+  }
+
+  @override
+  String paquetBaixant(int percent) {
+    return 'Baixant el mapa… $percent %';
+  }
+
+  @override
+  String paquetConfirmar(int teseles, String mida) {
+    return 'Es baixaran unes $teseles imatges d\'ortofoto (uns $mida) per a treballar sense cobertura. Millor amb wifi.';
+  }
+
+  @override
+  String get paquetBaixar => 'Baixar';
+
+  @override
+  String get paquetActualitzar => 'Actualitzar';
+
+  @override
+  String get paquetEsborrar => 'Esborrar del mòbil';
+
+  @override
+  String get paquetConfirmarEsborrar =>
+      'S\'esborrarà el mapa d\'aquesta partida del mòbil. Les revisions pendents d\'enviar no es perden.';
+
+  @override
+  String paquetIncomplet(int n) {
+    return 'Han faltat $n imatges. Torna-ho a provar per a completar-ho.';
+  }
+
+  @override
+  String get paquetError => 'No s\'ha pogut preparar. Cal connexió.';
+
+  @override
+  String get partidesSenseXarxa =>
+      'Sense connexió: es mostra l\'última llista guardada.';
+
+  @override
+  String revisioSenseXarxa(String data) {
+    return 'Sense connexió · dades del $data';
+  }
+
+  @override
+  String get revisioGuardadaMobil =>
+      'Guardat al mòbil. S\'enviarà quan hi haja cobertura.';
+
+  @override
+  String get revisioPendentEnviar => 'Pendent d\'enviar';
+
+  @override
+  String revisioRebutjada(String motiu) {
+    return 'No s\'ha pogut registrar: $motiu';
+  }
 }

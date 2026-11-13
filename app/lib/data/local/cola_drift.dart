@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../models.dart' show Aportacio, EstatCola;
+import '../models.dart' show Aportacio, EstatCola, RevisioLocal;
 import 'cola.dart';
 
 part 'cola_drift.g.dart';
@@ -28,23 +28,37 @@ class AportacionsCola extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class RevisionsCola extends Table {   // v3
+  TextColumn get id => text()();
+  TextColumn get elementId => text()();
+  IntColumn get partidaId => integer()();
+  TextColumn get resultat => text()();
+  DateTimeColumn get creadaEn => dateTime()();
+  TextColumn get nota => text().nullable()();
+  TextColumn get error => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 class FotosCola extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get aportacioId => text().references(AportacionsCola, #id)();
   BlobColumn get bytes => blob()();
 }
 
-@DriftDatabase(tables: [AportacionsCola, FotosCola])
+@DriftDatabase(tables: [AportacionsCola, FotosCola, RevisionsCola])
 class BdCola extends _$BdCola {
   BdCola(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, de, a) async {
           if (de < 2) await m.addColumn(aportacionsCola, aportacionsCola.substitueixId);
+          if (de < 3) await m.createTable(revisionsCola);
         },
       );
 }
@@ -117,4 +131,29 @@ class ColaDrift implements ColaAportacions {
         await (_bd.delete(_bd.fotosCola)..where((t) => t.aportacioId.equals(id))).go();
         await (_bd.delete(_bd.aportacionsCola)..where((t) => t.id.equals(id))).go();
       });
+
+  @override
+  Future<List<RevisioLocal>> revisions() async {
+    final files = await (_bd.select(_bd.revisionsCola)..orderBy([(t) => OrderingTerm.asc(t.creadaEn)])).get();
+    return [
+      for (final f in files)
+        RevisioLocal(
+          id: f.id, elementId: f.elementId, partidaId: f.partidaId, resultat: f.resultat,
+          creadaEn: f.creadaEn, nota: f.nota, error: f.error,
+        ),
+    ];
+  }
+
+  @override
+  Future<void> afegirRevisio(RevisioLocal r) => _bd.into(_bd.revisionsCola).insert(RevisionsColaCompanion.insert(
+        id: r.id, elementId: r.elementId, partidaId: r.partidaId, resultat: r.resultat,
+        creadaEn: r.creadaEn, nota: Value(r.nota),
+      ));
+
+  @override
+  Future<void> errorRevisio(String id, String missatge) =>
+      (_bd.update(_bd.revisionsCola)..where((t) => t.id.equals(id))).write(RevisionsColaCompanion(error: Value(missatge)));
+
+  @override
+  Future<void> esborrarRevisio(String id) => (_bd.delete(_bd.revisionsCola)..where((t) => t.id.equals(id))).go();
 }

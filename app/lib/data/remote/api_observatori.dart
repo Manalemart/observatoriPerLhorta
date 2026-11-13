@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models.dart';
-import '../revisio.dart';
 
 /// Rechazo definitivo del servidor (fuera del ámbito, geometría no válida...): reintentar
 /// no sirve. Cualquier otro error se considera transitorio.
@@ -16,6 +15,7 @@ class RebuigServidor implements Exception {
 abstract class ApiAportacions {
   Future<void> inserirElement(Map<String, dynamic> fila);
   Future<void> pujarFoto(String elementId, int index, Uint8List bytes);
+  Future<void> revisarElement(String elementId, String resultat, {String? nota});
 }
 
 class ApiObservatori implements ApiAportacions {
@@ -84,23 +84,27 @@ class ApiObservatori implements ApiAportacions {
 
   // ─── Revisión del inventario (padrí) ───────────────────────────────────
 
-  Future<List<PartidaApadrinada>> lesMeuesPartides() async {
-    final r = await _client.rpc('resum_les_meues_partides');
-    return [for (final f in (r as List).cast<Map<String, dynamic>>()) PartidaApadrinada.fromJson(f)];
-  }
+  /// Tal cual llega: se guarda para abrir la lista sin red.
+  Future<List<dynamic>> lesMeuesPartidesJson() async => await _client.rpc('resum_les_meues_partides') as List;
 
-  /// La partida con sus elementos numerados (los mismos números que el Full de revisió).
-  Future<PartidaRevisio> partidaRevisio(int partidaId) async {
-    final r = await _client.rpc('full_de_camp', params: {'p_partida_id': partidaId});
-    return PartidaRevisio.fromJson(r as Map<String, dynamic>);
-  }
+  /// La partida con sus elementos numerados (los mismos números que el Full de revisió),
+  /// tal cual la da `full_de_camp()`: es lo que guarda el paquete sin conexión.
+  Future<Map<String, dynamic>> fullDeCamp(int partidaId) async =>
+      await _client.rpc('full_de_camp', params: {'p_partida_id': partidaId}) as Map<String, dynamic>;
 
   /// [resultat]: igual, canviat o no_trobat. Solo el padrí de la partida (o la coordinación).
+  @override
   Future<void> revisarElement(String elementId, String resultat, {String? nota}) async {
-    await _client.rpc('revisar_element', params: {
-      'p_element_id': elementId,
-      'p_resultat': resultat,
-      'p_nota': (nota == null || nota.trim().isEmpty) ? null : nota.trim(),
-    });
+    try {
+      await _client.rpc('revisar_element', params: {
+        'p_element_id': elementId,
+        'p_resultat': resultat,
+        'p_nota': (nota == null || nota.trim().isEmpty) ? null : nota.trim(),
+      });
+    } on PostgrestException catch (e) {
+      // Sin permiso, elemento ya dado de baja o inexistente: reintentar no lo arreglará
+      if (e.code == '42501' || e.code == '22023' || e.code == 'P0002') throw RebuigServidor(e.message);
+      rethrow;
+    }
   }
 }

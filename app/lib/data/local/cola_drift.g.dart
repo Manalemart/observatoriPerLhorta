@@ -1097,6 +1097,460 @@ class FotosColaCompanion extends UpdateCompanion<FotosColaData> {
   }
 }
 
+class $RevisionsColaTable extends RevisionsCola
+    with TableInfo<$RevisionsColaTable, RevisionsColaData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RevisionsColaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elementIdMeta = const VerificationMeta(
+    'elementId',
+  );
+  @override
+  late final GeneratedColumn<String> elementId = GeneratedColumn<String>(
+    'element_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _partidaIdMeta = const VerificationMeta(
+    'partidaId',
+  );
+  @override
+  late final GeneratedColumn<int> partidaId = GeneratedColumn<int>(
+    'partida_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _resultatMeta = const VerificationMeta(
+    'resultat',
+  );
+  @override
+  late final GeneratedColumn<String> resultat = GeneratedColumn<String>(
+    'resultat',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _creadaEnMeta = const VerificationMeta(
+    'creadaEn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creadaEn = GeneratedColumn<DateTime>(
+    'creada_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notaMeta = const VerificationMeta('nota');
+  @override
+  late final GeneratedColumn<String> nota = GeneratedColumn<String>(
+    'nota',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _errorMeta = const VerificationMeta('error');
+  @override
+  late final GeneratedColumn<String> error = GeneratedColumn<String>(
+    'error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    elementId,
+    partidaId,
+    resultat,
+    creadaEn,
+    nota,
+    error,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'revisions_cola';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RevisionsColaData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('element_id')) {
+      context.handle(
+        _elementIdMeta,
+        elementId.isAcceptableOrUnknown(data['element_id']!, _elementIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_elementIdMeta);
+    }
+    if (data.containsKey('partida_id')) {
+      context.handle(
+        _partidaIdMeta,
+        partidaId.isAcceptableOrUnknown(data['partida_id']!, _partidaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_partidaIdMeta);
+    }
+    if (data.containsKey('resultat')) {
+      context.handle(
+        _resultatMeta,
+        resultat.isAcceptableOrUnknown(data['resultat']!, _resultatMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_resultatMeta);
+    }
+    if (data.containsKey('creada_en')) {
+      context.handle(
+        _creadaEnMeta,
+        creadaEn.isAcceptableOrUnknown(data['creada_en']!, _creadaEnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_creadaEnMeta);
+    }
+    if (data.containsKey('nota')) {
+      context.handle(
+        _notaMeta,
+        nota.isAcceptableOrUnknown(data['nota']!, _notaMeta),
+      );
+    }
+    if (data.containsKey('error')) {
+      context.handle(
+        _errorMeta,
+        error.isAcceptableOrUnknown(data['error']!, _errorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RevisionsColaData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RevisionsColaData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      elementId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}element_id'],
+      )!,
+      partidaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}partida_id'],
+      )!,
+      resultat: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}resultat'],
+      )!,
+      creadaEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creada_en'],
+      )!,
+      nota: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nota'],
+      ),
+      error: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error'],
+      ),
+    );
+  }
+
+  @override
+  $RevisionsColaTable createAlias(String alias) {
+    return $RevisionsColaTable(attachedDatabase, alias);
+  }
+}
+
+class RevisionsColaData extends DataClass
+    implements Insertable<RevisionsColaData> {
+  final String id;
+  final String elementId;
+  final int partidaId;
+  final String resultat;
+  final DateTime creadaEn;
+  final String? nota;
+  final String? error;
+  const RevisionsColaData({
+    required this.id,
+    required this.elementId,
+    required this.partidaId,
+    required this.resultat,
+    required this.creadaEn,
+    this.nota,
+    this.error,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['element_id'] = Variable<String>(elementId);
+    map['partida_id'] = Variable<int>(partidaId);
+    map['resultat'] = Variable<String>(resultat);
+    map['creada_en'] = Variable<DateTime>(creadaEn);
+    if (!nullToAbsent || nota != null) {
+      map['nota'] = Variable<String>(nota);
+    }
+    if (!nullToAbsent || error != null) {
+      map['error'] = Variable<String>(error);
+    }
+    return map;
+  }
+
+  RevisionsColaCompanion toCompanion(bool nullToAbsent) {
+    return RevisionsColaCompanion(
+      id: Value(id),
+      elementId: Value(elementId),
+      partidaId: Value(partidaId),
+      resultat: Value(resultat),
+      creadaEn: Value(creadaEn),
+      nota: nota == null && nullToAbsent ? const Value.absent() : Value(nota),
+      error: error == null && nullToAbsent
+          ? const Value.absent()
+          : Value(error),
+    );
+  }
+
+  factory RevisionsColaData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RevisionsColaData(
+      id: serializer.fromJson<String>(json['id']),
+      elementId: serializer.fromJson<String>(json['elementId']),
+      partidaId: serializer.fromJson<int>(json['partidaId']),
+      resultat: serializer.fromJson<String>(json['resultat']),
+      creadaEn: serializer.fromJson<DateTime>(json['creadaEn']),
+      nota: serializer.fromJson<String?>(json['nota']),
+      error: serializer.fromJson<String?>(json['error']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'elementId': serializer.toJson<String>(elementId),
+      'partidaId': serializer.toJson<int>(partidaId),
+      'resultat': serializer.toJson<String>(resultat),
+      'creadaEn': serializer.toJson<DateTime>(creadaEn),
+      'nota': serializer.toJson<String?>(nota),
+      'error': serializer.toJson<String?>(error),
+    };
+  }
+
+  RevisionsColaData copyWith({
+    String? id,
+    String? elementId,
+    int? partidaId,
+    String? resultat,
+    DateTime? creadaEn,
+    Value<String?> nota = const Value.absent(),
+    Value<String?> error = const Value.absent(),
+  }) => RevisionsColaData(
+    id: id ?? this.id,
+    elementId: elementId ?? this.elementId,
+    partidaId: partidaId ?? this.partidaId,
+    resultat: resultat ?? this.resultat,
+    creadaEn: creadaEn ?? this.creadaEn,
+    nota: nota.present ? nota.value : this.nota,
+    error: error.present ? error.value : this.error,
+  );
+  RevisionsColaData copyWithCompanion(RevisionsColaCompanion data) {
+    return RevisionsColaData(
+      id: data.id.present ? data.id.value : this.id,
+      elementId: data.elementId.present ? data.elementId.value : this.elementId,
+      partidaId: data.partidaId.present ? data.partidaId.value : this.partidaId,
+      resultat: data.resultat.present ? data.resultat.value : this.resultat,
+      creadaEn: data.creadaEn.present ? data.creadaEn.value : this.creadaEn,
+      nota: data.nota.present ? data.nota.value : this.nota,
+      error: data.error.present ? data.error.value : this.error,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RevisionsColaData(')
+          ..write('id: $id, ')
+          ..write('elementId: $elementId, ')
+          ..write('partidaId: $partidaId, ')
+          ..write('resultat: $resultat, ')
+          ..write('creadaEn: $creadaEn, ')
+          ..write('nota: $nota, ')
+          ..write('error: $error')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, elementId, partidaId, resultat, creadaEn, nota, error);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RevisionsColaData &&
+          other.id == this.id &&
+          other.elementId == this.elementId &&
+          other.partidaId == this.partidaId &&
+          other.resultat == this.resultat &&
+          other.creadaEn == this.creadaEn &&
+          other.nota == this.nota &&
+          other.error == this.error);
+}
+
+class RevisionsColaCompanion extends UpdateCompanion<RevisionsColaData> {
+  final Value<String> id;
+  final Value<String> elementId;
+  final Value<int> partidaId;
+  final Value<String> resultat;
+  final Value<DateTime> creadaEn;
+  final Value<String?> nota;
+  final Value<String?> error;
+  final Value<int> rowid;
+  const RevisionsColaCompanion({
+    this.id = const Value.absent(),
+    this.elementId = const Value.absent(),
+    this.partidaId = const Value.absent(),
+    this.resultat = const Value.absent(),
+    this.creadaEn = const Value.absent(),
+    this.nota = const Value.absent(),
+    this.error = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RevisionsColaCompanion.insert({
+    required String id,
+    required String elementId,
+    required int partidaId,
+    required String resultat,
+    required DateTime creadaEn,
+    this.nota = const Value.absent(),
+    this.error = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       elementId = Value(elementId),
+       partidaId = Value(partidaId),
+       resultat = Value(resultat),
+       creadaEn = Value(creadaEn);
+  static Insertable<RevisionsColaData> custom({
+    Expression<String>? id,
+    Expression<String>? elementId,
+    Expression<int>? partidaId,
+    Expression<String>? resultat,
+    Expression<DateTime>? creadaEn,
+    Expression<String>? nota,
+    Expression<String>? error,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (elementId != null) 'element_id': elementId,
+      if (partidaId != null) 'partida_id': partidaId,
+      if (resultat != null) 'resultat': resultat,
+      if (creadaEn != null) 'creada_en': creadaEn,
+      if (nota != null) 'nota': nota,
+      if (error != null) 'error': error,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RevisionsColaCompanion copyWith({
+    Value<String>? id,
+    Value<String>? elementId,
+    Value<int>? partidaId,
+    Value<String>? resultat,
+    Value<DateTime>? creadaEn,
+    Value<String?>? nota,
+    Value<String?>? error,
+    Value<int>? rowid,
+  }) {
+    return RevisionsColaCompanion(
+      id: id ?? this.id,
+      elementId: elementId ?? this.elementId,
+      partidaId: partidaId ?? this.partidaId,
+      resultat: resultat ?? this.resultat,
+      creadaEn: creadaEn ?? this.creadaEn,
+      nota: nota ?? this.nota,
+      error: error ?? this.error,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (elementId.present) {
+      map['element_id'] = Variable<String>(elementId.value);
+    }
+    if (partidaId.present) {
+      map['partida_id'] = Variable<int>(partidaId.value);
+    }
+    if (resultat.present) {
+      map['resultat'] = Variable<String>(resultat.value);
+    }
+    if (creadaEn.present) {
+      map['creada_en'] = Variable<DateTime>(creadaEn.value);
+    }
+    if (nota.present) {
+      map['nota'] = Variable<String>(nota.value);
+    }
+    if (error.present) {
+      map['error'] = Variable<String>(error.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RevisionsColaCompanion(')
+          ..write('id: $id, ')
+          ..write('elementId: $elementId, ')
+          ..write('partidaId: $partidaId, ')
+          ..write('resultat: $resultat, ')
+          ..write('creadaEn: $creadaEn, ')
+          ..write('nota: $nota, ')
+          ..write('error: $error, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$BdCola extends GeneratedDatabase {
   _$BdCola(QueryExecutor e) : super(e);
   $BdColaManager get managers => $BdColaManager(this);
@@ -1104,6 +1558,7 @@ abstract class _$BdCola extends GeneratedDatabase {
     this,
   );
   late final $FotosColaTable fotosCola = $FotosColaTable(this);
+  late final $RevisionsColaTable revisionsCola = $RevisionsColaTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1111,6 +1566,7 @@ abstract class _$BdCola extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     aportacionsCola,
     fotosCola,
+    revisionsCola,
   ];
 }
 
@@ -1889,6 +2345,244 @@ typedef $$FotosColaTableProcessedTableManager =
       FotosColaData,
       PrefetchHooks Function({bool aportacioId})
     >;
+typedef $$RevisionsColaTableCreateCompanionBuilder =
+    RevisionsColaCompanion Function({
+      required String id,
+      required String elementId,
+      required int partidaId,
+      required String resultat,
+      required DateTime creadaEn,
+      Value<String?> nota,
+      Value<String?> error,
+      Value<int> rowid,
+    });
+typedef $$RevisionsColaTableUpdateCompanionBuilder =
+    RevisionsColaCompanion Function({
+      Value<String> id,
+      Value<String> elementId,
+      Value<int> partidaId,
+      Value<String> resultat,
+      Value<DateTime> creadaEn,
+      Value<String?> nota,
+      Value<String?> error,
+      Value<int> rowid,
+    });
+
+class $$RevisionsColaTableFilterComposer
+    extends Composer<_$BdCola, $RevisionsColaTable> {
+  $$RevisionsColaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get elementId => $composableBuilder(
+    column: $table.elementId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get partidaId => $composableBuilder(
+    column: $table.partidaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get resultat => $composableBuilder(
+    column: $table.resultat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creadaEn => $composableBuilder(
+    column: $table.creadaEn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nota => $composableBuilder(
+    column: $table.nota,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RevisionsColaTableOrderingComposer
+    extends Composer<_$BdCola, $RevisionsColaTable> {
+  $$RevisionsColaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get elementId => $composableBuilder(
+    column: $table.elementId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get partidaId => $composableBuilder(
+    column: $table.partidaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get resultat => $composableBuilder(
+    column: $table.resultat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get creadaEn => $composableBuilder(
+    column: $table.creadaEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nota => $composableBuilder(
+    column: $table.nota,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RevisionsColaTableAnnotationComposer
+    extends Composer<_$BdCola, $RevisionsColaTable> {
+  $$RevisionsColaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get elementId =>
+      $composableBuilder(column: $table.elementId, builder: (column) => column);
+
+  GeneratedColumn<int> get partidaId =>
+      $composableBuilder(column: $table.partidaId, builder: (column) => column);
+
+  GeneratedColumn<String> get resultat =>
+      $composableBuilder(column: $table.resultat, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get creadaEn =>
+      $composableBuilder(column: $table.creadaEn, builder: (column) => column);
+
+  GeneratedColumn<String> get nota =>
+      $composableBuilder(column: $table.nota, builder: (column) => column);
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+}
+
+class $$RevisionsColaTableTableManager
+    extends
+        RootTableManager<
+          _$BdCola,
+          $RevisionsColaTable,
+          RevisionsColaData,
+          $$RevisionsColaTableFilterComposer,
+          $$RevisionsColaTableOrderingComposer,
+          $$RevisionsColaTableAnnotationComposer,
+          $$RevisionsColaTableCreateCompanionBuilder,
+          $$RevisionsColaTableUpdateCompanionBuilder,
+          (
+            RevisionsColaData,
+            BaseReferences<_$BdCola, $RevisionsColaTable, RevisionsColaData>,
+          ),
+          RevisionsColaData,
+          PrefetchHooks Function()
+        > {
+  $$RevisionsColaTableTableManager(_$BdCola db, $RevisionsColaTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RevisionsColaTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RevisionsColaTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RevisionsColaTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> elementId = const Value.absent(),
+                Value<int> partidaId = const Value.absent(),
+                Value<String> resultat = const Value.absent(),
+                Value<DateTime> creadaEn = const Value.absent(),
+                Value<String?> nota = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RevisionsColaCompanion(
+                id: id,
+                elementId: elementId,
+                partidaId: partidaId,
+                resultat: resultat,
+                creadaEn: creadaEn,
+                nota: nota,
+                error: error,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String elementId,
+                required int partidaId,
+                required String resultat,
+                required DateTime creadaEn,
+                Value<String?> nota = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RevisionsColaCompanion.insert(
+                id: id,
+                elementId: elementId,
+                partidaId: partidaId,
+                resultat: resultat,
+                creadaEn: creadaEn,
+                nota: nota,
+                error: error,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RevisionsColaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$BdCola,
+      $RevisionsColaTable,
+      RevisionsColaData,
+      $$RevisionsColaTableFilterComposer,
+      $$RevisionsColaTableOrderingComposer,
+      $$RevisionsColaTableAnnotationComposer,
+      $$RevisionsColaTableCreateCompanionBuilder,
+      $$RevisionsColaTableUpdateCompanionBuilder,
+      (
+        RevisionsColaData,
+        BaseReferences<_$BdCola, $RevisionsColaTable, RevisionsColaData>,
+      ),
+      RevisionsColaData,
+      PrefetchHooks Function()
+    >;
 
 class $BdColaManager {
   final _$BdCola _db;
@@ -1897,4 +2591,6 @@ class $BdColaManager {
       $$AportacionsColaTableTableManager(_db, _db.aportacionsCola);
   $$FotosColaTableTableManager get fotosCola =>
       $$FotosColaTableTableManager(_db, _db.fotosCola);
+  $$RevisionsColaTableTableManager get revisionsCola =>
+      $$RevisionsColaTableTableManager(_db, _db.revisionsCola);
 }

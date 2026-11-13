@@ -14,6 +14,7 @@ import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
 import '../services/cataleg.dart';
 import '../services/fotos.dart';
+import '../services/paquets.dart';
 import '../services/sigpac.dart';
 import '../services/sincronitzacio.dart';
 import 'capes_mapa.dart';
@@ -244,7 +245,7 @@ class _AportarScreenState extends State<AportarScreen> {
                   interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
                 ),
                 children: [
-                  capaFons(_fons),
+                  capaFons(_fons, locals: context.read<Paquets>().teseles),
                   if (_recinte != null)
                     PolygonLayer(polygons: [
                       Polygon(
