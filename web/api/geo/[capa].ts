@@ -15,7 +15,12 @@ const CAPES: Record<string, { rpc: string; segons: number }> = {
 };
 
 export async function GET(request: Request): Promise<Response> {
-  const capa = new URL(request.url).pathname.split('/').pop() ?? '';
+  const adreca = new URL(request.url);
+  const capa = adreca.pathname.split('/').pop() ?? '';
+  // ?v=<versión> (segundos de la última actualización, de versions_geojson()): esa URL no
+  // cambiará nunca de contenido, así que se guarda sin caducidad. Sin v, caché corta.
+  const versio = adreca.searchParams.get('v');
+  if (versio !== null && !/^\d{1,12}$/.test(versio)) return new Response('Versió no vàlida', { status: 400 });
   const config = CAPES[capa];
   if (!config) return new Response('Capa desconeguda', { status: 404 });
 
@@ -37,8 +42,10 @@ export async function GET(request: Request): Promise<Response> {
   return new Response(await resposta.text(), {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      // s-maxage: CDN; max-age corto en el navegador para ver pronto lo recién validado
-      'Cache-Control': `public, max-age=60, s-maxage=${config.segons}, stale-while-revalidate=86400`,
+      'Cache-Control': versio
+        ? 'public, max-age=31536000, immutable'
+        // s-maxage: CDN; max-age corto en el navegador para ver pronto lo recién validado
+        : `public, max-age=60, s-maxage=${config.segons}, stale-while-revalidate=86400`,
     },
   });
 }
