@@ -39,7 +39,7 @@ select is((select count(*)::int from public.notificacions), 0, 'Aportar no gener
 select pg_temp.com('00000000-0000-0000-0000-00000000000b');
 select public.canviar_estat('10000000-0000-0000-0000-000000000001', 'validat');
 select public.canviar_estat('10000000-0000-0000-0000-000000000002', 'rebutjat', 'Falta foto');
-select is((select count(*)::int from public.notificacions), 0, 'Un padrí no veu els avisos d''altri');
+select is((select count(*)::int from public.notificacions where accio <> 'nova_aportacio'), 0, 'Un padrí no veu els avisos d''altri');
 
 select pg_temp.com('00000000-0000-0000-0000-00000000000a');
 select is((select count(*)::int from public.notificacions), 2, 'L''autora rep un avís per cada canvi');

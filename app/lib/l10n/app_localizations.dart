@@ -752,6 +752,84 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'No s\'ha pogut registrar: {motiu}'**
   String revisioRebutjada(String motiu);
+
+  /// No description provided for @revisioFotoOpcional.
+  ///
+  /// In ca, this message translates to:
+  /// **'Foto de com està hui (opcional)'**
+  String get revisioFotoOpcional;
+
+  /// No description provided for @revisioTreureFoto.
+  ///
+  /// In ca, this message translates to:
+  /// **'Lleva la foto'**
+  String get revisioTreureFoto;
+
+  /// No description provided for @revisioLlicenciaFotos.
+  ///
+  /// In ca, this message translates to:
+  /// **'Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.'**
+  String get revisioLlicenciaFotos;
+
+  /// No description provided for @avisosTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Avisos'**
+  String get avisosTitol;
+
+  /// No description provided for @avisosBuit.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens cap avís.'**
+  String get avisosBuit;
+
+  /// No description provided for @avisosMarcarTots.
+  ///
+  /// In ca, this message translates to:
+  /// **'Marca-ho tot com a llegit'**
+  String get avisosMarcarTots;
+
+  /// No description provided for @avisValidat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Validada'**
+  String get avisValidat;
+
+  /// No description provided for @avisRebutjat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Rebutjada'**
+  String get avisRebutjat;
+
+  /// No description provided for @avisReobert.
+  ///
+  /// In ca, this message translates to:
+  /// **'Torna a estar pendent'**
+  String get avisReobert;
+
+  /// No description provided for @avisNovaAportacio.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aportació nova a la teua partida'**
+  String get avisNovaAportacio;
+
+  /// No description provided for @avisRevisat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisat per una altra persona'**
+  String get avisRevisat;
+
+  /// No description provided for @avisValidarAWeb.
+  ///
+  /// In ca, this message translates to:
+  /// **'Per validar: des del panell de validació de la web.'**
+  String get avisValidarAWeb;
+
+  /// No description provided for @avisNoTrobat.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha trobat: donat de baixa'**
+  String get avisNoTrobat;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

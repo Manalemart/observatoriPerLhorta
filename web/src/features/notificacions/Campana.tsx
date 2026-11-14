@@ -7,7 +7,7 @@ import { supabase } from '../../lib/supabase';
 interface Notificacio {
   id: number;
   element_id: string;
-  accio: 'validat' | 'rebutjat' | 'reobert';
+  accio: 'validat' | 'rebutjat' | 'reobert' | 'nova_aportacio' | 'revisat';
   motiu: string | null;
   llegida: boolean;
   created_at: string;
@@ -64,7 +64,8 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
       await supabase.from('notificacions').update({ llegida: true }).eq('id', n.id);
       await carregar();
     }
-    navegar(`/mapa?element=${n.element_id}`);
+    // Lo nuevo en la partida se valida en el panel; lo demás se ve en el mapa
+    navegar(n.accio === 'nova_aportacio' ? '/validacio' : `/mapa?element=${n.element_id}`);
   };
 
   return (
@@ -91,7 +92,7 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
                     <small>
                       {t(`notificacions.accio.${n.accio}`)} · {new Date(n.created_at).toLocaleDateString(i18n.language)}
                     </small>
-                    {n.motiu && <small>{n.motiu}</small>}
+                    {n.motiu && <small>{n.accio === 'revisat' ? t(`notificacions.resultat.${n.motiu}`) : n.motiu}</small>}
                   </span>
                 </button>
               </li>

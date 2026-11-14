@@ -7,6 +7,7 @@ import 'l10n/app_localizations.dart';
 import 'services/sessio.dart';
 import 'ui/aportacions_screen.dart';
 import 'ui/aportar_screen.dart';
+import 'ui/avisos_screen.dart';
 import 'ui/entrada_screen.dart';
 import 'data/revisio.dart';
 import 'ui/mapa_screen.dart';
@@ -40,6 +41,7 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
         builder: (_, estat) => RevisioScreen(partidaId: int.parse(estat.pathParameters['id']!)),
       ),
       GoRoute(path: '/aportacions', builder: (_, _) => const AportacionsScreen()),
+      GoRoute(path: '/avisos', builder: (_, _) => const AvisosScreen()),
     ],
   );
 

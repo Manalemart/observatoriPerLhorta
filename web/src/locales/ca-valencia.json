@@ -239,7 +239,14 @@
     "accio": {
       "validat": "Validat",
       "rebutjat": "Rebutjat",
-      "reobert": "Torna a estar pendent"
+      "reobert": "Torna a estar pendent",
+      "nova_aportacio": "Aportació nova a la teua partida: per validar",
+      "revisat": "Revisat per una altra persona"
+    },
+    "resultat": {
+      "igual": "Continua igual",
+      "canviat": "Ha canviat",
+      "no_trobat": "No s'ha trobat: donat de baixa"
     }
   },
   "legal": {

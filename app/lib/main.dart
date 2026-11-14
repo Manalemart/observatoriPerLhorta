@@ -9,6 +9,7 @@ import 'core/config.dart';
 import 'data/local/crear_cola.dart';
 import 'data/local/magatzem.dart';
 import 'data/remote/api_observatori.dart';
+import 'services/avisos.dart';
 import 'services/cataleg.dart';
 import 'services/paquets.dart';
 import 'services/sessio.dart';
@@ -25,6 +26,7 @@ Future<void> main() async {
   final sigpac = Sigpac();
   final sessio = Sessio(client);
   final cataleg = Cataleg(api);
+  final avisos = Avisos(api);
   final sincronitzacio = Sincronitzacio(
     cola: crearCola(),
     api: api,
@@ -43,17 +45,24 @@ Future<void> main() async {
   await sincronitzacio.carregar();
   // Al recuperar la red se envía lo pendiente. Sin sesión no se puede: se espera a entrar
   Connectivity().onConnectivityChanged.listen((r) {
-    if (!r.contains(ConnectivityResult.none) && sessio.entrada) sincronitzacio.enviar();
+    if (!r.contains(ConnectivityResult.none) && sessio.entrada) {
+      sincronitzacio.enviar();
+      avisos.carregar();
+    }
   });
   sessio.addListener(() {
     if (sessio.entrada) {
       cataleg.carregar();
       sincronitzacio.enviar();
+      avisos.carregar();
+    } else {
+      avisos.buidar();
     }
   });
   if (sessio.entrada) {
     cataleg.carregar();
     sincronitzacio.enviar();
+    avisos.carregar();
   }
 
   runApp(MultiProvider(
@@ -64,6 +73,7 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: cataleg),
       ChangeNotifierProvider.value(value: sincronitzacio),
       ChangeNotifierProvider.value(value: paquets),
+      ChangeNotifierProvider.value(value: avisos),
     ],
     child: ObservatoriApp(sessio: sessio),
   ));

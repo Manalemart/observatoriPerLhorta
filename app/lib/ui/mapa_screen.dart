@@ -10,6 +10,7 @@ import '../core/config.dart';
 import '../core/tema_app.dart';
 import '../data/remote/api_observatori.dart';
 import '../l10n/app_localizations.dart';
+import '../services/avisos.dart';
 import '../services/cataleg.dart';
 import '../services/paquets.dart';
 import '../services/sessio.dart';
@@ -113,6 +114,7 @@ class _MapaScreenState extends State<MapaScreen> {
     final sessio = context.watch<Sessio>();
     final temes = context.watch<Cataleg>().temes;
     final pendents = context.watch<Sincronitzacio>().pendents;
+    final noLlegits = context.watch<Avisos>().noLlegits;
     final colors = {for (final x in temes) x.id: colorDesDeHex(x.color)};
 
     if (sessio.necessitaAlies && !_dialegAlies) {
@@ -181,6 +183,15 @@ class _MapaScreenState extends State<MapaScreen> {
             tooltip: t.partidesTitol,
             onPressed: () => context.push('/partides'),
             icon: const Icon(Icons.fact_check_outlined),
+          ),
+          IconButton(
+            tooltip: t.avisosTitol,
+            onPressed: () => context.push('/avisos'),
+            icon: Badge(
+              isLabelVisible: noLlegits > 0,
+              label: Text('$noLlegits'),
+              child: const Icon(Icons.notifications_outlined),
+            ),
           ),
           IconButton(
             tooltip: t.mapaAportacions,

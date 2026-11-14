@@ -167,6 +167,7 @@ class RevisioLocal {
     required this.creadaEn,
     this.nota,
     this.error,
+    this.fotos = const [],
   });
 
   final String id;
@@ -178,4 +179,7 @@ class RevisioLocal {
   final DateTime creadaEn;
   final String? nota;
   final String? error;
+
+  /// Ya reducidas y sin GPS (prepararFoto). Se suben antes de revisar_element().
+  final List<Uint8List> fotos;
 }

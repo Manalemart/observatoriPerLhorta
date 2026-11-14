@@ -1551,6 +1551,263 @@ class RevisionsColaCompanion extends UpdateCompanion<RevisionsColaData> {
   }
 }
 
+class $FotosRevisioColaTable extends FotosRevisioCola
+    with TableInfo<$FotosRevisioColaTable, FotosRevisioColaData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FotosRevisioColaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _revisioIdMeta = const VerificationMeta(
+    'revisioId',
+  );
+  @override
+  late final GeneratedColumn<String> revisioId = GeneratedColumn<String>(
+    'revisio_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES revisions_cola (id)',
+    ),
+  );
+  static const VerificationMeta _bytesMeta = const VerificationMeta('bytes');
+  @override
+  late final GeneratedColumn<Uint8List> bytes = GeneratedColumn<Uint8List>(
+    'bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, revisioId, bytes];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'fotos_revisio_cola';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FotosRevisioColaData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('revisio_id')) {
+      context.handle(
+        _revisioIdMeta,
+        revisioId.isAcceptableOrUnknown(data['revisio_id']!, _revisioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_revisioIdMeta);
+    }
+    if (data.containsKey('bytes')) {
+      context.handle(
+        _bytesMeta,
+        bytes.isAcceptableOrUnknown(data['bytes']!, _bytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bytesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FotosRevisioColaData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FotosRevisioColaData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      revisioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}revisio_id'],
+      )!,
+      bytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}bytes'],
+      )!,
+    );
+  }
+
+  @override
+  $FotosRevisioColaTable createAlias(String alias) {
+    return $FotosRevisioColaTable(attachedDatabase, alias);
+  }
+}
+
+class FotosRevisioColaData extends DataClass
+    implements Insertable<FotosRevisioColaData> {
+  final int id;
+  final String revisioId;
+  final Uint8List bytes;
+  const FotosRevisioColaData({
+    required this.id,
+    required this.revisioId,
+    required this.bytes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['revisio_id'] = Variable<String>(revisioId);
+    map['bytes'] = Variable<Uint8List>(bytes);
+    return map;
+  }
+
+  FotosRevisioColaCompanion toCompanion(bool nullToAbsent) {
+    return FotosRevisioColaCompanion(
+      id: Value(id),
+      revisioId: Value(revisioId),
+      bytes: Value(bytes),
+    );
+  }
+
+  factory FotosRevisioColaData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FotosRevisioColaData(
+      id: serializer.fromJson<int>(json['id']),
+      revisioId: serializer.fromJson<String>(json['revisioId']),
+      bytes: serializer.fromJson<Uint8List>(json['bytes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'revisioId': serializer.toJson<String>(revisioId),
+      'bytes': serializer.toJson<Uint8List>(bytes),
+    };
+  }
+
+  FotosRevisioColaData copyWith({
+    int? id,
+    String? revisioId,
+    Uint8List? bytes,
+  }) => FotosRevisioColaData(
+    id: id ?? this.id,
+    revisioId: revisioId ?? this.revisioId,
+    bytes: bytes ?? this.bytes,
+  );
+  FotosRevisioColaData copyWithCompanion(FotosRevisioColaCompanion data) {
+    return FotosRevisioColaData(
+      id: data.id.present ? data.id.value : this.id,
+      revisioId: data.revisioId.present ? data.revisioId.value : this.revisioId,
+      bytes: data.bytes.present ? data.bytes.value : this.bytes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FotosRevisioColaData(')
+          ..write('id: $id, ')
+          ..write('revisioId: $revisioId, ')
+          ..write('bytes: $bytes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, revisioId, $driftBlobEquality.hash(bytes));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FotosRevisioColaData &&
+          other.id == this.id &&
+          other.revisioId == this.revisioId &&
+          $driftBlobEquality.equals(other.bytes, this.bytes));
+}
+
+class FotosRevisioColaCompanion extends UpdateCompanion<FotosRevisioColaData> {
+  final Value<int> id;
+  final Value<String> revisioId;
+  final Value<Uint8List> bytes;
+  const FotosRevisioColaCompanion({
+    this.id = const Value.absent(),
+    this.revisioId = const Value.absent(),
+    this.bytes = const Value.absent(),
+  });
+  FotosRevisioColaCompanion.insert({
+    this.id = const Value.absent(),
+    required String revisioId,
+    required Uint8List bytes,
+  }) : revisioId = Value(revisioId),
+       bytes = Value(bytes);
+  static Insertable<FotosRevisioColaData> custom({
+    Expression<int>? id,
+    Expression<String>? revisioId,
+    Expression<Uint8List>? bytes,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (revisioId != null) 'revisio_id': revisioId,
+      if (bytes != null) 'bytes': bytes,
+    });
+  }
+
+  FotosRevisioColaCompanion copyWith({
+    Value<int>? id,
+    Value<String>? revisioId,
+    Value<Uint8List>? bytes,
+  }) {
+    return FotosRevisioColaCompanion(
+      id: id ?? this.id,
+      revisioId: revisioId ?? this.revisioId,
+      bytes: bytes ?? this.bytes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (revisioId.present) {
+      map['revisio_id'] = Variable<String>(revisioId.value);
+    }
+    if (bytes.present) {
+      map['bytes'] = Variable<Uint8List>(bytes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FotosRevisioColaCompanion(')
+          ..write('id: $id, ')
+          ..write('revisioId: $revisioId, ')
+          ..write('bytes: $bytes')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$BdCola extends GeneratedDatabase {
   _$BdCola(QueryExecutor e) : super(e);
   $BdColaManager get managers => $BdColaManager(this);
@@ -1559,6 +1816,9 @@ abstract class _$BdCola extends GeneratedDatabase {
   );
   late final $FotosColaTable fotosCola = $FotosColaTable(this);
   late final $RevisionsColaTable revisionsCola = $RevisionsColaTable(this);
+  late final $FotosRevisioColaTable fotosRevisioCola = $FotosRevisioColaTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1567,6 +1827,7 @@ abstract class _$BdCola extends GeneratedDatabase {
     aportacionsCola,
     fotosCola,
     revisionsCola,
+    fotosRevisioCola,
   ];
 }
 
@@ -2368,6 +2629,38 @@ typedef $$RevisionsColaTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$RevisionsColaTableReferences
+    extends BaseReferences<_$BdCola, $RevisionsColaTable, RevisionsColaData> {
+  $$RevisionsColaTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$FotosRevisioColaTable, List<FotosRevisioColaData>>
+  _fotosRevisioColaRefsTable(_$BdCola db) => MultiTypedResultKey.fromTable(
+    db.fotosRevisioCola,
+    aliasName: $_aliasNameGenerator(
+      db.revisionsCola.id,
+      db.fotosRevisioCola.revisioId,
+    ),
+  );
+
+  $$FotosRevisioColaTableProcessedTableManager get fotosRevisioColaRefs {
+    final manager = $$FotosRevisioColaTableTableManager(
+      $_db,
+      $_db.fotosRevisioCola,
+    ).filter((f) => f.revisioId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _fotosRevisioColaRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$RevisionsColaTableFilterComposer
     extends Composer<_$BdCola, $RevisionsColaTable> {
   $$RevisionsColaTableFilterComposer({
@@ -2411,6 +2704,31 @@ class $$RevisionsColaTableFilterComposer
     column: $table.error,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> fotosRevisioColaRefs(
+    Expression<bool> Function($$FotosRevisioColaTableFilterComposer f) f,
+  ) {
+    final $$FotosRevisioColaTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.fotosRevisioCola,
+      getReferencedColumn: (t) => t.revisioId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FotosRevisioColaTableFilterComposer(
+            $db: $db,
+            $table: $db.fotosRevisioCola,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$RevisionsColaTableOrderingComposer
@@ -2487,6 +2805,31 @@ class $$RevisionsColaTableAnnotationComposer
 
   GeneratedColumn<String> get error =>
       $composableBuilder(column: $table.error, builder: (column) => column);
+
+  Expression<T> fotosRevisioColaRefs<T extends Object>(
+    Expression<T> Function($$FotosRevisioColaTableAnnotationComposer a) f,
+  ) {
+    final $$FotosRevisioColaTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.fotosRevisioCola,
+      getReferencedColumn: (t) => t.revisioId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FotosRevisioColaTableAnnotationComposer(
+            $db: $db,
+            $table: $db.fotosRevisioCola,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$RevisionsColaTableTableManager
@@ -2500,12 +2843,9 @@ class $$RevisionsColaTableTableManager
           $$RevisionsColaTableAnnotationComposer,
           $$RevisionsColaTableCreateCompanionBuilder,
           $$RevisionsColaTableUpdateCompanionBuilder,
-          (
-            RevisionsColaData,
-            BaseReferences<_$BdCola, $RevisionsColaTable, RevisionsColaData>,
-          ),
+          (RevisionsColaData, $$RevisionsColaTableReferences),
           RevisionsColaData,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool fotosRevisioColaRefs})
         > {
   $$RevisionsColaTableTableManager(_$BdCola db, $RevisionsColaTable table)
     : super(
@@ -2559,9 +2899,45 @@ class $$RevisionsColaTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$RevisionsColaTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({fotosRevisioColaRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (fotosRevisioColaRefs) db.fotosRevisioCola,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (fotosRevisioColaRefs)
+                    await $_getPrefetchedData<
+                      RevisionsColaData,
+                      $RevisionsColaTable,
+                      FotosRevisioColaData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$RevisionsColaTableReferences
+                          ._fotosRevisioColaRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$RevisionsColaTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).fotosRevisioColaRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.revisioId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -2576,12 +2952,294 @@ typedef $$RevisionsColaTableProcessedTableManager =
       $$RevisionsColaTableAnnotationComposer,
       $$RevisionsColaTableCreateCompanionBuilder,
       $$RevisionsColaTableUpdateCompanionBuilder,
-      (
-        RevisionsColaData,
-        BaseReferences<_$BdCola, $RevisionsColaTable, RevisionsColaData>,
-      ),
+      (RevisionsColaData, $$RevisionsColaTableReferences),
       RevisionsColaData,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool fotosRevisioColaRefs})
+    >;
+typedef $$FotosRevisioColaTableCreateCompanionBuilder =
+    FotosRevisioColaCompanion Function({
+      Value<int> id,
+      required String revisioId,
+      required Uint8List bytes,
+    });
+typedef $$FotosRevisioColaTableUpdateCompanionBuilder =
+    FotosRevisioColaCompanion Function({
+      Value<int> id,
+      Value<String> revisioId,
+      Value<Uint8List> bytes,
+    });
+
+final class $$FotosRevisioColaTableReferences
+    extends
+        BaseReferences<_$BdCola, $FotosRevisioColaTable, FotosRevisioColaData> {
+  $$FotosRevisioColaTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $RevisionsColaTable _revisioIdTable(_$BdCola db) =>
+      db.revisionsCola.createAlias(
+        $_aliasNameGenerator(
+          db.fotosRevisioCola.revisioId,
+          db.revisionsCola.id,
+        ),
+      );
+
+  $$RevisionsColaTableProcessedTableManager get revisioId {
+    final $_column = $_itemColumn<String>('revisio_id')!;
+
+    final manager = $$RevisionsColaTableTableManager(
+      $_db,
+      $_db.revisionsCola,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_revisioIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FotosRevisioColaTableFilterComposer
+    extends Composer<_$BdCola, $FotosRevisioColaTable> {
+  $$FotosRevisioColaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$RevisionsColaTableFilterComposer get revisioId {
+    final $$RevisionsColaTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.revisioId,
+      referencedTable: $db.revisionsCola,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RevisionsColaTableFilterComposer(
+            $db: $db,
+            $table: $db.revisionsCola,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FotosRevisioColaTableOrderingComposer
+    extends Composer<_$BdCola, $FotosRevisioColaTable> {
+  $$FotosRevisioColaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$RevisionsColaTableOrderingComposer get revisioId {
+    final $$RevisionsColaTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.revisioId,
+      referencedTable: $db.revisionsCola,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RevisionsColaTableOrderingComposer(
+            $db: $db,
+            $table: $db.revisionsCola,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FotosRevisioColaTableAnnotationComposer
+    extends Composer<_$BdCola, $FotosRevisioColaTable> {
+  $$FotosRevisioColaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get bytes =>
+      $composableBuilder(column: $table.bytes, builder: (column) => column);
+
+  $$RevisionsColaTableAnnotationComposer get revisioId {
+    final $$RevisionsColaTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.revisioId,
+      referencedTable: $db.revisionsCola,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RevisionsColaTableAnnotationComposer(
+            $db: $db,
+            $table: $db.revisionsCola,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FotosRevisioColaTableTableManager
+    extends
+        RootTableManager<
+          _$BdCola,
+          $FotosRevisioColaTable,
+          FotosRevisioColaData,
+          $$FotosRevisioColaTableFilterComposer,
+          $$FotosRevisioColaTableOrderingComposer,
+          $$FotosRevisioColaTableAnnotationComposer,
+          $$FotosRevisioColaTableCreateCompanionBuilder,
+          $$FotosRevisioColaTableUpdateCompanionBuilder,
+          (FotosRevisioColaData, $$FotosRevisioColaTableReferences),
+          FotosRevisioColaData,
+          PrefetchHooks Function({bool revisioId})
+        > {
+  $$FotosRevisioColaTableTableManager(_$BdCola db, $FotosRevisioColaTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FotosRevisioColaTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FotosRevisioColaTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FotosRevisioColaTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> revisioId = const Value.absent(),
+                Value<Uint8List> bytes = const Value.absent(),
+              }) => FotosRevisioColaCompanion(
+                id: id,
+                revisioId: revisioId,
+                bytes: bytes,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String revisioId,
+                required Uint8List bytes,
+              }) => FotosRevisioColaCompanion.insert(
+                id: id,
+                revisioId: revisioId,
+                bytes: bytes,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FotosRevisioColaTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({revisioId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (revisioId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.revisioId,
+                                referencedTable:
+                                    $$FotosRevisioColaTableReferences
+                                        ._revisioIdTable(db),
+                                referencedColumn:
+                                    $$FotosRevisioColaTableReferences
+                                        ._revisioIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FotosRevisioColaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$BdCola,
+      $FotosRevisioColaTable,
+      FotosRevisioColaData,
+      $$FotosRevisioColaTableFilterComposer,
+      $$FotosRevisioColaTableOrderingComposer,
+      $$FotosRevisioColaTableAnnotationComposer,
+      $$FotosRevisioColaTableCreateCompanionBuilder,
+      $$FotosRevisioColaTableUpdateCompanionBuilder,
+      (FotosRevisioColaData, $$FotosRevisioColaTableReferences),
+      FotosRevisioColaData,
+      PrefetchHooks Function({bool revisioId})
     >;
 
 class $BdColaManager {
@@ -2593,4 +3251,6 @@ class $BdColaManager {
       $$FotosColaTableTableManager(_db, _db.fotosCola);
   $$RevisionsColaTableTableManager get revisionsCola =>
       $$RevisionsColaTableTableManager(_db, _db.revisionsCola);
+  $$FotosRevisioColaTableTableManager get fotosRevisioCola =>
+      $$FotosRevisioColaTableTableManager(_db, _db.fotosRevisioCola);
 }

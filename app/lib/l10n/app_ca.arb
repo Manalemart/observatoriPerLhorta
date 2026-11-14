@@ -232,5 +232,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "revisioFotoOpcional": "Foto de com està hui (opcional)",
+  "revisioTreureFoto": "Lleva la foto",
+  "revisioLlicenciaFotos": "Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.",
+  "avisosTitol": "Avisos",
+  "avisosBuit": "No tens cap avís.",
+  "avisosMarcarTots": "Marca-ho tot com a llegit",
+  "avisValidat": "Validada",
+  "avisRebutjat": "Rebutjada",
+  "avisReobert": "Torna a estar pendent",
+  "avisNovaAportacio": "Aportació nova a la teua partida",
+  "avisRevisat": "Revisat per una altra persona",
+  "avisValidarAWeb": "Per validar: des del panell de validació de la web.",
+  "avisNoTrobat": "No s'ha trobat: donat de baixa"
 }

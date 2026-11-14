@@ -10,6 +10,7 @@ import 'package:observatori_horta/data/local/magatzem.dart';
 import 'package:observatori_horta/data/models.dart';
 import 'package:observatori_horta/data/revisio.dart';
 import 'package:observatori_horta/data/remote/api_observatori.dart';
+import 'package:observatori_horta/services/avisos.dart';
 import 'package:observatori_horta/services/fotos.dart';
 import 'package:observatori_horta/services/paquets.dart';
 import 'package:observatori_horta/services/sigpac.dart';
@@ -33,15 +34,20 @@ class ApiFalsa implements ApiAportacions {
   final revisions = <String>[];
   Object? errorRevisar;
 
+  final fotosRevisio = <String>[];
+
   @override
-  Future<void> revisarElement(String elementId, String resultat, {String? nota}) async {
+  Future<void> revisarElement(String elementId, String resultat, {String? nota, List<Uint8List> fotos = const [], String? id}) async {
     if (errorRevisar != null) throw errorRevisar!;
     revisions.add('$elementId:$resultat');
+    for (var i = 0; i < fotos.length; i++) {
+      fotosRevisio.add('$id/$i');
+    }
   }
 }
 
-RevisioLocal revisio(String id, String element, String resultat) => RevisioLocal(
-      id: id, elementId: element, partidaId: 89, resultat: resultat, creadaEn: DateTime(2026, 11, 13));
+RevisioLocal revisio(String id, String element, String resultat, {List<Uint8List> fotos = const []}) => RevisioLocal(
+      id: id, elementId: element, partidaId: 89, resultat: resultat, creadaEn: DateTime(2026, 11, 13), fotos: fotos);
 
 Aportacio aportacio(String id, {Map<String, dynamic>? geom, LatLng? parcela, List<Uint8List> fotos = const []}) => Aportacio(
       id: id,
@@ -205,6 +211,12 @@ void main() {
       expect(s.revisions, isEmpty);
     });
 
+    test('la revisió envia les seues fotos i el seu id', () async {
+      final s = sinc(cola, api);
+      await s.revisar(revisio('r1', 'e1', 'igual', fotos: [Uint8List(1), Uint8List(1)]));
+      expect(api.fotosRevisio, ['r1/0', 'r1/1']);
+    });
+
     test('una revisió rebutjada queda marcada i no bloqueja', () async {
       final s = sinc(cola, api);
       api.errorRevisar = RebuigServidor('Ja està de baixa');
@@ -259,13 +271,15 @@ void main() {
     });
 
     test('revisions: guarda, marca error i esborra', () async {
-      await cola.afegirRevisio(revisio('r1', 'e1', 'igual'));
+      await cola.afegirRevisio(revisio('r1', 'e1', 'igual', fotos: [Uint8List.fromList([7, 8])]));
       final r = (await cola.revisions()).single;
       expect([r.elementId, r.partidaId, r.resultat], ['e1', 89, 'igual']);
+      expect(r.fotos.single.toList(), [7, 8]);
       await cola.errorRevisio('r1', 'motiu');
       expect((await cola.revisions()).single.error, 'motiu');
       await cola.esborrarRevisio('r1');
       expect(await cola.revisions(), isEmpty);
+      expect(await bd.select(bd.fotosRevisioCola).get(), isEmpty);
     });
   });
 
@@ -465,4 +479,59 @@ void main() {
       expect(v.revisats, 1);
     });
   });
+
+  group('Avisos', () {
+    Map<String, dynamic> fila(int id, String accio, {bool llegida = false, String? motiu}) => {
+          'id': id, 'element_id': 'e$id', 'accio': accio, 'motiu': motiu, 'llegida': llegida,
+          'created_at': '2026-11-14T09:00:00Z',
+          'element': {
+            'text_lliure': null, 'partida_id': 89,
+            'variable': {'nom': 'Alqueria'}, 'partida': {'nom': 'Séquia de Picanya'},
+          },
+        };
+
+    test('llig l\'element i la partida', () {
+      final a = Avis.fromJson(fila(1, 'revisat', motiu: 'no_trobat'));
+      expect([a.titol, a.partida, a.partidaId, a.motiu], ['Alqueria', 'Séquia de Picanya', 89, 'no_trobat']);
+      expect(a.dePartida, isTrue);
+      expect(Avis.fromJson(fila(2, 'validat')).dePartida, isFalse);
+      expect(Avis.fromJson({...fila(3, 'validat'), 'element': null}).titol, '', reason: 'sense element visible no peta');
+    });
+
+    test('compta els no llegits i els marca', () async {
+      final api = _ApiAvisosFalsa([fila(1, 'nova_aportacio'), fila(2, 'validat', llegida: true), fila(3, 'revisat')]);
+      final avisos = Avisos(api);
+      await avisos.carregar();
+      expect(avisos.noLlegits, 2);
+      await avisos.marcarLlegits(avisos.items);
+      expect(api.marcats, [1, 3]);
+      expect(avisos.noLlegits, 0);
+    });
+
+    test('sense xarxa es queda amb el que tenia', () async {
+      final api = _ApiAvisosFalsa([fila(1, 'nova_aportacio')]);
+      final avisos = Avisos(api);
+      await avisos.carregar();
+      api.error = true;
+      await avisos.carregar();
+      expect(avisos.noLlegits, 1);
+    });
+  });
+}
+
+class _ApiAvisosFalsa implements ApiAvisos {
+  _ApiAvisosFalsa(this.files);
+
+  final List<Map<String, dynamic>> files;
+  final marcats = <int>[];
+  bool error = false;
+
+  @override
+  Future<List<Map<String, dynamic>>> avisos() async {
+    if (error) throw Exception('sense xarxa');
+    return [for (final f in files) {...f, 'llegida': (f['llegida'] as bool) || marcats.contains(f['id'])}];
+  }
+
+  @override
+  Future<void> marcarLlegits(List<int> ids) async => marcats.addAll(ids);
 }

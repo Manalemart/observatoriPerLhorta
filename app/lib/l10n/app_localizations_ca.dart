@@ -403,4 +403,45 @@ class LCa extends L {
   String revisioRebutjada(String motiu) {
     return 'No s\'ha pogut registrar: $motiu';
   }
+
+  @override
+  String get revisioFotoOpcional => 'Foto de com està hui (opcional)';
+
+  @override
+  String get revisioTreureFoto => 'Lleva la foto';
+
+  @override
+  String get revisioLlicenciaFotos =>
+      'Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.';
+
+  @override
+  String get avisosTitol => 'Avisos';
+
+  @override
+  String get avisosBuit => 'No tens cap avís.';
+
+  @override
+  String get avisosMarcarTots => 'Marca-ho tot com a llegit';
+
+  @override
+  String get avisValidat => 'Validada';
+
+  @override
+  String get avisRebutjat => 'Rebutjada';
+
+  @override
+  String get avisReobert => 'Torna a estar pendent';
+
+  @override
+  String get avisNovaAportacio => 'Aportació nova a la teua partida';
+
+  @override
+  String get avisRevisat => 'Revisat per una altra persona';
+
+  @override
+  String get avisValidarAWeb =>
+      'Per validar: des del panell de validació de la web.';
+
+  @override
+  String get avisNoTrobat => 'No s\'ha trobat: donat de baixa';
 }

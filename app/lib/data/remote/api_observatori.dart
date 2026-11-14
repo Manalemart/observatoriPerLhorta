@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../services/avisos.dart';
 import '../models.dart';
 
 /// Rechazo definitivo del servidor (fuera del ámbito, geometría no válida...): reintentar
@@ -15,10 +16,10 @@ class RebuigServidor implements Exception {
 abstract class ApiAportacions {
   Future<void> inserirElement(Map<String, dynamic> fila);
   Future<void> pujarFoto(String elementId, int index, Uint8List bytes);
-  Future<void> revisarElement(String elementId, String resultat, {String? nota});
+  Future<void> revisarElement(String elementId, String resultat, {String? nota, List<Uint8List> fotos, String? id});
 }
 
-class ApiObservatori implements ApiAportacions {
+class ApiObservatori implements ApiAportacions, ApiAvisos {
   ApiObservatori(this._client);
 
   final SupabaseClient _client;
@@ -72,6 +73,20 @@ class ApiObservatori implements ApiAportacions {
     );
   }
 
+  @override
+  Future<List<Map<String, dynamic>>> avisos() async {
+    final r = await _client
+        .from('notificacions')
+        .select('id, element_id, accio, motiu, llegida, created_at, '
+            'element:elements(text_lliure, partida_id, variable:variables(nom), partida:partides(nom))')
+        .order('created_at', ascending: false)
+        .limit(30);
+    return r.cast<Map<String, dynamic>>();
+  }
+
+  @override
+  Future<void> marcarLlegits(List<int> ids) => _client.from('notificacions').update({'llegida': true}).inFilter('id', ids);
+
   Future<List<AportacioRemota>> lesMeues() async {
     final files = await _client
         .from('elements')
@@ -93,13 +108,30 @@ class ApiObservatori implements ApiAportacions {
       await _client.rpc('full_de_camp', params: {'p_partida_id': partidaId}) as Map<String, dynamic>;
 
   /// [resultat]: igual, canviat o no_trobat. Solo el padrí de la partida (o la coordinación).
+  ///
+  /// [id]: el de la cola del móvil. Si la respuesta se pierde y se reintenta, el servidor
+  /// reconoce que ya llegó. Las [fotos] se suben primero y la revisión las enlaza.
   @override
-  Future<void> revisarElement(String elementId, String resultat, {String? nota}) async {
+  Future<void> revisarElement(String elementId, String resultat,
+      {String? nota, List<Uint8List> fotos = const [], String? id}) async {
+    final rutes = <String>[];
+    for (var i = 0; i < fotos.length; i++) {
+      final ruta = '$_uid/$elementId/rev-${id ?? DateTime.now().millisecondsSinceEpoch}-$i.jpg';
+      try {
+        await _client.storage.from('fotos').uploadBinary(ruta, fotos[i], fileOptions: const FileOptions(contentType: 'image/jpeg'));
+      } on StorageException catch (e) {
+        // Ya subida en un intento anterior
+        if (e.statusCode != '409' && e.error != 'Duplicate') rethrow;
+      }
+      rutes.add(ruta);
+    }
     try {
       await _client.rpc('revisar_element', params: {
         'p_element_id': elementId,
         'p_resultat': resultat,
         'p_nota': (nota == null || nota.trim().isEmpty) ? null : nota.trim(),
+        'p_fotos': rutes.isEmpty ? null : rutes,
+        'p_id': id,
       });
     } on PostgrestException catch (e) {
       // Sin permiso, elemento ya dado de baja o inexistente: reintentar no lo arreglará

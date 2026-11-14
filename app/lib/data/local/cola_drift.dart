@@ -41,24 +41,31 @@ class RevisionsCola extends Table {   // v3
   Set<Column> get primaryKey => {id};
 }
 
+class FotosRevisioCola extends Table {   // v4
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get revisioId => text().references(RevisionsCola, #id)();
+  BlobColumn get bytes => blob()();
+}
+
 class FotosCola extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get aportacioId => text().references(AportacionsCola, #id)();
   BlobColumn get bytes => blob()();
 }
 
-@DriftDatabase(tables: [AportacionsCola, FotosCola, RevisionsCola])
+@DriftDatabase(tables: [AportacionsCola, FotosCola, RevisionsCola, FotosRevisioCola])
 class BdCola extends _$BdCola {
   BdCola(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, de, a) async {
           if (de < 2) await m.addColumn(aportacionsCola, aportacionsCola.substitueixId);
           if (de < 3) await m.createTable(revisionsCola);
+          if (de < 4) await m.createTable(fotosRevisioCola);
         },
       );
 }
@@ -135,25 +142,35 @@ class ColaDrift implements ColaAportacions {
   @override
   Future<List<RevisioLocal>> revisions() async {
     final files = await (_bd.select(_bd.revisionsCola)..orderBy([(t) => OrderingTerm.asc(t.creadaEn)])).get();
+    final fotos = await (_bd.select(_bd.fotosRevisioCola)..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
     return [
       for (final f in files)
         RevisioLocal(
           id: f.id, elementId: f.elementId, partidaId: f.partidaId, resultat: f.resultat,
           creadaEn: f.creadaEn, nota: f.nota, error: f.error,
+          fotos: [for (final x in fotos) if (x.revisioId == f.id) x.bytes],
         ),
     ];
   }
 
   @override
-  Future<void> afegirRevisio(RevisioLocal r) => _bd.into(_bd.revisionsCola).insert(RevisionsColaCompanion.insert(
-        id: r.id, elementId: r.elementId, partidaId: r.partidaId, resultat: r.resultat,
-        creadaEn: r.creadaEn, nota: Value(r.nota),
-      ));
+  Future<void> afegirRevisio(RevisioLocal r) => _bd.transaction(() async {
+        await _bd.into(_bd.revisionsCola).insert(RevisionsColaCompanion.insert(
+              id: r.id, elementId: r.elementId, partidaId: r.partidaId, resultat: r.resultat,
+              creadaEn: r.creadaEn, nota: Value(r.nota),
+            ));
+        for (final f in r.fotos) {
+          await _bd.into(_bd.fotosRevisioCola).insert(FotosRevisioColaCompanion.insert(revisioId: r.id, bytes: f));
+        }
+      });
 
   @override
   Future<void> errorRevisio(String id, String missatge) =>
       (_bd.update(_bd.revisionsCola)..where((t) => t.id.equals(id))).write(RevisionsColaCompanion(error: Value(missatge)));
 
   @override
-  Future<void> esborrarRevisio(String id) => (_bd.delete(_bd.revisionsCola)..where((t) => t.id.equals(id))).go();
+  Future<void> esborrarRevisio(String id) => _bd.transaction(() async {
+        await (_bd.delete(_bd.fotosRevisioCola)..where((t) => t.revisioId.equals(id))).go();
+        await (_bd.delete(_bd.revisionsCola)..where((t) => t.id.equals(id))).go();
+      });
 }

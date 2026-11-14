@@ -65,7 +65,7 @@ class ColaMemoria implements ColaAportacions {
     final r = _revisions[id]!;
     _revisions[id] = RevisioLocal(
       id: r.id, elementId: r.elementId, partidaId: r.partidaId, resultat: r.resultat,
-      creadaEn: r.creadaEn, nota: r.nota, error: missatge,
+      creadaEn: r.creadaEn, nota: r.nota, error: missatge, fotos: r.fotos,
     );
   }
 

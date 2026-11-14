@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +14,7 @@ import '../data/models.dart';
 import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
+import '../services/fotos.dart';
 import '../services/paquets.dart';
 import '../services/sigpac.dart';
 import '../services/sincronitzacio.dart';
@@ -137,7 +141,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
     _obrirFitxa(millor);
   }
 
-  Future<void> _revisar(ElementRevisio e, String resultat, String nota) async {
+  Future<void> _revisar(ElementRevisio e, String resultat, String nota, List<Uint8List> fotos) async {
     final t = L.of(context);
     final avis = ScaffoldMessenger.of(context);
     final router = GoRouter.of(context);
@@ -150,6 +154,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
       resultat: resultat,
       creadaEn: DateTime.now(),
       nota: nota.trim().isEmpty ? null : nota.trim(),
+      fotos: fotos,
     );
     try {
       await sinc.revisar(r);
@@ -184,9 +189,9 @@ class _RevisioScreenState extends State<RevisioScreen> {
         element: e,
         pendent: pendent,
         potRevisar: p.esPadri && e.revisable && !pendent,
-        onResultat: (resultat, nota) async {
+        onResultat: (resultat, nota, fotos) async {
           Navigator.of(ctx).pop();
-          await _revisar(e, resultat, nota);
+          await _revisar(e, resultat, nota, fotos);
         },
       ),
     );
@@ -412,7 +417,7 @@ class _FitxaRevisio extends StatefulWidget {
   final ElementRevisio element;
   final bool pendent;
   final bool potRevisar;
-  final Future<void> Function(String resultat, String nota) onResultat;
+  final Future<void> Function(String resultat, String nota, List<Uint8List> fotos) onResultat;
 
   @override
   State<_FitxaRevisio> createState() => _FitxaRevisioState();
@@ -421,6 +426,21 @@ class _FitxaRevisio extends StatefulWidget {
 class _FitxaRevisioState extends State<_FitxaRevisio> {
   final _nota = TextEditingController();
   bool _enviant = false;
+  final _fotos = <Uint8List>[];
+  static const _maxFotos = 3;
+
+  Future<void> _afegirFoto(ImageSource origen) async {
+    final t = L.of(context);
+    final avis = ScaffoldMessenger.of(context);
+    try {
+      final f = await ImagePicker().pickImage(source: origen);
+      if (f == null) return;
+      final foto = await prepararFoto(await f.readAsBytes());
+      if (mounted) setState(() => _fotos.add(foto));
+    } catch (_) {
+      avis.showSnackBar(SnackBar(content: Text(t.comuError)));
+    }
+  }
 
   @override
   void dispose() {
@@ -444,7 +464,7 @@ class _FitxaRevisioState extends State<_FitxaRevisio> {
       if (segur != true) return;
     }
     setState(() => _enviant = true);
-    await widget.onResultat(resultat, _nota.text);
+    await widget.onResultat(resultat, _nota.text, List.of(_fotos));
   }
 
   @override
@@ -480,6 +500,50 @@ class _FitxaRevisioState extends State<_FitxaRevisio> {
               maxLines: 2,
               decoration: InputDecoration(labelText: t.revisioNota),
             ),
+            const SizedBox(height: 8),
+            // Una foto de cómo está hoy: se queda en el elemento (y en el historial)
+            Row(children: [
+              IconButton.filledTonal(
+                tooltip: t.aportarFerFoto,
+                onPressed: _enviant || _fotos.length >= _maxFotos ? null : () => _afegirFoto(ImageSource.camera),
+                icon: const Icon(Icons.photo_camera),
+              ),
+              IconButton(
+                tooltip: t.aportarGaleria,
+                onPressed: _enviant || _fotos.length >= _maxFotos ? null : () => _afegirFoto(ImageSource.gallery),
+                icon: const Icon(Icons.photo_library_outlined),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: SizedBox(
+                  height: 56,
+                  child: _fotos.isEmpty
+                      ? Align(alignment: Alignment.centerLeft, child: Text(t.revisioFotoOpcional, style: Theme.of(context).textTheme.bodySmall))
+                      : ListView(scrollDirection: Axis.horizontal, children: [
+                          for (var i = 0; i < _fotos.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: Stack(children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Image.memory(_fotos[i], width: 56, height: 56, fit: BoxFit.cover),
+                                ),
+                                Positioned(
+                                  top: -6, right: -6,
+                                  child: IconButton(
+                                    tooltip: t.revisioTreureFoto,
+                                    visualDensity: VisualDensity.compact,
+                                    onPressed: _enviant ? null : () => setState(() => _fotos.removeAt(i)),
+                                    icon: const Icon(Icons.cancel, size: 20, color: Colors.white, shadows: [Shadow(blurRadius: 3)]),
+                                  ),
+                                ),
+                              ]),
+                            ),
+                        ]),
+                ),
+              ),
+            ]),
+            if (_fotos.isNotEmpty) Text(t.revisioLlicenciaFotos, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 12),
             FilledButton.icon(
               style: FilledButton.styleFrom(backgroundColor: _verdIgual, minimumSize: const Size.fromHeight(52)),

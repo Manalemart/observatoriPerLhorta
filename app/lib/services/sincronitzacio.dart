@@ -75,7 +75,7 @@ class Sincronitzacio extends ChangeNotifier {
       for (final r in await cola.revisions()) {
         if (r.error != null) continue;
         try {
-          await api.revisarElement(r.elementId, r.resultat, nota: r.nota);
+          await api.revisarElement(r.elementId, r.resultat, nota: r.nota, fotos: r.fotos, id: r.id);
           await cola.esborrarRevisio(r.id);
         } on RebuigServidor catch (e) {
           await cola.errorRevisio(r.id, e.missatge);
