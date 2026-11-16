@@ -8,6 +8,7 @@ import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
 import '../services/paquets.dart';
+import 'adaptatiu.dart';
 
 /// Las partidas que apadrina quien ha entrado: desde aquí se revisan en el campo y se
 /// preparan para trabajar sin cobertura.
@@ -54,18 +55,14 @@ class _PartidesScreenState extends State<PartidesScreen> {
       if (mounted) setState(() => _preparant = null);
     }
     if (!mounted) return;
-    final segur = await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: Text(p.nom),
-        content: Text(t.paquetConfirmar(prep.teseles.length, _mida(prep.bytesEstimats))),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: Text(t.comuCancelar)),
-          FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(t.paquetBaixar)),
-        ],
-      ),
+    final segur = await confirmar(
+      context,
+      titol: p.nom,
+      text: t.paquetConfirmar(prep.teseles.length, _mida(prep.bytesEstimats)),
+      cancelar: t.comuCancelar,
+      acceptar: t.paquetBaixar,
     );
-    if (segur != true) return;
+    if (!segur) return;
     try {
       await paquets.descarregar(prep);
     } on TeselesSenseBaixar catch (e) {
@@ -78,18 +75,15 @@ class _PartidesScreenState extends State<PartidesScreen> {
   Future<void> _esborrar(PartidaApadrinada p) async {
     final t = L.of(context);
     final paquets = context.read<Paquets>();
-    final segur = await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: Text(p.nom),
-        content: Text(t.paquetConfirmarEsborrar),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: Text(t.comuCancelar)),
-          FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(t.paquetEsborrar)),
-        ],
-      ),
+    final segur = await confirmar(
+      context,
+      titol: p.nom,
+      text: t.paquetConfirmarEsborrar,
+      cancelar: t.comuCancelar,
+      acceptar: t.paquetEsborrar,
+      destructiu: true,
     );
-    if (segur == true) await paquets.esborrar(p.id);
+    if (segur) await paquets.esborrar(p.id);
   }
 
   @override

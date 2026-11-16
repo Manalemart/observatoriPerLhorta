@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'l10n/app_localizations.dart';
 import 'services/avisos.dart';
 import 'services/sessio.dart';
 import 'services/sincronitzacio.dart';
+import 'ui/adaptatiu.dart';
 import 'ui/aportacions_screen.dart';
 import 'ui/aportar_screen.dart';
 import 'ui/avisos_screen.dart';
@@ -81,47 +83,92 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
 }
 
 /// Barra de navegación inferior con las cuatro secciones.
-/// Toda la navegación principal pasa por aquí: en iOS se cambiaría solo este widget.
+/// Toda la navegación principal pasa por aquí: NavigationBar de Material en Android
+/// y barra de pestañas de Apple (CupertinoTabBar) en iOS.
 class _Seccions extends StatelessWidget {
   const _Seccions({required this.shell});
 
   final StatefulNavigationShell shell;
 
+  // Tocar la sección en la que ya estás vuelve a su pantalla principal
+  void _anar(int i) => shell.goBranch(i, initialLocation: i == shell.currentIndex);
+
   @override
   Widget build(BuildContext context) {
-    final t = L.of(context);
     final noLlegits = context.watch<Avisos>().noLlegits;
     final pendents = context.watch<Sincronitzacio>().pendents;
-    Widget ambInsignia(IconData icona, int n) =>
-        Badge(isLabelVisible: n > 0, label: Text('$n'), child: Icon(icona));
     return Scaffold(
       body: shell,
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant))),
-        child: NavigationBar(
-          selectedIndex: shell.currentIndex,
-          // Tocar la sección en la que ya estás vuelve a su pantalla principal
-          onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-          destinations: [
-            NavigationDestination(icon: const Icon(Icons.map_outlined), selectedIcon: const Icon(Icons.map), label: t.navMapa),
-            NavigationDestination(
-              icon: const Icon(Icons.fact_check_outlined),
-              selectedIcon: const Icon(Icons.fact_check),
-              label: t.navPartides,
-            ),
-            NavigationDestination(
-              icon: ambInsignia(Icons.notifications_outlined, noLlegits),
-              selectedIcon: ambInsignia(Icons.notifications, noLlegits),
-              label: t.navAvisos,
-            ),
-            NavigationDestination(
-              icon: ambInsignia(Icons.inventory_2_outlined, pendents),
-              selectedIcon: ambInsignia(Icons.inventory_2, pendents),
-              label: t.navLesMeues,
-            ),
-          ],
-        ),
+      bottomNavigationBar: esApple(context)
+          ? _barraApple(context, noLlegits, pendents)
+          : _barraMaterial(context, noLlegits, pendents),
+    );
+  }
+
+  static Widget _ambInsignia(IconData icona, int n) =>
+      Badge(isLabelVisible: n > 0, label: Text('$n'), child: Icon(icona));
+
+  Widget _barraMaterial(BuildContext context, int noLlegits, int pendents) {
+    final t = L.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant))),
+      child: NavigationBar(
+        selectedIndex: shell.currentIndex,
+        onDestinationSelected: _anar,
+        destinations: [
+          NavigationDestination(icon: const Icon(Icons.map_outlined), selectedIcon: const Icon(Icons.map), label: t.navMapa),
+          NavigationDestination(
+            icon: const Icon(Icons.fact_check_outlined),
+            selectedIcon: const Icon(Icons.fact_check),
+            label: t.navPartides,
+          ),
+          NavigationDestination(
+            icon: _ambInsignia(Icons.notifications_outlined, noLlegits),
+            selectedIcon: _ambInsignia(Icons.notifications, noLlegits),
+            label: t.navAvisos,
+          ),
+          NavigationDestination(
+            icon: _ambInsignia(Icons.inventory_2_outlined, pendents),
+            selectedIcon: _ambInsignia(Icons.inventory_2, pendents),
+            label: t.navLesMeues,
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _barraApple(BuildContext context, int noLlegits, int pendents) {
+    final t = L.of(context);
+    final c = Theme.of(context).colorScheme;
+    return CupertinoTabBar(
+      currentIndex: shell.currentIndex,
+      onTap: _anar,
+      activeColor: c.primary,
+      inactiveColor: c.onSurfaceVariant,
+      backgroundColor: c.surface.withValues(alpha: 0.94),
+      border: Border(top: BorderSide(color: c.outlineVariant, width: 0.5)),
+      items: [
+        BottomNavigationBarItem(
+          icon: const Icon(CupertinoIcons.map),
+          activeIcon: const Icon(CupertinoIcons.map_fill),
+          label: t.navMapa,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(CupertinoIcons.checkmark_seal),
+          activeIcon: const Icon(CupertinoIcons.checkmark_seal_fill),
+          label: t.navPartides,
+        ),
+        BottomNavigationBarItem(
+          icon: _ambInsignia(CupertinoIcons.bell, noLlegits),
+          activeIcon: _ambInsignia(CupertinoIcons.bell_fill, noLlegits),
+          label: t.navAvisos,
+        ),
+        BottomNavigationBarItem(
+          icon: _ambInsignia(CupertinoIcons.archivebox, pendents),
+          activeIcon: _ambInsignia(CupertinoIcons.archivebox_fill, pendents),
+          label: t.navLesMeues,
+        ),
+      ],
     );
   }
 }

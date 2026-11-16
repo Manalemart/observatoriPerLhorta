@@ -17,6 +17,7 @@ import '../services/paquets.dart';
 import '../services/sigpac.dart';
 import '../services/sincronitzacio.dart';
 import 'accio_revisio.dart';
+import 'adaptatiu.dart';
 import 'capes_mapa.dart';
 
 const _verd = Color(0xFF215C00);
@@ -426,17 +427,14 @@ class _FitxaRevisioState extends State<_FitxaRevisio> {
   Future<void> _fer(String resultat) async {
     if (resultat == 'no_trobat') {
       final t = L.of(context);
-      final segur = await showDialog<bool>(
-        context: context,
-        builder: (c) => AlertDialog(
-          content: Text(t.revisioConfirmarNoTrobat),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(c, false), child: Text(t.comuCancelar)),
-            FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(t.revisioNoTrobat)),
-          ],
-        ),
+      final segur = await confirmar(
+        context,
+        text: t.revisioConfirmarNoTrobat,
+        cancelar: t.comuCancelar,
+        acceptar: t.revisioNoTrobat,
+        destructiu: true,
       );
-      if (segur != true) return;
+      if (!segur) return;
     }
     setState(() => _enviant = true);
     await widget.onResultat(resultat, _nota.text, List.of(_fotos));
