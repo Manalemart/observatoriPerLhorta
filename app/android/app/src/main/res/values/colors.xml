@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- El mismo fondo que la app (surface del tema, semilla #4A7016): el paso a Flutter no se nota -->
+    <color name="splash_fons">#F9FAEF</color>
+</resources>
