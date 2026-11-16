@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../core/tema_app.dart';
 import '../data/models.dart';
 import '../data/remote/api_observatori.dart';
 import '../l10n/app_localizations.dart';
@@ -48,7 +49,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
     final enviades = _enviades ?? const <AportacioRemota>[];
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.mapaAportacions)),
+      appBar: AppBar(title: TitolBarra(t.mapaAportacions)),
       body: RefreshIndicator(
         onRefresh: () async {
           await sinc.enviar();
@@ -58,7 +59,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
           children: [
             if (perEnviar.isNotEmpty) ...[
               ListTile(
-                title: Text(t.llistaPerEnviar, style: Theme.of(context).textTheme.titleSmall),
+                title: EtiquetaSeccio(t.llistaPerEnviar, padding: EdgeInsets.zero),
                 trailing: TextButton(
                   onPressed: sinc.enviant
                       ? null
@@ -94,7 +95,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
                 ),
               const Divider(),
             ],
-            ListTile(title: Text(t.llistaEnviades, style: Theme.of(context).textTheme.titleSmall)),
+            ListTile(title: EtiquetaSeccio(t.llistaEnviades, padding: EdgeInsets.zero)),
             if (_errorEnviades) ListTile(title: Text(t.llistaSenseConnexio)),
             if (!_errorEnviades && _enviades != null && enviades.isEmpty && perEnviar.isEmpty)
               ListTile(title: Text(t.llistaBuit)),

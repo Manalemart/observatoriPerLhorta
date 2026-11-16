@@ -75,6 +75,33 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/simbol.png
+    - assets/marca.png
+    - assets/marca_blanca.png
+    - assets/fonts/OFL-Montserrat.txt
+    - assets/fonts/OFL-SourceSerif4.txt
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-400.ttf
+          weight: 400
+        - asset: assets/fonts/Montserrat-500.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat-600.ttf
+          weight: 600
+        - asset: assets/fonts/Montserrat-700.ttf
+          weight: 700
+        - asset: assets/fonts/Montserrat-800.ttf
+          weight: 800
+    - family: SourceSerif4
+      fonts:
+        - asset: assets/fonts/SourceSerif4-400.ttf
+          weight: 400
+        - asset: assets/fonts/SourceSerif4-600.ttf
+          weight: 600
+        - asset: assets/fonts/SourceSerif4-700.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

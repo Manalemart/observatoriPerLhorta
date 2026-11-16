@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,6 +21,12 @@ import 'ui/capes_mapa.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Licencias de las fuentes (OFL), en la pantalla de licencias
+  LicenseRegistry.addLicense(() async* {
+    for (final (nom, fitxer) in [('Montserrat', 'OFL-Montserrat.txt'), ('Source Serif 4', 'OFL-SourceSerif4.txt')]) {
+      yield LicenseEntryWithLineBreaks([nom], await rootBundle.loadString('assets/fonts/$fitxer'));
+    }
+  });
   await Supabase.initialize(url: Config.supabaseUrl, publishableKey: Config.supabaseKey);
   final client = Supabase.instance.client;
 

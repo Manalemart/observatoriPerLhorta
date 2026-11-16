@@ -20,6 +20,7 @@ class Sessio extends ChangeNotifier {
 
   bool get entrada => _client.auth.currentUser != null;
   String? get alies => _alies;
+  String? get email => _client.auth.currentUser?.email;
 
   /// Sin red no se puede comprobar: no se bloquea a quien ya tenía sesión.
   bool get necessitaAlies => entrada && _aliesCarregat && (_alies == null || _alies!.isEmpty);

@@ -248,5 +248,56 @@
   "avisNoTrobat": "No s'ha trobat: donat de baixa",
   "avisosResumCorreu": "Resum diari per correu",
   "avisosResumCorreuDetall": "Un correu al dia amb els avisos nous que no hages llegit",
-  "avisosResumError": "No s'ha pogut desar. Torna-ho a provar amb connexió."
+  "avisosResumError": "No s'ha pogut desar. Torna-ho a provar amb connexió.",
+  "navMapa": "Mapa",
+  "navPartides": "Partides",
+  "navAvisos": "Avisos",
+  "navLesMeues": "Les meues",
+  "perfilTitol": "El meu perfil",
+  "perfilLlicencies": "Llicències",
+  "revisioSubstitueixNom": "Substitueix «{nom}»",
+  "@revisioSubstitueixNom": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "fitxaPerRevisar": "Inventari 2018 · per revisar",
+  "fitxaRevisat": "Revisat el {data}",
+  "@fitxaRevisat": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "fitxaAportat": "Aportat el {data}",
+  "@fitxaAportat": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "fitxaEsEncara": "És encara així?",
+  "fitxaEsEncaraPadri": "Si estàs davant, confirma-ho o conta què ha canviat.",
+  "fitxaSiIgual": "Sí, igual",
+  "fitxaHaCanviatPregunta": "Ha canviat?",
+  "fitxaAvisansDetall": "Fes una aportació nova amb com està hui. La validarà el padrí o la padrina de la partida.",
+  "fitxaObrirPartida": "Obre la revisió de la partida",
+  "comuContinua": "Continua",
+  "comuEnrere": "Enrere",
+  "aportarPas": "Pas {n} de 3",
+  "@aportarPas": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "aportarPasQue": "Què has vist?",
+  "aportarPasOn": "On és?",
+  "aportarPasDetalls": "Foto i detalls",
+  "aportarFotosTitol": "Fotos (opcionals)"
 }

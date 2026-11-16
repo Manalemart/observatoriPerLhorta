@@ -7,10 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 import '../core/tema_app.dart';
-import '../data/models.dart';
 import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
@@ -18,6 +16,7 @@ import '../services/fotos.dart';
 import '../services/paquets.dart';
 import '../services/sigpac.dart';
 import '../services/sincronitzacio.dart';
+import 'accio_revisio.dart';
 import 'capes_mapa.dart';
 
 const _verd = Color(0xFF215C00);
@@ -142,40 +141,16 @@ class _RevisioScreenState extends State<RevisioScreen> {
   }
 
   Future<void> _revisar(ElementRevisio e, String resultat, String nota, List<Uint8List> fotos) async {
-    final t = L.of(context);
-    final avis = ScaffoldMessenger.of(context);
-    final router = GoRouter.of(context);
-    final sinc = context.read<Sincronitzacio>();
-    // Primero al móvil: en el campo puede no haber cobertura. Se envía en cuanto la haya
-    final r = RevisioLocal(
-      id: const Uuid().v4(),
+    await enviarRevisio(
+      context,
       elementId: e.id,
       partidaId: widget.partidaId,
       resultat: resultat,
-      creadaEn: DateTime.now(),
-      nota: nota.trim().isEmpty ? null : nota.trim(),
+      nota: nota,
       fotos: fotos,
+      substitut: AportacioSubstitut(substitueixId: e.id, numero: e.numero, variableId: e.variableId, punt: e.etiqueta),
     );
-    try {
-      await sinc.revisar(r);
-    } catch (_) {
-      avis.showSnackBar(SnackBar(content: Text(t.revisioError)));
-      return;
-    }
-    final queda = sinc.revisions.where((x) => x.id == r.id).firstOrNull;
-    if (queda?.error != null) {
-      // El servidor la ha rechazado (p. ej. ya no es padrí): no tiene sentido guardarla
-      await sinc.esborrarRevisio(r.id);
-      avis.showSnackBar(SnackBar(content: Text(t.revisioRebutjada(queda!.error!))));
-      return;
-    }
-    avis.showSnackBar(SnackBar(content: Text(queda == null ? t.revisioFet : t.revisioGuardadaMobil)));
-    if (resultat == 'canviat') {
-      await router.push('/aportar', extra: AportacioSubstitut(
-        substitueixId: e.id, numero: e.numero, variableId: e.variableId, punt: e.etiqueta,
-      ));
-    }
-    await _carregar();
+    if (mounted) await _carregar();
   }
 
   void _obrirFitxa(ElementRevisio e) {
@@ -204,7 +179,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
     final p = _vista;
     if (p == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(t.revisioTitol)),
+        appBar: AppBar(title: TitolBarra(t.revisioTitol)),
         body: Center(
           child: _error == null
               ? const CircularProgressIndicator()

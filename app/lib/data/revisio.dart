@@ -190,10 +190,13 @@ class PartidaRevisio {
 
 /// Para abrir el formulario de aportar desde «Ha canviat»: el nuevo sustituirá al antiguo.
 class AportacioSubstitut {
-  const AportacioSubstitut({required this.substitueixId, required this.numero, required this.variableId, required this.punt});
+  const AportacioSubstitut({required this.substitueixId, this.numero, required this.variableId, required this.punt, this.nom});
 
   final String substitueixId;
-  final int numero;
+  /// Número del Full de revisió (desde la revisión de la partida); desde el mapa no hay
+  final int? numero;
+  /// Nombre del elemento (desde el mapa)
+  final String? nom;
   final int variableId;
   final LatLng punt;
 }

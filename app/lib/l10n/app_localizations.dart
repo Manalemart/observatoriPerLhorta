@@ -848,6 +848,144 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'No s\'ha pogut desar. Torna-ho a provar amb connexió.'**
   String get avisosResumError;
+
+  /// No description provided for @navMapa.
+  ///
+  /// In ca, this message translates to:
+  /// **'Mapa'**
+  String get navMapa;
+
+  /// No description provided for @navPartides.
+  ///
+  /// In ca, this message translates to:
+  /// **'Partides'**
+  String get navPartides;
+
+  /// No description provided for @navAvisos.
+  ///
+  /// In ca, this message translates to:
+  /// **'Avisos'**
+  String get navAvisos;
+
+  /// No description provided for @navLesMeues.
+  ///
+  /// In ca, this message translates to:
+  /// **'Les meues'**
+  String get navLesMeues;
+
+  /// No description provided for @perfilTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'El meu perfil'**
+  String get perfilTitol;
+
+  /// No description provided for @perfilLlicencies.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llicències'**
+  String get perfilLlicencies;
+
+  /// No description provided for @revisioSubstitueixNom.
+  ///
+  /// In ca, this message translates to:
+  /// **'Substitueix «{nom}»'**
+  String revisioSubstitueixNom(String nom);
+
+  /// No description provided for @fitxaPerRevisar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Inventari 2018 · per revisar'**
+  String get fitxaPerRevisar;
+
+  /// No description provided for @fitxaRevisat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisat el {data}'**
+  String fitxaRevisat(String data);
+
+  /// No description provided for @fitxaAportat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aportat el {data}'**
+  String fitxaAportat(String data);
+
+  /// No description provided for @fitxaEsEncara.
+  ///
+  /// In ca, this message translates to:
+  /// **'És encara així?'**
+  String get fitxaEsEncara;
+
+  /// No description provided for @fitxaEsEncaraPadri.
+  ///
+  /// In ca, this message translates to:
+  /// **'Si estàs davant, confirma-ho o conta què ha canviat.'**
+  String get fitxaEsEncaraPadri;
+
+  /// No description provided for @fitxaSiIgual.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sí, igual'**
+  String get fitxaSiIgual;
+
+  /// No description provided for @fitxaHaCanviatPregunta.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ha canviat?'**
+  String get fitxaHaCanviatPregunta;
+
+  /// No description provided for @fitxaAvisansDetall.
+  ///
+  /// In ca, this message translates to:
+  /// **'Fes una aportació nova amb com està hui. La validarà el padrí o la padrina de la partida.'**
+  String get fitxaAvisansDetall;
+
+  /// No description provided for @fitxaObrirPartida.
+  ///
+  /// In ca, this message translates to:
+  /// **'Obre la revisió de la partida'**
+  String get fitxaObrirPartida;
+
+  /// No description provided for @comuContinua.
+  ///
+  /// In ca, this message translates to:
+  /// **'Continua'**
+  String get comuContinua;
+
+  /// No description provided for @comuEnrere.
+  ///
+  /// In ca, this message translates to:
+  /// **'Enrere'**
+  String get comuEnrere;
+
+  /// No description provided for @aportarPas.
+  ///
+  /// In ca, this message translates to:
+  /// **'Pas {n} de 3'**
+  String aportarPas(int n);
+
+  /// No description provided for @aportarPasQue.
+  ///
+  /// In ca, this message translates to:
+  /// **'Què has vist?'**
+  String get aportarPasQue;
+
+  /// No description provided for @aportarPasOn.
+  ///
+  /// In ca, this message translates to:
+  /// **'On és?'**
+  String get aportarPasOn;
+
+  /// No description provided for @aportarPasDetalls.
+  ///
+  /// In ca, this message translates to:
+  /// **'Foto i detalls'**
+  String get aportarPasDetalls;
+
+  /// No description provided for @aportarFotosTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Fotos (opcionals)'**
+  String get aportarFotosTitol;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

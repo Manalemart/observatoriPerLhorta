@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../core/tema_app.dart';
 import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
@@ -96,7 +97,7 @@ class _PartidesScreenState extends State<PartidesScreen> {
     final t = L.of(context);
     final ha = NumberFormat.decimalPattern('ca');
     return Scaffold(
-      appBar: AppBar(title: Text(t.partidesTitol)),
+      appBar: AppBar(title: TitolBarra(t.partidesTitol)),
       body: FutureBuilder<List<PartidaApadrinada>>(
         future: _partides,
         builder: (context, s) {
@@ -115,7 +116,7 @@ class _PartidesScreenState extends State<PartidesScreen> {
           }
           final llista = s.data!;
           if (llista.isEmpty) {
-            return Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(t.partidesBuit, textAlign: TextAlign.center)));
+            return _Buit(icona: Icons.fact_check_outlined, text: t.partidesBuit);
           }
           return RefreshIndicator(
             onRefresh: () async {
@@ -226,4 +227,24 @@ class _EstatPaquet extends StatelessWidget {
       ]),
     );
   }
+}
+
+/// Pantalla vacía: icono y una explicación con la serif.
+class _Buit extends StatelessWidget {
+  const _Buit({required this.icona, required this.text});
+
+  final IconData icona;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Icon(icona, size: 48, color: Theme.of(context).colorScheme.outline),
+            const SizedBox(height: 16),
+            Text(text, textAlign: TextAlign.center, style: estilProsa(context)),
+          ]),
+        ),
+      );
 }

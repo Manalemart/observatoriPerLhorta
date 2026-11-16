@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
+import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
 import '../services/sessio.dart';
 
@@ -72,21 +73,30 @@ class _EntradaScreenState extends State<EntradaScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // El texto del logo es oscuro: en modo oscuro no se leería sin fondo
+                  Image.asset('assets/simbol.png', height: 96, excludeFromSemantics: true),
+                  const SizedBox(height: 8),
                   Center(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Image.asset('assets/logo.png', height: 48),
-                      ),
+                    child: Image.asset(
+                      Theme.of(context).brightness == Brightness.dark ? 'assets/marca_blanca.png' : 'assets/marca.png',
+                      width: 220,
+                      semanticLabel: "L'observatori ciutadà de l'horta",
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  Text(t.entradaTitol, style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 28),
+                  Text(
+                    t.entradaTitol.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text(_codiEnviat ? t.entradaCodiEnviat(_correu.text.trim()) : t.entradaExplicacio),
-                  const SizedBox(height: 16),
+                  Text(
+                    _codiEnviat ? t.entradaCodiEnviat(_correu.text.trim()) : t.entradaExplicacio,
+                    style: estilProsa(context).copyWith(fontSize: 17),
+                  ),
+                  const SizedBox(height: 20),
                   if (!_codiEnviat) ...[
                     TextField(
                       controller: _correu,

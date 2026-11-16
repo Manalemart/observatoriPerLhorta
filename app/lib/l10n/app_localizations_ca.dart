@@ -455,4 +455,83 @@ class LCa extends L {
   @override
   String get avisosResumError =>
       'No s\'ha pogut desar. Torna-ho a provar amb connexió.';
+
+  @override
+  String get navMapa => 'Mapa';
+
+  @override
+  String get navPartides => 'Partides';
+
+  @override
+  String get navAvisos => 'Avisos';
+
+  @override
+  String get navLesMeues => 'Les meues';
+
+  @override
+  String get perfilTitol => 'El meu perfil';
+
+  @override
+  String get perfilLlicencies => 'Llicències';
+
+  @override
+  String revisioSubstitueixNom(String nom) {
+    return 'Substitueix «$nom»';
+  }
+
+  @override
+  String get fitxaPerRevisar => 'Inventari 2018 · per revisar';
+
+  @override
+  String fitxaRevisat(String data) {
+    return 'Revisat el $data';
+  }
+
+  @override
+  String fitxaAportat(String data) {
+    return 'Aportat el $data';
+  }
+
+  @override
+  String get fitxaEsEncara => 'És encara així?';
+
+  @override
+  String get fitxaEsEncaraPadri =>
+      'Si estàs davant, confirma-ho o conta què ha canviat.';
+
+  @override
+  String get fitxaSiIgual => 'Sí, igual';
+
+  @override
+  String get fitxaHaCanviatPregunta => 'Ha canviat?';
+
+  @override
+  String get fitxaAvisansDetall =>
+      'Fes una aportació nova amb com està hui. La validarà el padrí o la padrina de la partida.';
+
+  @override
+  String get fitxaObrirPartida => 'Obre la revisió de la partida';
+
+  @override
+  String get comuContinua => 'Continua';
+
+  @override
+  String get comuEnrere => 'Enrere';
+
+  @override
+  String aportarPas(int n) {
+    return 'Pas $n de 3';
+  }
+
+  @override
+  String get aportarPasQue => 'Què has vist?';
+
+  @override
+  String get aportarPasOn => 'On és?';
+
+  @override
+  String get aportarPasDetalls => 'Foto i detalls';
+
+  @override
+  String get aportarFotosTitol => 'Fotos (opcionals)';
 }

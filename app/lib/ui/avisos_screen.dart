@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
 import '../services/avisos.dart';
 
@@ -73,7 +74,7 @@ class _AvisosScreenState extends State<AvisosScreen> {
     final data = DateFormat('d/M/yyyy', 'ca');
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.avisosTitol),
+        title: TitolBarra(t.avisosTitol),
         actions: [
           if (avisos.noLlegits > 0)
             TextButton(
@@ -99,7 +100,7 @@ class _AvisosScreenState extends State<AvisosScreen> {
             if (avisos.items.isEmpty)
               Padding(
                 padding: const EdgeInsets.all(32),
-                child: Text(t.avisosBuit, textAlign: TextAlign.center),
+                child: Text(t.avisosBuit, textAlign: TextAlign.center, style: estilProsa(context)),
               ),
             for (final (i, a) in avisos.items.indexed) ...[
               if (i > 0) const Divider(height: 1),
