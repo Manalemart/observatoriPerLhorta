@@ -444,4 +444,15 @@ class LCa extends L {
 
   @override
   String get avisNoTrobat => 'No s\'ha trobat: donat de baixa';
+
+  @override
+  String get avisosResumCorreu => 'Resum diari per correu';
+
+  @override
+  String get avisosResumCorreuDetall =>
+      'Un correu al dia amb els avisos nous que no hages llegit';
+
+  @override
+  String get avisosResumError =>
+      'No s\'ha pogut desar. Torna-ho a provar amb connexió.';
 }

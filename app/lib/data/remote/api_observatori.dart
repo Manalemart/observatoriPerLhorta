@@ -87,6 +87,16 @@ class ApiObservatori implements ApiAportacions, ApiAvisos {
   @override
   Future<void> marcarLlegits(List<int> ids) => _client.from('notificacions').update({'llegida': true}).inFilter('id', ids);
 
+  @override
+  Future<bool> resumCorreu() async {
+    final r = await _client.from('perfils').select('resum_correu').eq('id', _uid).single();
+    return r['resum_correu'] as bool;
+  }
+
+  @override
+  Future<void> desarResumCorreu(bool valor) =>
+      _client.from('perfils').update({'resum_correu': valor}).eq('id', _uid);
+
   Future<List<AportacioRemota>> lesMeues() async {
     final files = await _client
         .from('elements')

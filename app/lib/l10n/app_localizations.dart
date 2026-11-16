@@ -830,6 +830,24 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'No s\'ha trobat: donat de baixa'**
   String get avisNoTrobat;
+
+  /// No description provided for @avisosResumCorreu.
+  ///
+  /// In ca, this message translates to:
+  /// **'Resum diari per correu'**
+  String get avisosResumCorreu;
+
+  /// No description provided for @avisosResumCorreuDetall.
+  ///
+  /// In ca, this message translates to:
+  /// **'Un correu al dia amb els avisos nous que no hages llegit'**
+  String get avisosResumCorreuDetall;
+
+  /// No description provided for @avisosResumError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut desar. Torna-ho a provar amb connexió.'**
+  String get avisosResumError;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

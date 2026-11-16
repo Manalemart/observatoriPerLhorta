@@ -22,24 +22,24 @@ class _AvisosScreenState extends State<AvisosScreen> {
   }
 
   String _accio(L t, Avis a) => switch (a.accio) {
-        'validat' => t.avisValidat,
-        'rebutjat' => t.avisRebutjat,
-        'reobert' => t.avisReobert,
-        'nova_aportacio' => t.avisNovaAportacio,
-        'revisat' => t.avisRevisat,
-        _ => a.accio,
-      };
+    'validat' => t.avisValidat,
+    'rebutjat' => t.avisRebutjat,
+    'reobert' => t.avisReobert,
+    'nova_aportacio' => t.avisNovaAportacio,
+    'revisat' => t.avisRevisat,
+    _ => a.accio,
+  };
 
   String? _detall(L t, Avis a) => switch (a.accio) {
-        'nova_aportacio' => t.avisValidarAWeb,
-        'revisat' => switch (a.motiu) {
-            'igual' => t.revisioEstatIgual,
-            'canviat' => t.revisioEstatCanviat,
-            'no_trobat' => t.avisNoTrobat,
-            _ => null,
-          },
-        _ => a.motiu,
-      };
+    'nova_aportacio' => t.avisValidarAWeb,
+    'revisat' => switch (a.motiu) {
+      'igual' => t.revisioEstatIgual,
+      'canviat' => t.revisioEstatCanviat,
+      'no_trobat' => t.avisNoTrobat,
+      _ => null,
+    },
+    _ => a.motiu,
+  };
 
   Future<void> _obrir(Avis a) async {
     final avisos = context.read<Avisos>();
@@ -53,6 +53,16 @@ class _AvisosScreenState extends State<AvisosScreen> {
       await router.push('/partides/${a.partidaId}');
     } else if (!a.dePartida) {
       await router.push('/aportacions');
+    }
+  }
+
+  Future<void> _canviarResum(bool valor) async {
+    final missatger = ScaffoldMessenger.of(context);
+    final error = L.of(context).avisosResumError;
+    try {
+      await context.read<Avisos>().canviarResumCorreu(valor);
+    } catch (_) {
+      missatger.showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -74,37 +84,53 @@ class _AvisosScreenState extends State<AvisosScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: avisos.carregar,
-        child: avisos.items.isEmpty
-            ? ListView(children: [Padding(padding: const EdgeInsets.all(32), child: Text(t.avisosBuit, textAlign: TextAlign.center))])
-            : ListView.separated(
-                itemCount: avisos.items.length,
-                separatorBuilder: (_, _) => const Divider(height: 1),
-                itemBuilder: (context, i) {
-                  final a = avisos.items[i];
+        child: ListView(
+          children: [
+            if (avisos.resumCorreu != null) ...[
+              SwitchListTile(
+                secondary: const Icon(Icons.mail_outline),
+                title: Text(t.avisosResumCorreu),
+                subtitle: Text(t.avisosResumCorreuDetall),
+                value: avisos.resumCorreu!,
+                onChanged: _canviarResum,
+              ),
+              const Divider(height: 1),
+            ],
+            if (avisos.items.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text(t.avisosBuit, textAlign: TextAlign.center),
+              ),
+            for (final (i, a) in avisos.items.indexed) ...[
+              if (i > 0) const Divider(height: 1),
+              Builder(
+                builder: (context) {
                   final detall = _detall(t, a);
                   return ListTile(
-                    leading: Icon(
-                      switch (a.accio) {
-                        'validat' => Icons.check_circle_outline,
-                        'rebutjat' => Icons.cancel_outlined,
-                        'nova_aportacio' => Icons.add_location_alt_outlined,
-                        'revisat' => Icons.fact_check_outlined,
-                        _ => Icons.history,
-                      },
-                      color: a.llegit ? null : Theme.of(context).colorScheme.primary,
-                    ),
+                    leading: Icon(switch (a.accio) {
+                      'validat' => Icons.check_circle_outline,
+                      'rebutjat' => Icons.cancel_outlined,
+                      'nova_aportacio' => Icons.add_location_alt_outlined,
+                      'revisat' => Icons.fact_check_outlined,
+                      _ => Icons.history,
+                    }, color: a.llegit ? null : Theme.of(context).colorScheme.primary),
                     title: Text(a.titol, style: TextStyle(fontWeight: a.llegit ? FontWeight.normal : FontWeight.w700)),
-                    subtitle: Text([
-                      _accio(t, a),
-                      if (a.partida != null && a.dePartida) a.partida!,
-                      data.format(a.creat.toLocal()),
-                      if (detall != null && detall.isNotEmpty) '\n$detall',
-                    ].join(' · ').replaceAll(' · \n', '\n')),
+                    subtitle: Text(
+                      [
+                        _accio(t, a),
+                        if (a.partida != null && a.dePartida) a.partida!,
+                        data.format(a.creat.toLocal()),
+                        if (detall != null && detall.isNotEmpty) '\n$detall',
+                      ].join(' · ').replaceAll(' · \n', '\n'),
+                    ),
                     isThreeLine: detall != null && detall.isNotEmpty,
                     onTap: () => _obrir(a),
                   );
                 },
               ),
+            ],
+          ],
+        ),
       ),
     );
   }

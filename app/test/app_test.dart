@@ -508,6 +508,34 @@ void main() {
       expect(avisos.noLlegits, 0);
     });
 
+    test('el resum per correu es llig i es desa', () async {
+      final api = _ApiAvisosFalsa([fila(1, 'nova_aportacio')]);
+      final avisos = Avisos(api);
+      expect(avisos.resumCorreu, isNull, reason: 'abans de carregar no es mostra');
+      await avisos.carregar();
+      expect(avisos.resumCorreu, isTrue);
+      await avisos.canviarResumCorreu(false);
+      expect([avisos.resumCorreu, api.resum], [false, false]);
+      avisos.buidar();
+      expect(avisos.resumCorreu, isNull);
+    });
+
+    test('si no es pot desar el resum torna enrere', () async {
+      final api = _ApiAvisosFalsa([]);
+      final avisos = Avisos(api);
+      await avisos.carregar();
+      api.error = true;
+      await expectLater(avisos.canviarResumCorreu(false), throwsException);
+      expect(avisos.resumCorreu, isTrue);
+    });
+
+    test('sense la columna a la base de dades no es mostra', () async {
+      final api = _ApiAvisosFalsa([fila(1, 'revisat')])..errorResum = true;
+      final avisos = Avisos(api);
+      await avisos.carregar();
+      expect([avisos.noLlegits, avisos.resumCorreu], [1, null]);
+    });
+
     test('sense xarxa es queda amb el que tenia', () async {
       final api = _ApiAvisosFalsa([fila(1, 'nova_aportacio')]);
       final avisos = Avisos(api);
@@ -534,4 +562,19 @@ class _ApiAvisosFalsa implements ApiAvisos {
 
   @override
   Future<void> marcarLlegits(List<int> ids) async => marcats.addAll(ids);
+
+  bool resum = true;
+  bool errorResum = false;
+
+  @override
+  Future<bool> resumCorreu() async {
+    if (error || errorResum) throw Exception('sense resum');
+    return resum;
+  }
+
+  @override
+  Future<void> desarResumCorreu(bool valor) async {
+    if (error) throw Exception('sense xarxa');
+    resum = valor;
+  }
 }

@@ -51,6 +51,10 @@ class Avis {
 abstract class ApiAvisos {
   Future<List<Map<String, dynamic>>> avisos();
   Future<void> marcarLlegits(List<int> ids);
+
+  /// Si recibe el resumen diario por correo (perfils.resum_correu)
+  Future<bool> resumCorreu();
+  Future<void> desarResumCorreu(bool valor);
 }
 
 /// Avisos del usuario. Se cargan al entrar, al recuperar la red y al abrir la app; sin
@@ -60,9 +64,13 @@ class Avisos extends ChangeNotifier {
 
   final ApiAvisos api;
   List<Avis> _items = const [];
+  bool? _resumCorreu;
 
   List<Avis> get items => _items;
   int get noLlegits => _items.where((a) => !a.llegit).length;
+
+  /// null mientras no se sabe (sin red, o la base de datos aún no lo tiene): no se muestra
+  bool? get resumCorreu => _resumCorreu;
 
   Future<void> carregar() async {
     try {
@@ -70,6 +78,26 @@ class Avisos extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Avisos sense carregar: $e');
+    }
+    try {
+      _resumCorreu = await api.resumCorreu();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Preferència del resum sense carregar: $e');
+    }
+  }
+
+  /// Se ve el cambio enseguida; si no se puede desar, vuelve atrás y lanza el error.
+  Future<void> canviarResumCorreu(bool valor) async {
+    final abans = _resumCorreu;
+    _resumCorreu = valor;
+    notifyListeners();
+    try {
+      await api.desarResumCorreu(valor);
+    } catch (_) {
+      _resumCorreu = abans;
+      notifyListeners();
+      rethrow;
     }
   }
 
@@ -83,6 +111,7 @@ class Avisos extends ChangeNotifier {
   /// Al salir de la sesión
   void buidar() {
     _items = const [];
+    _resumCorreu = null;
     notifyListeners();
   }
 }

@@ -245,5 +245,8 @@
   "avisNovaAportacio": "Aportació nova a la teua partida",
   "avisRevisat": "Revisat per una altra persona",
   "avisValidarAWeb": "Per validar: des del panell de validació de la web.",
-  "avisNoTrobat": "No s'ha trobat: donat de baixa"
+  "avisNoTrobat": "No s'ha trobat: donat de baixa",
+  "avisosResumCorreu": "Resum diari per correu",
+  "avisosResumCorreuDetall": "Un correu al dia amb els avisos nous que no hages llegit",
+  "avisosResumError": "No s'ha pogut desar. Torna-ho a provar amb connexió."
 }
