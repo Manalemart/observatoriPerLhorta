@@ -19,7 +19,8 @@ const MAXIM = 20;
 
 export function Campana({ onCanvi }: { onCanvi: () => void }) {
   const { t, i18n } = useTranslation();
-  const { uid } = useAuth();
+  const { uid, perfil, recarregarPerfil } = useAuth();
+  const [desantResum, setDesantResum] = useState(false);
   const navegar = useNavigate();
   const [items, setItems] = useState<Notificacio[]>([]);
   const [obert, setObert] = useState(false);
@@ -68,6 +69,13 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
     navegar(n.accio === 'nova_aportacio' ? '/validacio' : `/mapa?element=${n.element_id}`);
   };
 
+  const canviarResum = async (valor: boolean) => {
+    setDesantResum(true);
+    await supabase.from('perfils').update({ resum_correu: valor }).eq('id', uid!);
+    await recarregarPerfil();
+    setDesantResum(false);
+  };
+
   return (
     <div className="campana" ref={contenidor}>
       <button
@@ -98,6 +106,17 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
               </li>
             ))}
           </ul>
+          {perfil && (
+            <label className="campana-resum">
+              <input
+                type="checkbox"
+                checked={perfil.resum_correu}
+                disabled={desantResum}
+                onChange={(e) => void canviarResum(e.target.checked)}
+              />
+              <span>{t('notificacions.resumCorreu')}</span>
+            </label>
+          )}
         </div>
       )}
     </div>

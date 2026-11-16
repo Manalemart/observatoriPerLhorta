@@ -247,7 +247,8 @@
       "igual": "Continua igual",
       "canviat": "Ha canviat",
       "no_trobat": "No s'ha trobat: donat de baixa"
-    }
+    },
+    "resumCorreu": "Rep cada dia un resum dels avisos nous per correu"
   },
   "legal": {
     "enllac": "Avís legal i privacitat",

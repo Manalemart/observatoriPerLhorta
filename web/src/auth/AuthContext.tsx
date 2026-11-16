@@ -8,6 +8,8 @@ export interface Perfil {
   id: string;
   nom_public: string | null;
   rol: Rol;
+  /** Recibe el resumen diario de avisos por correo. */
+  resum_correu: boolean;
 }
 
 interface Valor {
@@ -53,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setPerfil(null);
       return;
     }
-    const { data } = await supabase.from('perfils').select('id, nom_public, rol').eq('id', uid).single();
+    const { data } = await supabase.from('perfils').select('id, nom_public, rol, resum_correu').eq('id', uid).single();
     setPerfil(data as Perfil | null);
   }, [uid]);
 
