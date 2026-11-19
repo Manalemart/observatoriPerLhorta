@@ -1,3 +1,4 @@
+import { dibuixNombre } from './agrupacio';
 import type { Feature, FeatureCollection } from 'geojson';
 import type { Map as MapaGL } from 'maplibre-gl';
 import guia from './simbologia.json';
@@ -247,6 +248,9 @@ export function servirImatges(mapa: MapaGL) {
     if (mapa.hasImage(id)) return;
     if (id.startsWith('trama-')) {
       mapa.addImage(id, trama(id.slice(6) as Trama), { pixelRatio: RATIO });
+    } else if (id.startsWith('nombre-')) {
+      const [, color, n] = id.split('-');
+      mapa.addImage(id, dibuixNombre(`#${color}`, Number(n), RATIO), { pixelRatio: RATIO });
     } else if (id.startsWith('glif-')) {
       const [, glif, color] = id.split('-') as [string, Glif, string];
       const [w, h] = MIDA_GLIF[glif];

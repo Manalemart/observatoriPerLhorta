@@ -4,7 +4,8 @@ import {
   type ExpressionSpecification, type FilterSpecification, type LayerSpecification, type Point,
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { FeatureCollection } from 'geojson';
+import type { Feature, FeatureCollection, Point as PuntGeo } from 'geojson';
+import { agruparPunts, MIDA_ICONA, ZOOM_ICONES, ZOOM_SENSE_AGRUPAR } from './agrupacio';
 import { CAPES_ELEMENTS, estilBase, FONS, LIMITS_AMBIT } from './estil';
 import { ambSimbols, indexSimbologia, servirImatges } from './simbologia';
 import type { Dades, Epoca, Esborrany, Fons } from './tipus';
@@ -69,12 +70,13 @@ const BASE_CAPES: Record<string, unknown> = {
   'elements-linies-trama': ambPatro('trama'),
   'elements-linies-fletxes': ['all', LINIA, ['==', ['get', 's_glif'], 'fletxa']],
   'elements-punts': PUNT,
-  'elements-punts-no-validats': ['all', PUNT, NO_VALIDAT],
-  'elements-icones': PUNT,
 };
 
-// A partir d'este zoom els punts es dibuixen amb la icona de la guia; abans, un cercle del color
-const ZOOM_ICONES = 14;
+// A partir de ZOOM_ICONES els punts es dibuixen amb la icona de la guia (abans, un cercle del
+// color) i des de la font «punts»: els de la mateixa categoria que es trepitgen, agrupats
+// (agrupacio.ts). Els filtres de variables i època s'apliquen abans d'agrupar.
+const GRUP: ExpressionSpecification = ['has', 'n'];
+const MIDA = ['interpolate', ['linear'], ['zoom'], ...MIDA_ICONA.flat()] as unknown as ExpressionSpecification;
 
 function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
   servirImatges(mapa);
@@ -85,6 +87,7 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     data: elements,
     attribution: "Observatori Ciutadà de l'Horta · Per l'Horta · Font parcel·les 2018: D. G. del Cadastre",
   });
+  mapa.addSource('punts', { type: 'geojson', data: BUIT });
   mapa.addSource('esborrany', { type: 'geojson', data: BUIT });
   const filtre = (id: string) => BASE_CAPES[id] as FilterSpecification;
   const COLOR: ExpressionSpecification = ['get', 's_color'];
@@ -170,21 +173,41 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
   });
   // A prop: la icona de la guia. Lo de 2018 sense revisar, més pàl·lid; lo no validat, amb un anell negre
   mapa.addLayer({
-    id: 'elements-punts-no-validats', type: 'circle', source: 'elements', minzoom: ZOOM_ICONES,
-    filter: filtre('elements-punts-no-validats'),
+    id: 'elements-punts-no-validats', type: 'circle', source: 'punts', minzoom: ZOOM_ICONES,
+    filter: ['all', ['!', GRUP], NO_VALIDAT],
     paint: {
       'circle-radius': ['interpolate', ['linear'], ['zoom'], ZOOM_ICONES, 15, 19, 24],
       'circle-color': 'rgba(255,255,255,0.6)', 'circle-stroke-color': '#0b0b0b', 'circle-stroke-width': 2,
     },
   });
+  // Grup: cercle blanc amb la vora del color de la família (negra si hi ha res sense validar)
   mapa.addLayer({
-    id: 'elements-icones', type: 'symbol', source: 'elements', minzoom: ZOOM_ICONES, filter: filtre('elements-icones'),
+    id: 'punts-grups', type: 'circle', source: 'punts', minzoom: ZOOM_ICONES, filter: GRUP,
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], ZOOM_ICONES, 19, 17, 26, 19, 32],
+      'circle-color': 'rgba(255,255,255,0.85)',
+      'circle-stroke-color': ['case', ['==', ['get', 'no_validat'], true], '#0b0b0b', COLOR],
+      'circle-stroke-width': 2,
+    },
+  });
+  mapa.addLayer({
+    id: 'elements-icones', type: 'symbol', source: 'punts', minzoom: ZOOM_ICONES,
     layout: {
       'icon-image': ['get', 's_icona'],
-      'icon-size': ['interpolate', ['linear'], ['zoom'], ZOOM_ICONES, 0.22, 17, 0.32, 19, 0.42],
+      'icon-size': MIDA,
       'icon-allow-overlap': true, 'icon-ignore-placement': true,
     },
     paint: { 'icon-opacity': ['case', PER_REVISAR, 0.6, 1] },
+  });
+  // El nombre d'elements, en una pastilla a dalt a la dreta del cercle
+  mapa.addLayer({
+    id: 'punts-grups-nombre', type: 'symbol', source: 'punts', minzoom: ZOOM_ICONES, filter: GRUP,
+    layout: {
+      'icon-image': ['concat', 'nombre-', ['downcase', ['slice', COLOR, 1]], '-', ['to-string', ['get', 'n']]],
+      'icon-offset': ['interpolate', ['linear'], ['zoom'],
+        ZOOM_ICONES, ['literal', [15, -15]], 17, ['literal', [21, -21]], 19, ['literal', [26, -26]]],
+      'icon-allow-overlap': true, 'icon-ignore-placement': true,
+    },
   });
   mapa.addLayer({
     id: 'seleccio-poligon', type: 'line', source: 'elements',
@@ -233,8 +256,21 @@ export function Mapa({
   const index = useMemo(() => indexSimbologia(dades.temes), [dades.temes]);
   const simbolitzats = useMemo(() => ambSimbols(elements, index), [elements, index]);
 
-  const ultim = useRef({ onSeleccionar, capturant, ignorarClics, onClicCaptura, elements: simbolitzats });
-  ultim.current = { onSeleccionar, capturant, ignorarClics, onClicCaptura, elements: simbolitzats };
+  // Punts que es veuen (variables actives i època), abans d'agrupar-los segons el zoom
+  const puntsVisibles = useMemo(
+    () => simbolitzats.features.filter((f): f is Feature<PuntGeo> => {
+      if (f.geometry?.type !== 'Point') return false;
+      const p = f.properties ?? {};
+      if (!variablesActives.has(p.variable_id as number)) return false;
+      return epoca === 'tot' || (epoca === '2018') === (p.per_revisar === true);
+    }),
+    [simbolitzats, variablesActives, epoca],
+  );
+
+  const ultim = useRef({ onSeleccionar, capturant, ignorarClics, onClicCaptura, elements: simbolitzats, puntsVisibles });
+  ultim.current = { onSeleccionar, capturant, ignorarClics, onClicCaptura, elements: simbolitzats, puntsVisibles };
+  // Zoom (a mitjos nivells) al qual s'han agrupat els punts que hi ha ara en la font
+  const zoomAgrupat = useRef<number | null>(null);
 
   useEffect(() => {
     if (!contenidor.current) return;
@@ -256,6 +292,13 @@ export function Mapa({
       afegirCapes(mapa, dades, ultim.current.elements);
       setLlest(true);
     });
+    // En canviar de mig nivell de zoom, es tornen a agrupar els punts
+    mapa.on('zoom', () => {
+      const z = Math.floor(mapa.getZoom() * 2) / 2;
+      if (zoomAgrupat.current === null || z === zoomAgrupat.current) return;
+      zoomAgrupat.current = z;
+      mapa.getSource<GeoJSONSource>('punts')?.setData(agruparPunts(ultim.current.puntsVisibles, z));
+    });
 
     const elementsAlPunt = (p: Point) =>
       mapa.queryRenderedFeatures(
@@ -269,8 +312,18 @@ export function Mapa({
         return;
       }
       if (ignorar || !mapa.getLayer(CAPES_ELEMENTS[0])) return;
+      const tocats = elementsAlPunt(e.point);
+      // Un grup de punts: s'acosta fins que se separen
+      const grup = tocats.find((f) => f.properties?.n);
+      if (grup) {
+        const [o, s, est, n] = JSON.parse(grup.properties.limits as string) as number[];
+        const desti = mapa.cameraForBounds([[o, s], [est, n]], { padding: 80, maxZoom: ZOOM_SENSE_AGRUPAR });
+        const zoom = Math.max(desti?.zoom ?? 0, Math.min(mapa.getZoom() + 2, ZOOM_SENSE_AGRUPAR));
+        mapa.easeTo({ center: desti?.center ?? e.lngLat, zoom });
+        return;
+      }
       // Sin repetir: queryRenderedFeatures puede devolver un elemento por cada tesela que cruza
-      const ids = elementsAlPunt(e.point).map((f) => f.properties?.id as string);
+      const ids = tocats.map((f) => f.properties?.id as string);
       ultim.current.onSeleccionar([...new Set(ids)]);
     });
     mapa.on('mousemove', (e) => {
@@ -293,6 +346,14 @@ export function Mapa({
     if (!llest) return;
     mapaRef.current?.getSource<GeoJSONSource>('elements')?.setData(simbolitzats);
   }, [simbolitzats, llest]);
+
+  useEffect(() => {
+    const mapa = mapaRef.current;
+    if (!mapa || !llest) return;
+    const z = Math.floor(mapa.getZoom() * 2) / 2;
+    zoomAgrupat.current = z;
+    mapa.getSource<GeoJSONSource>('punts')?.setData(agruparPunts(puntsVisibles, z));
+  }, [puntsVisibles, llest]);
 
   useEffect(() => {
     if (!llest) return;

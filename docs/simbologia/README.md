@@ -42,6 +42,7 @@ El color de cada tema (casillas, leyenda, fichas) es el de su familia en la guí
 ## Cómo se dibuja
 
 - **Puntos.** Web: de lejos (zoom < 14), un círculo del color de la familia; de cerca, el icono. App: siempre el icono (la app solo muestra elementos desde zoom 13).
+- **Agrupación.** Cuando varios puntos de la misma variable y categoría se pisan, se pinta un solo icono dentro de un círculo blanco, con el número de elementos en una pastilla del color de la familia. Al tocarlo, el mapa se acerca hasta separarlos. Categorías distintas nunca se agrupan; desde el zoom 18 no se agrupa. Web: `web/src/features/mapa/agrupacio.ts`; app: `app/lib/ui/capa_punts.dart`.
 - **Parcelas.** Color de la guía al 75 % (para que se vea la ortofoto) con su contorno; las tramas de rayas y puntos en blanco encima.
 - **Líneas.** Color, grosor y discontinuo de la guía. La decoración (flechas de las acequias, cuadrados de la pared de piedra, travesaños, zigzag, onda) se repite a lo largo del trazo. Las formas están dibujadas igual en la web (`web/src/features/mapa/simbologia.ts`) y en la app (`app/lib/ui/capa_simbologia.dart`).
 - **Estado.** Lo de 2017-2018 sin revisar: icono más pálido y parcela con contorno discontinuo (de lejos, en la web, punto hueco). Lo no validado (solo lo ve quien tiene permiso): anillo o contorno negro.
