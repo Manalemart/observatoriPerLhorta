@@ -235,6 +235,11 @@ class LCa extends L {
   }
 
   @override
+  String llistaRevisio(String resultat) {
+    return 'Revisió: $resultat';
+  }
+
+  @override
   String get entradaEsperant => 'Esperant que obris l\'enllaç…';
 
   @override

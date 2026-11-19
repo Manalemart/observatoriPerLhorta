@@ -19,10 +19,34 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
   List<AportacioRemota>? _enviades;
   bool _errorEnviades = false;
 
+  late final Sincronitzacio _sinc;
+  late int _reconnexions;
+  late bool _enviava;
+
   @override
   void initState() {
     super.initState();
+    _sinc = context.read<Sincronitzacio>();
+    _reconnexions = _sinc.reconnexions;
+    _enviava = _sinc.enviant;
+    _sinc.addListener(_canvi);
     _carregar();
+  }
+
+  @override
+  void dispose() {
+    _sinc.removeListener(_canvi);
+    super.dispose();
+  }
+
+  /// Recarga las enviadas al volver la red y al acabar un envío (lo enviado pasa a la lista)
+  void _canvi() {
+    final acabat = _enviava && !_sinc.enviant;
+    _enviava = _sinc.enviant;
+    if (acabat || _sinc.reconnexions != _reconnexions) {
+      _reconnexions = _sinc.reconnexions;
+      _carregar();
+    }
   }
 
   Future<void> _carregar() async {
@@ -46,6 +70,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
     final sinc = context.watch<Sincronitzacio>();
     final data = DateFormat.yMd('ca');
     final perEnviar = sinc.items;
+    final revisions = sinc.revisions;
     final enviades = _enviades ?? const <AportacioRemota>[];
 
     return Scaffold(
@@ -57,7 +82,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
         },
         child: ListView(
           children: [
-            if (perEnviar.isNotEmpty) ...[
+            if (perEnviar.isNotEmpty || revisions.isNotEmpty) ...[
               ListTile(
                 title: EtiquetaSeccio(t.llistaPerEnviar, padding: EdgeInsets.zero),
                 trailing: TextButton(
@@ -70,6 +95,21 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
                   child: Text(t.llistaEnviarAra),
                 ),
               ),
+              for (final r in revisions)
+                ListTile(
+                  leading: Icon(r.error != null ? Icons.error_outline : Icons.fact_check_outlined),
+                  title: Text(t.llistaRevisio(switch (r.resultat) {
+                    'igual' => t.revisioIgual,
+                    'canviat' => t.revisioCanviat,
+                    _ => t.revisioNoTrobat,
+                  })),
+                  subtitle: Text(r.error ?? '${data.format(r.creadaEn)} · ${t.llistaEsperant}'),
+                  trailing: IconButton(
+                    tooltip: t.llistaEsborrar,
+                    onPressed: () => sinc.esborrarRevisio(r.id),
+                    icon: const Icon(Icons.delete_outline),
+                  ),
+                ),
               for (final a in perEnviar)
                 ListTile(
                   leading: Icon(a.estat == EstatCola.error ? Icons.error_outline : Icons.cloud_upload_outlined),

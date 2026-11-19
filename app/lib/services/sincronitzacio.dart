@@ -36,10 +36,26 @@ class Sincronitzacio extends ChangeNotifier {
   }
 
   /// Se guarda primero en el móvil (en el campo puede no haber red) y luego se intenta enviar.
-  Future<void> revisar(RevisioLocal r) async {
+  /// Guarda la revisión y prueba a enviarla, pero sin esperar más de [espera]:
+  /// con poca cobertura quien revisa no se queda sin respuesta; el envío sigue de fondo.
+  Future<void> revisar(RevisioLocal r, {Duration espera = esperaRevisio}) async {
     await cola.afegirRevisio(r);
     await carregar();
-    await enviar();
+    await enviar().timeout(espera, onTimeout: () {});
+  }
+
+  static const esperaRevisio = Duration(seconds: 5);
+
+  int _reconnexions = 0;
+
+  /// Cambia cada vez que vuelve la red: las pantallas que dependen del servidor recargan.
+  int get reconnexions => _reconnexions;
+
+  /// Ha vuelto la red: se envía lo pendiente y se avisa a las pantallas.
+  Future<void> xarxaRecuperada() {
+    _reconnexions++;
+    notifyListeners();
+    return enviar();
   }
 
   Future<void> esborrarRevisio(String id) async {

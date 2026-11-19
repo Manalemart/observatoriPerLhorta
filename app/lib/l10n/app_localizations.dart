@@ -477,6 +477,12 @@ abstract class L {
   /// **'Motiu: {motiu}'**
   String llistaMotiu(String motiu);
 
+  /// No description provided for @llistaRevisio.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisió: {resultat}'**
+  String llistaRevisio(String resultat);
+
   /// No description provided for @entradaEsperant.
   ///
   /// In ca, this message translates to:

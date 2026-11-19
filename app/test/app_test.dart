@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:drift/native.dart';
@@ -335,6 +336,33 @@ void main() {
     });
   });
 
+  test('revisar no espera més del compte si la xarxa va lenta', () async {
+    final api = _ApiLenta();
+    final s = sinc(ColaMemoria(), api);
+    await s.revisar(revisio('r1', 'e1', 'igual'), espera: const Duration(milliseconds: 50));
+    // Ha tornat sense enviar-la: queda pendent i l'enviament segueix de fons
+    expect(s.pendents, 1);
+    api.solta.complete();
+    await s.enviar();
+    expect(s.pendents, 0);
+  });
+
+  test('en tornar la xarxa avisa les pantalles i envia el pendent', () async {
+    final api = ApiFalsa()..errorRevisar = Exception('sense xarxa');
+    final s = sinc(ColaMemoria(), api);
+    await s.revisar(revisio('r1', 'e1', 'igual'));
+    expect(s.pendents, 1);
+    var avisos = 0;
+    s.addListener(() => avisos++);
+    final abans = s.reconnexions;
+    api.errorRevisar = null;
+    await s.xarxaRecuperada();
+    expect(s.reconnexions, abans + 1);
+    expect(avisos, greaterThan(0));
+    expect(api.revisions, ['e1:igual']);
+    expect(s.pendents, 0);
+  });
+
   test("l'aportació que substitueix envia substitueix_id", () async {
     final api = ApiFalsa();
     final s = Sincronitzacio(cola: ColaMemoria(), api: api, recinte: (_) async => null, missatgeSenseRecinte: '');
@@ -576,5 +604,16 @@ class _ApiAvisosFalsa implements ApiAvisos {
   Future<void> desarResumCorreu(bool valor) async {
     if (error) throw Exception('sense xarxa');
     resum = valor;
+  }
+}
+
+/// Revisar no acaba fins que es solta: com una connexió que no arriba a fallar
+class _ApiLenta extends ApiFalsa {
+  final solta = Completer<void>();
+
+  @override
+  Future<void> revisarElement(String elementId, String resultat, {String? nota, List<Uint8List> fotos = const [], String? id}) async {
+    await solta.future;
+    return super.revisarElement(elementId, resultat, nota: nota, fotos: fotos, id: id);
   }
 }

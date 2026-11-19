@@ -43,10 +43,24 @@ class _MapaScreenState extends State<MapaScreen> {
   /// Partidas que apadrinas: en sus elementos, la ficha deja revisar
   Set<int> _apadrinades = const {};
 
+  late final Sincronitzacio _sinc;
+  late int _reconnexions;
+
   @override
   void initState() {
     super.initState();
+    _sinc = context.read<Sincronitzacio>();
+    _reconnexions = _sinc.reconnexions;
+    _sinc.addListener(_xarxa);
     _carregarApadrinades();
+  }
+
+  /// Al volver la red se recarga lo que se vio sin ella
+  void _xarxa() {
+    if (_sinc.reconnexions == _reconnexions) return;
+    _reconnexions = _sinc.reconnexions;
+    _carregarApadrinades();
+    _carregarElements();
   }
 
   Future<void> _carregarApadrinades() async {
@@ -63,6 +77,7 @@ class _MapaScreenState extends State<MapaScreen> {
 
   @override
   void dispose() {
+    _sinc.removeListener(_xarxa);
     _espera?.cancel();
     _toc.dispose();
     super.dispose();

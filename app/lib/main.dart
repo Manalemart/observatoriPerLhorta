@@ -51,13 +51,19 @@ Future<void> main() async {
   await paquets.carregar();
 
   await sincronitzacio.carregar();
-  // Al recuperar la red se envía lo pendiente. Sin sesión no se puede: se espera a entrar
-  Connectivity().onConnectivityChanged.listen((r) {
+  // Al recuperar la red se envía lo pendiente y se recargan las pantallas. Sin sesión no se puede
+  void ambXarxa(List<ConnectivityResult> r) {
     if (!r.contains(ConnectivityResult.none) && sessio.entrada) {
-      sincronitzacio.enviar();
+      sincronitzacio.xarxaRecuperada();
       avisos.carregar();
     }
-  });
+  }
+
+  final connectivitat = Connectivity();
+  connectivitat.onConnectivityChanged.listen(ambXarxa);
+  // iOS suspende la app poco después de salir de ella: si la red vuelve mientras tanto, el aviso
+  // de cambio puede no llegar. Al volver a la app se comprueba igualmente (en Android no sobra)
+  AppLifecycleListener(onResume: () async => ambXarxa(await connectivitat.checkConnectivity()));
   sessio.addListener(() {
     if (sessio.entrada) {
       cataleg.carregar();

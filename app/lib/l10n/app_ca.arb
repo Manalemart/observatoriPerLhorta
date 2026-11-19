@@ -92,6 +92,8 @@
   "llistaReintentar": "Torna-ho a provar",
   "llistaEsborrar": "Esborra",
   "llistaMotiu": "Motiu: {motiu}",
+  "llistaRevisio": "Revisió: {resultat}",
+  "@llistaRevisio": {"placeholders": {"resultat": {"type": "String"}}},
   "@llistaMotiu": {
     "placeholders": {
       "motiu": {
