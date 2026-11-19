@@ -19,6 +19,7 @@ import '../services/sincronitzacio.dart';
 import 'accio_revisio.dart';
 import 'adaptatiu.dart';
 import 'aportar_screen.dart' show VistaMapa;
+import 'capa_punts.dart';
 import 'capa_simbologia.dart';
 import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
@@ -239,7 +240,7 @@ class _MapaScreenState extends State<MapaScreen> {
 
     final poligons = <Polygon<Map<String, dynamic>>>[];
     final linies = <Polyline<Map<String, dynamic>>>[];
-    final punts = <Marker>[];
+    final punts = <PuntMapa>[];
     final trames = <ParcelaAmbTrama>[];
     final glifs = <LiniaAmbGlif>[];
     for (final f in _elements) {
@@ -258,7 +259,14 @@ class _MapaScreenState extends State<MapaScreen> {
       );
       switch ((geo['type'], simbol)) {
         case ('Point', final SimbolPunt s):
-          punts.add(_marcador(s, prop, _ll(coord), validat: validat, perRevisar: perRevisar));
+          punts.add(PuntMapa(
+            punt: _ll(coord),
+            clau: '${prop['variable']}|${prop['categoria']}',
+            simbol: s,
+            prop: prop,
+            validat: validat,
+            perRevisar: perRevisar,
+          ));
         case ('LineString', final SimbolLinia s):
           final llista = [for (final c in coord) _ll(c as List)];
           linies.add(_linia(llista, s, prop));
@@ -307,7 +315,7 @@ class _MapaScreenState extends State<MapaScreen> {
                 child: PolylineLayer<Map<String, dynamic>>(polylines: linies, hitNotifier: _toc),
               ),
               CapaSimbologia(linies: glifs),
-              MarkerLayer(markers: punts),
+              CapaPunts(punts: punts, obrir: (p) => _obrirFitxa(p.prop, p.punt)),
               if (_posicio != null)
                 CircleLayer(
                   circles: [
@@ -478,37 +486,6 @@ class _MapaScreenState extends State<MapaScreen> {
       hitValue: prop,
     );
   }
-
-  /// Punt: la icona de la guia. Lo de 2018 sense revisar, més pàl·lid; lo no validat, amb anell negre.
-  Marker _marcador(SimbolPunt s, Map<String, dynamic> prop, LatLng punt, {required bool validat, required bool perRevisar}) =>
-      Marker(
-        point: punt,
-        width: 40,
-        height: 40,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _obrirFitxa(prop, punt),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              if (!validat)
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.6),
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                ),
-              Opacity(
-                opacity: perRevisar ? 0.6 : 1,
-                child: Image.asset(s.asset, width: 30, height: 30, fit: BoxFit.contain, filterQuality: FilterQuality.medium),
-              ),
-            ],
-          ),
-        ),
-      );
 }
 
 LatLng _ll(List c) => LatLng((c[1] as num).toDouble(), (c[0] as num).toDouble());
