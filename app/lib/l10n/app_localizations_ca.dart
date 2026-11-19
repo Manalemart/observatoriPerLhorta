@@ -35,7 +35,7 @@ class LCa extends L {
 
   @override
   String entradaCodiEnviat(String email) {
-    return 'Hem enviat un enllaç a $email. Obri\'l des d\'este mòbil i entraràs directament.';
+    return 'Hem enviat un enllaç a $email. Obri\'l des d\'este dispositiu i entraràs directament.';
   }
 
   @override
@@ -354,7 +354,7 @@ class LCa extends L {
 
   @override
   String paquetPreparat(String mida, String data) {
-    return 'Al mòbil · $mida · $data';
+    return 'Al dispositiu · $mida · $data';
   }
 
   @override
@@ -374,11 +374,11 @@ class LCa extends L {
   String get paquetActualitzar => 'Actualitzar';
 
   @override
-  String get paquetEsborrar => 'Esborrar del mòbil';
+  String get paquetEsborrar => 'Esborrar del dispositiu';
 
   @override
   String get paquetConfirmarEsborrar =>
-      'S\'esborrarà el mapa d\'aquesta partida del mòbil. Les revisions pendents d\'enviar no es perden.';
+      'S\'esborrarà el mapa d\'aquesta partida del dispositiu. Les revisions pendents d\'enviar no es perden.';
 
   @override
   String paquetIncomplet(int n) {
@@ -403,7 +403,7 @@ class LCa extends L {
 
   @override
   String get revisioGuardadaMobil =>
-      'Guardat al mòbil. S\'enviarà quan hi haja cobertura.';
+      'Guardat al dispositiu. S\'enviarà quan hi haja cobertura.';
 
   @override
   String get revisioPendentEnviar => 'Pendent d\'enviar';

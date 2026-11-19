@@ -144,7 +144,7 @@ abstract class L {
   /// No description provided for @entradaCodiEnviat.
   ///
   /// In ca, this message translates to:
-  /// **'Hem enviat un enllaç a {email}. Obri\'l des d\'este mòbil i entraràs directament.'**
+  /// **'Hem enviat un enllaç a {email}. Obri\'l des d\'este dispositiu i entraràs directament.'**
   String entradaCodiEnviat(String email);
 
   /// No description provided for @entradaCodi.
@@ -678,7 +678,7 @@ abstract class L {
   /// No description provided for @paquetPreparat.
   ///
   /// In ca, this message translates to:
-  /// **'Al mòbil · {mida} · {data}'**
+  /// **'Al dispositiu · {mida} · {data}'**
   String paquetPreparat(String mida, String data);
 
   /// No description provided for @paquetBaixant.
@@ -708,13 +708,13 @@ abstract class L {
   /// No description provided for @paquetEsborrar.
   ///
   /// In ca, this message translates to:
-  /// **'Esborrar del mòbil'**
+  /// **'Esborrar del dispositiu'**
   String get paquetEsborrar;
 
   /// No description provided for @paquetConfirmarEsborrar.
   ///
   /// In ca, this message translates to:
-  /// **'S\'esborrarà el mapa d\'aquesta partida del mòbil. Les revisions pendents d\'enviar no es perden.'**
+  /// **'S\'esborrarà el mapa d\'aquesta partida del dispositiu. Les revisions pendents d\'enviar no es perden.'**
   String get paquetConfirmarEsborrar;
 
   /// No description provided for @paquetIncomplet.
@@ -750,7 +750,7 @@ abstract class L {
   /// No description provided for @revisioGuardadaMobil.
   ///
   /// In ca, this message translates to:
-  /// **'Guardat al mòbil. S\'enviarà quan hi haja cobertura.'**
+  /// **'Guardat al dispositiu. S\'enviarà quan hi haja cobertura.'**
   String get revisioGuardadaMobil;
 
   /// No description provided for @revisioPendentEnviar.
