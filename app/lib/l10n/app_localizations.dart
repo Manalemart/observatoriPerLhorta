@@ -729,6 +729,12 @@ abstract class L {
   /// **'No s\'ha pogut preparar. Cal connexió.'**
   String get paquetError;
 
+  /// No description provided for @paquetErrorServidor.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut preparar: el servidor ha donat un error. Torna-ho a provar més tard.'**
+  String get paquetErrorServidor;
+
   /// No description provided for @partidesSenseXarxa.
   ///
   /// In ca, this message translates to:
@@ -788,6 +794,18 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'No tens cap avís.'**
   String get avisosBuit;
+
+  /// No description provided for @avisosSenseConnexio.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense connexió: no es poden consultar els avisos.'**
+  String get avisosSenseConnexio;
+
+  /// No description provided for @avisosSenseConnexioUltims.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense connexió: es mostren els últims avisos carregats.'**
+  String get avisosSenseConnexioUltims;
 
   /// No description provided for @avisosMarcarTots.
   ///

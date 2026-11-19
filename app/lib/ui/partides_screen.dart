@@ -48,8 +48,8 @@ class _PartidesScreenState extends State<PartidesScreen> {
     PreparacioPaquet prep;
     try {
       prep = await paquets.preparar(p.id);
-    } catch (_) {
-      avis.showSnackBar(SnackBar(content: Text(t.paquetError)));
+    } catch (e) {
+      avis.showSnackBar(SnackBar(content: Text(esErrorServidor(e) ? t.paquetErrorServidor : t.paquetError)));
       return;
     } finally {
       if (mounted) setState(() => _preparant = null);
@@ -67,8 +67,8 @@ class _PartidesScreenState extends State<PartidesScreen> {
       await paquets.descarregar(prep);
     } on TeselesSenseBaixar catch (e) {
       avis.showSnackBar(SnackBar(content: Text(t.paquetIncomplet(e.n))));
-    } catch (_) {
-      avis.showSnackBar(SnackBar(content: Text(t.paquetError)));
+    } catch (e) {
+      avis.showSnackBar(SnackBar(content: Text(esErrorServidor(e) ? t.paquetErrorServidor : t.paquetError)));
     }
   }
 

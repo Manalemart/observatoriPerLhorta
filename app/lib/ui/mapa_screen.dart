@@ -16,6 +16,7 @@ import '../services/paquets.dart';
 import '../services/sessio.dart';
 import '../services/sincronitzacio.dart';
 import 'accio_revisio.dart';
+import 'aportar_screen.dart' show VistaMapa;
 import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
 import 'entrada_screen.dart';
@@ -408,7 +409,7 @@ class _MapaScreenState extends State<MapaScreen> {
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               onPressed: () async {
-                await context.push('/aportar');
+                await context.push('/aportar', extra: VistaMapa(_mapa.camera.center, _mapa.camera.zoom));
                 _programarCarrega();
               },
               icon: const Icon(Icons.add),

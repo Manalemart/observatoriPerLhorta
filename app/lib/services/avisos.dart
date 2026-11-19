@@ -65,22 +65,44 @@ class Avisos extends ChangeNotifier {
   final ApiAvisos api;
   List<Avis> _items = const [];
   bool? _resumCorreu;
+  bool _carregant = false;
+  bool _carregats = false;
+  bool _senseConnexio = false;
+
+  /// Con poca cobertura la consulta puede tardar mucho en fallar: mejor avisar antes.
+  static const espera = Duration(seconds: 15);
 
   List<Avis> get items => _items;
+
+  bool get carregant => _carregant;
+
+  /// Si se han podido cargar alguna vez en esta sesión: si no, una lista vacía no quiere decir
+  /// que no haya avisos.
+  bool get carregats => _carregats;
+
+  /// La última carga ha fallado: lo que se ve (si hay algo) puede no estar al día.
+  bool get senseConnexio => _senseConnexio;
   int get noLlegits => _items.where((a) => !a.llegit).length;
 
   /// null mientras no se sabe (sin red, o la base de datos aún no lo tiene): no se muestra
   bool? get resumCorreu => _resumCorreu;
 
   Future<void> carregar() async {
+    _carregant = true;
+    notifyListeners();
     try {
-      _items = [for (final j in await api.avisos()) Avis.fromJson(j)];
-      notifyListeners();
+      _items = [for (final j in await api.avisos().timeout(espera)) Avis.fromJson(j)];
+      _carregats = true;
+      _senseConnexio = false;
     } catch (e) {
       debugPrint('Avisos sense carregar: $e');
+      _senseConnexio = true;
+    } finally {
+      _carregant = false;
+      notifyListeners();
     }
     try {
-      _resumCorreu = await api.resumCorreu();
+      _resumCorreu = await api.resumCorreu().timeout(espera);
       notifyListeners();
     } catch (e) {
       debugPrint('Preferència del resum sense carregar: $e');
@@ -112,6 +134,8 @@ class Avisos extends ChangeNotifier {
   void buidar() {
     _items = const [];
     _resumCorreu = null;
+    _carregats = false;
+    _senseConnexio = false;
     notifyListeners();
   }
 }

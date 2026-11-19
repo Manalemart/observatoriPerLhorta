@@ -19,7 +19,10 @@ class _AvisosScreenState extends State<AvisosScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<Avisos>().carregar();
+    // Después del primer frame: carregar() avisa enseguida y la barra de abajo también escucha
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<Avisos>().carregar();
+    });
   }
 
   String _accio(L t, Avis a) => switch (a.accio) {
@@ -97,11 +100,20 @@ class _AvisosScreenState extends State<AvisosScreen> {
               ),
               const Divider(height: 1),
             ],
+            if (avisos.senseConnexio && avisos.items.isNotEmpty)
+              ListTile(leading: const Icon(Icons.cloud_off), title: Text(t.avisosSenseConnexioUltims)),
             if (avisos.items.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(t.avisosBuit, textAlign: TextAlign.center, style: estilProsa(context)),
-              ),
+              if (!avisos.carregats && avisos.carregant)
+                const Padding(padding: EdgeInsets.all(32), child: Center(child: CircularProgressIndicator()))
+              else
+                Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Text(
+                    avisos.carregats ? t.avisosBuit : t.avisosSenseConnexio,
+                    textAlign: TextAlign.center,
+                    style: estilProsa(context),
+                  ),
+                ),
             for (final (i, a) in avisos.items.indexed) ...[
               if (i > 0) const Divider(height: 1),
               Builder(

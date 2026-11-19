@@ -18,6 +18,7 @@ import '../services/sigpac.dart';
 import '../services/sincronitzacio.dart';
 import 'accio_revisio.dart';
 import 'adaptatiu.dart';
+import 'aportar_screen.dart' show VistaMapa;
 import 'capes_mapa.dart';
 
 const _verd = Color(0xFF215C00);
@@ -345,7 +346,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
           FloatingActionButton.extended(
             heroTag: 'aportar',
             onPressed: () async {
-              await context.push('/aportar');
+              await context.push('/aportar', extra: VistaMapa(_mapa.camera.center, _mapa.camera.zoom));
               await _carregar();
             },
             icon: const Icon(Icons.add),

@@ -389,6 +389,10 @@ class LCa extends L {
   String get paquetError => 'No s\'ha pogut preparar. Cal connexió.';
 
   @override
+  String get paquetErrorServidor =>
+      'No s\'ha pogut preparar: el servidor ha donat un error. Torna-ho a provar més tard.';
+
+  @override
   String get partidesSenseXarxa =>
       'Sense connexió: es mostra l\'última llista guardada.';
 
@@ -424,6 +428,14 @@ class LCa extends L {
 
   @override
   String get avisosBuit => 'No tens cap avís.';
+
+  @override
+  String get avisosSenseConnexio =>
+      'Sense connexió: no es poden consultar els avisos.';
+
+  @override
+  String get avisosSenseConnexioUltims =>
+      'Sense connexió: es mostren els últims avisos carregats.';
 
   @override
   String get avisosMarcarTots => 'Marca-ho tot com a llegit';

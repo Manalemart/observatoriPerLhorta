@@ -216,6 +216,7 @@
     }
   },
   "paquetError": "No s'ha pogut preparar. Cal connexió.",
+  "paquetErrorServidor": "No s'ha pogut preparar: el servidor ha donat un error. Torna-ho a provar més tard.",
   "partidesSenseXarxa": "Sense connexió: es mostra l'última llista guardada.",
   "revisioSenseXarxa": "Sense connexió · dades del {data}",
   "@revisioSenseXarxa": {
@@ -240,6 +241,8 @@
   "revisioLlicenciaFotos": "Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.",
   "avisosTitol": "Avisos",
   "avisosBuit": "No tens cap avís.",
+  "avisosSenseConnexio": "Sense connexió: no es poden consultar els avisos.",
+  "avisosSenseConnexioUltims": "Sense connexió: es mostren els últims avisos carregats.",
   "avisosMarcarTots": "Marca-ho tot com a llegit",
   "avisValidat": "Validada",
   "avisRebutjat": "Rebutjada",

@@ -18,6 +18,10 @@ class AportacionsScreen extends StatefulWidget {
 class _AportacionsScreenState extends State<AportacionsScreen> {
   List<AportacioRemota>? _enviades;
   bool _errorEnviades = false;
+  bool _carregant = false;
+
+  /// Con poca cobertura la consulta puede tardar mucho en fallar: mejor avisar antes.
+  static const _espera = Duration(seconds: 15);
 
   late final Sincronitzacio _sinc;
   late int _reconnexions;
@@ -51,8 +55,9 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
 
   Future<void> _carregar() async {
     final api = context.read<ApiObservatori>();
+    setState(() => _carregant = true);
     try {
-      final r = await api.lesMeues();
+      final r = await api.lesMeues().timeout(_espera);
       if (mounted) {
         setState(() {
           _enviades = r;
@@ -61,6 +66,8 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
       }
     } catch (_) {
       if (mounted) setState(() => _errorEnviades = true);
+    } finally {
+      if (mounted) setState(() => _carregant = false);
     }
   }
 
@@ -136,7 +143,10 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
               const Divider(),
             ],
             ListTile(title: EtiquetaSeccio(t.llistaEnviades, padding: EdgeInsets.zero)),
-            if (_errorEnviades) ListTile(title: Text(t.llistaSenseConnexio)),
+            if (_carregant && _enviades == null)
+              const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator()))
+            else if (_errorEnviades)
+              ListTile(title: Text(t.llistaSenseConnexio)),
             if (!_errorEnviades && _enviades != null && enviades.isEmpty && perEnviar.isEmpty)
               ListTile(title: Text(t.llistaBuit)),
             for (final a in enviades)

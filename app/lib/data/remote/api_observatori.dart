@@ -12,6 +12,9 @@ class RebuigServidor implements Exception {
   final String missatge;
 }
 
+/// El servidor ha respondido con un error: no es falta de red, reintentar ahora no lo arregla.
+bool esErrorServidor(Object e) => e is PostgrestException || e is StorageException || e is RebuigServidor;
+
 /// Lo que necesita la sincronización: en los tests se sustituye por un doble.
 abstract class ApiAportacions {
   Future<void> inserirElement(Map<String, dynamic> fila);

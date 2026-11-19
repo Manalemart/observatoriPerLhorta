@@ -17,6 +17,7 @@ import 'package:observatori_horta/services/paquets.dart';
 import 'package:observatori_horta/services/sigpac.dart';
 import 'package:observatori_horta/services/sincronitzacio.dart';
 import 'package:observatori_horta/ui/aportar_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 
 class ApiFalsa implements ApiAportacions {
   final files = <Map<String, dynamic>>[];
@@ -70,6 +71,13 @@ Sincronitzacio sinc(ColaAportacions c, ApiAportacions a, {CercaRecinte? recinte}
     );
 
 void main() {
+  test('error del servidor o falta de red: el missatge ha de dir el que passa', () {
+    expect(esErrorServidor(const PostgrestException(message: 'no existeix la funció')), isTrue);
+    expect(esErrorServidor(RebuigServidor("fora de l'àmbit")), isTrue);
+    expect(esErrorServidor(TimeoutException('sense resposta')), isFalse);
+    expect(esErrorServidor(Exception('sense xarxa')), isFalse);
+  });
+
   group('Geometria', () {
     const a = LatLng(39.42, -0.35), b = LatLng(39.43, -0.36), c = LatLng(39.44, -0.34);
 
@@ -524,6 +532,21 @@ void main() {
       expect(a.dePartida, isTrue);
       expect(Avis.fromJson(fila(2, 'validat')).dePartida, isFalse);
       expect(Avis.fromJson({...fila(3, 'validat'), 'element': null}).titol, '', reason: 'sense element visible no peta');
+    });
+
+    test("sense xarxa no diu que no n'hi ha: diu que no s'han pogut carregar", () async {
+      final api = _ApiAvisosFalsa([fila(1, 'validat')])..error = true;
+      final avisos = Avisos(api);
+      await avisos.carregar();
+      expect([avisos.carregats, avisos.senseConnexio, avisos.items.length], [false, true, 0]);
+      api.error = false;
+      await avisos.carregar();
+      expect([avisos.carregats, avisos.senseConnexio, avisos.items.length], [true, false, 1]);
+      api.error = true;
+      await avisos.carregar();
+      expect([avisos.senseConnexio, avisos.items.length], [true, 1], reason: 'es queda amb els últims');
+      avisos.buidar();
+      expect([avisos.carregats, avisos.senseConnexio], [false, false]);
     });
 
     test('compta els no llegits i els marca', () async {

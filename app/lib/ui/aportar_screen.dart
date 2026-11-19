@@ -39,11 +39,20 @@ Map<String, dynamic>? geometriaDePunts(GeometriaVariable tipus, List<LatLng> pun
   };
 }
 
+/// Dónde estaba el mapa desde el que se abre «Aporta»: se empieza ahí, no en la vista general.
+class VistaMapa {
+  const VistaMapa(this.centre, this.zoom);
+  final LatLng centre;
+  final double zoom;
+}
+
 class AportarScreen extends StatefulWidget {
-  const AportarScreen({super.key, this.substitut});
+  const AportarScreen({super.key, this.substitut, this.vista});
 
   /// Desde «Ha canviat» en la revisión: tipo y lugar ya puestos, y el nuevo sustituirá al antiguo.
   final AportacioSubstitut? substitut;
+
+  final VistaMapa? vista;
 
   @override
   State<AportarScreen> createState() => _AportarScreenState();
@@ -393,8 +402,8 @@ class _AportarScreenState extends State<AportarScreen> {
       FlutterMap(
         mapController: _mapa,
         options: MapOptions(
-          initialCenter: widget.substitut?.punt ?? Config.centreInicial,
-          initialZoom: widget.substitut == null ? Config.zoomInicial : 18,
+          initialCenter: widget.substitut?.punt ?? widget.vista?.centre ?? Config.centreInicial,
+          initialZoom: widget.substitut != null ? 18 : widget.vista?.zoom ?? Config.zoomInicial,
           onTap: (_, p) => _marcar(p),
           interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
         ),

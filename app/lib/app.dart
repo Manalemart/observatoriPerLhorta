@@ -45,7 +45,11 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
       GoRoute(
         path: '/aportar',
         parentNavigatorKey: _arrel,
-        builder: (_, estat) => AportarScreen(substitut: estat.extra as AportacioSubstitut?),
+        builder: (_, estat) => switch (estat.extra) {
+          final AportacioSubstitut s => AportarScreen(substitut: s),
+          final VistaMapa v => AportarScreen(vista: v),
+          _ => const AportarScreen(),
+        },
       ),
       GoRoute(
         path: '/partides/:id',
