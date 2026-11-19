@@ -112,14 +112,16 @@ class _PartidesScreenState extends State<PartidesScreen> {
           if (llista.isEmpty) {
             return _Buit(icona: Icons.fact_check_outlined, text: t.partidesBuit);
           }
-          return RefreshIndicator(
+          return Centrat(
+            base: const EdgeInsets.all(12),
+            builder: (context, farciment) => RefreshIndicator(
             onRefresh: () async {
               final f = _carregar();
               setState(() => _partides = f);
               await f;
             },
             child: ListView.separated(
-              padding: const EdgeInsets.all(12),
+              padding: farciment,
               itemCount: llista.length + (_senseXarxa ? 1 : 0),
               separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (context, i) {
@@ -151,7 +153,7 @@ class _PartidesScreenState extends State<PartidesScreen> {
                 );
               },
             ),
-          );
+          ));
         },
       ),
     );

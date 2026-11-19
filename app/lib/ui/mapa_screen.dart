@@ -17,6 +17,7 @@ import '../services/sessio.dart';
 import '../services/simbologia.dart';
 import '../services/sincronitzacio.dart';
 import 'accio_revisio.dart';
+import 'adaptatiu.dart';
 import 'aportar_screen.dart' show VistaMapa;
 import 'capa_simbologia.dart';
 import 'capes_mapa.dart';
@@ -324,7 +325,9 @@ class _MapaScreenState extends State<MapaScreen> {
           ),
           // Barra flotante: marca, capas y perfil
           SafeArea(
-            child: Padding(
+            child: Flotant(
+              maxim: ampladaFlotant + 24,
+              child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: Column(
                 children: [
@@ -392,7 +395,7 @@ class _MapaScreenState extends State<MapaScreen> {
                 ],
               ),
             ),
-          ),
+          )),
         ],
       ),
       // Por encima de la atribución del mapa de fondo, que debe leerse

@@ -18,6 +18,7 @@ import '../services/fotos.dart';
 import '../services/paquets.dart';
 import '../services/sigpac.dart';
 import '../services/sincronitzacio.dart';
+import 'adaptatiu.dart';
 import 'capes_mapa.dart';
 
 /// Geometría GeoJSON a partir de los puntos marcados; null si aún no hay bastantes.
@@ -280,7 +281,7 @@ class _AportarScreenState extends State<AportarScreen> {
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-              child: Row(children: [
+              child: Flotant(alineacio: Alignment.center, maxim: ampladaFormulari - 32, child: Row(children: [
                 if (_pas > 0) ...[
                   OutlinedButton(onPressed: () => setState(() => _pas--), child: Text(t.comuEnrere)),
                   const SizedBox(width: 12),
@@ -291,7 +292,7 @@ class _AportarScreenState extends State<AportarScreen> {
                     child: Text(_pas < 2 ? t.comuContinua : t.aportarGuardar),
                   ),
                 ),
-              ]),
+              ])),
             ),
           ),
         ),
@@ -302,8 +303,11 @@ class _AportarScreenState extends State<AportarScreen> {
   Widget _pasQue(L t) {
     final temes = context.watch<Cataleg>().temes;
     final v = _variable;
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+    return Centrat(
+      maxim: ampladaFormulari,
+      base: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+      builder: (context, farciment) => ListView(
+      padding: farciment,
       children: [
         if (widget.substitut != null)
           Padding(
@@ -378,7 +382,7 @@ class _AportarScreenState extends State<AportarScreen> {
           ),
         ],
       ],
-    );
+    ));
   }
 
   Widget _pasOn(L t) {
@@ -437,7 +441,7 @@ class _AportarScreenState extends State<AportarScreen> {
         top: 12,
         left: 12,
         right: 12,
-        child: Material(
+        child: Flotant(child: Material(
           color: cs.surface,
           elevation: 3,
           borderRadius: BorderRadius.circular(16),
@@ -451,7 +455,7 @@ class _AportarScreenState extends State<AportarScreen> {
               ],
             ]),
           ),
-        ),
+        )),
       ),
       Positioned(
         left: 12,
@@ -486,8 +490,11 @@ class _AportarScreenState extends State<AportarScreen> {
   Widget _pasDetalls(L t) {
     final cs = Theme.of(context).colorScheme;
     final ple = _fotos.length >= Config.maxFotos;
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+    return Centrat(
+      maxim: ampladaFormulari,
+      base: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+      builder: (context, farciment) => ListView(
+      padding: farciment,
       children: [
         EtiquetaSeccio(t.aportarFotosTitol, padding: const EdgeInsets.fromLTRB(4, 20, 4, 10)),
         SizedBox(
@@ -528,7 +535,7 @@ class _AportarScreenState extends State<AportarScreen> {
         const SizedBox(height: 8),
         Text(t.aportarLlicencia, style: TextStyle(fontSize: 12, height: 1.45, color: cs.onSurfaceVariant)),
       ],
-    );
+    ));
   }
 }
 

@@ -123,6 +123,15 @@ ThemeData temaApp(Brightness brillo) {
       // La vora lima de la capçalera de la web
       shape: const Border(bottom: BorderSide(color: Marca.lima, width: 4)),
     ),
+    navigationRailTheme: NavigationRailThemeData(
+      backgroundColor: c.surface,
+      indicatorColor: c.primaryContainer,
+      minWidth: 88,
+      selectedIconTheme: IconThemeData(color: c.onPrimaryContainer),
+      unselectedIconTheme: IconThemeData(color: c.onSurfaceVariant),
+      selectedLabelTextStyle: TextStyle(fontFamily: fontMarca, fontSize: 12, fontWeight: FontWeight.w800, color: c.onSurface),
+      unselectedLabelTextStyle: TextStyle(fontFamily: fontMarca, fontSize: 12, fontWeight: FontWeight.w600, color: c.onSurfaceVariant),
+    ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: c.surface,
       surfaceTintColor: Colors.transparent,

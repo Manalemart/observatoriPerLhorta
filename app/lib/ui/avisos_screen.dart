@@ -7,6 +7,8 @@ import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
 import '../services/avisos.dart';
 
+import 'adaptatiu.dart';
+
 /// La campana: lo que ha pasado con lo que has aportado y en las partidas que apadrinas.
 class AvisosScreen extends StatefulWidget {
   const AvisosScreen({super.key});
@@ -86,9 +88,11 @@ class _AvisosScreenState extends State<AvisosScreen> {
             ),
         ],
       ),
-      body: RefreshIndicator(
+      body: Centrat(
+        builder: (context, farciment) => RefreshIndicator(
         onRefresh: avisos.carregar,
         child: ListView(
+          padding: farciment,
           children: [
             if (avisos.resumCorreu != null) ...[
               SwitchListTile(
@@ -144,7 +148,7 @@ class _AvisosScreenState extends State<AvisosScreen> {
             ],
           ],
         ),
-      ),
+      )),
     );
   }
 }

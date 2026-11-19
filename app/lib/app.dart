@@ -101,11 +101,57 @@ class _Seccions extends StatelessWidget {
   Widget build(BuildContext context) {
     final noLlegits = context.watch<Avisos>().noLlegits;
     final pendents = context.watch<Sincronitzacio>().pendents;
+    // Tauleta Android: rail lateral (Material 3). En iPad es queda la barra de pestanyes,
+    // que és la navegació que esperen les guies d'Apple també en iPad.
+    if (!esApple(context) && esTauleta(context)) {
+      return Scaffold(
+        body: Row(children: [
+          _rail(context, noLlegits, pendents),
+          VerticalDivider(width: 1, thickness: 1, color: Theme.of(context).colorScheme.outlineVariant),
+          Expanded(child: shell),
+        ]),
+      );
+    }
     return Scaffold(
       body: shell,
       bottomNavigationBar: esApple(context)
           ? _barraApple(context, noLlegits, pendents)
           : _barraMaterial(context, noLlegits, pendents),
+    );
+  }
+
+  Widget _rail(BuildContext context, int noLlegits, int pendents) {
+    final t = L.of(context);
+    return SafeArea(
+      right: false,
+      child: NavigationRail(
+        selectedIndex: shell.currentIndex,
+        onDestinationSelected: _anar,
+        labelType: NavigationRailLabelType.all,
+        groupAlignment: -0.85,
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 8),
+          child: Image.asset('assets/simbol.png', height: 44, semanticLabel: "L'observatori"),
+        ),
+        destinations: [
+          NavigationRailDestination(icon: const Icon(Icons.map_outlined), selectedIcon: const Icon(Icons.map), label: Text(t.navMapa)),
+          NavigationRailDestination(
+            icon: const Icon(Icons.fact_check_outlined),
+            selectedIcon: const Icon(Icons.fact_check),
+            label: Text(t.navPartides),
+          ),
+          NavigationRailDestination(
+            icon: _ambInsignia(Icons.notifications_outlined, noLlegits),
+            selectedIcon: _ambInsignia(Icons.notifications, noLlegits),
+            label: Text(t.navAvisos),
+          ),
+          NavigationRailDestination(
+            icon: _ambInsignia(Icons.inventory_2_outlined, pendents),
+            selectedIcon: _ambInsignia(Icons.inventory_2, pendents),
+            label: Text(t.navLesMeues),
+          ),
+        ],
+      ),
     );
   }
 

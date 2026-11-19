@@ -8,6 +8,8 @@ import '../data/remote/api_observatori.dart';
 import '../l10n/app_localizations.dart';
 import '../services/sincronitzacio.dart';
 
+import 'adaptatiu.dart';
+
 class AportacionsScreen extends StatefulWidget {
   const AportacionsScreen({super.key});
 
@@ -82,12 +84,14 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: TitolBarra(t.mapaAportacions)),
-      body: RefreshIndicator(
+      body: Centrat(
+        builder: (context, farciment) => RefreshIndicator(
         onRefresh: () async {
           await sinc.enviar();
           await _carregar();
         },
         child: ListView(
+          padding: farciment,
           children: [
             if (perEnviar.isNotEmpty || revisions.isNotEmpty) ...[
               ListTile(
@@ -168,7 +172,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
               ),
           ],
         ),
-      ),
+      )),
     );
   }
 }
