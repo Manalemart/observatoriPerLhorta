@@ -78,6 +78,8 @@ flutter:
     - assets/simbol.png
     - assets/marca.png
     - assets/marca_blanca.png
+    - assets/simbologia.json
+    - assets/simbols/
     - assets/fonts/OFL-Montserrat.txt
     - assets/fonts/OFL-SourceSerif4.txt
 

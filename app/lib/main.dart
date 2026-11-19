@@ -15,6 +15,7 @@ import 'services/avisos.dart';
 import 'services/cataleg.dart';
 import 'services/paquets.dart';
 import 'services/sessio.dart';
+import 'services/simbologia.dart';
 import 'services/sigpac.dart';
 import 'services/sincronitzacio.dart';
 import 'ui/capes_mapa.dart';
@@ -49,6 +50,7 @@ Future<void> main() async {
     tesela: (t) => baixarTesela(clientTeseles, t),
   );
   await paquets.carregar();
+  final simbologia = await Simbologia.carregar();
 
   await sincronitzacio.carregar();
   // Al recuperar la red se envía lo pendiente y se recargan las pantallas. Sin sesión no se puede
@@ -83,6 +85,7 @@ Future<void> main() async {
     providers: [
       Provider.value(value: api),
       Provider.value(value: sigpac),
+      Provider.value(value: simbologia),
       ChangeNotifierProvider.value(value: sessio),
       ChangeNotifierProvider.value(value: cataleg),
       ChangeNotifierProvider.value(value: sincronitzacio),

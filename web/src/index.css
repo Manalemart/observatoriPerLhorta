@@ -121,6 +121,17 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .variables { padding: 0 0 0.5rem 1.4rem; }
 .variables li { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 30px; font-size: 0.85rem; }
 .variables label { display: flex; align-items: center; gap: 0.5rem; min-width: 0; cursor: pointer; }
+.variables li.amb-categories { flex-direction: column; align-items: stretch; }
+.variable-fila { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 30px; }
+/* Símbols de la guia de disseny (docs/simbologia) */
+.mostra-simbol { flex: none; width: 22px; height: 22px; object-fit: contain; }
+.mostra-linia { width: 30px; height: 14px; }
+.mostra-parcela { display: inline-block; width: 22px; height: 14px; border: 1px solid; border-radius: 2px; }
+.categories-simbol { padding: 0 0 0.35rem 1.6rem; display: flex; flex-direction: column; gap: 0.15rem; }
+.categories-simbol li { min-height: 24px !important; justify-content: flex-start !important; font-size: 0.8rem; color: var(--text-2); }
+.categories-simbol .mostra-simbol { width: 18px; height: 18px; }
+.categories-simbol .mostra-linia { width: 30px; height: 14px; }
+.categories-simbol .mostra-parcela { width: 20px; height: 12px; }
 
 /* Opciones */
 .opcions { display: flex; flex-direction: column; gap: 0.15rem; }

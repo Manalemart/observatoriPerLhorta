@@ -1,0 +1,901 @@
+{
+ "font": "docs/simbologia/guia (Per l'Horta, símbols finals). Generat per docs/simbologia/generar.py",
+ "paleta": [
+  "#84786d",
+  "#574F46",
+  "#009EE0",
+  "#244c0b",
+  "#348e00",
+  "#9ED100",
+  "#E2001A",
+  "#422515",
+  "#F9AC00"
+ ],
+ "colorsTema": {
+  "Agressions": "#E2001A",
+  "Construccions": "#F9AC00",
+  "Infraestructura": "#009EE0",
+  "Ús del sòl": "#9ED100",
+  "Vegetació": "#348E00"
+ },
+ "familiaTema": {
+  "Agressions": "agressions",
+  "Construccions": "construccions",
+  "Infraestructura": "serveis",
+  "Vegetació": "vegetacio",
+  "Ús del sòl": "construccions"
+ },
+ "families": {
+  "reg": {
+   "nom": "Sistema de reg",
+   "color": "#009EE0",
+   "contorn": "#574F46",
+   "icona": "reg"
+  },
+  "serveis": {
+   "nom": "Abastiments i serveis",
+   "color": "#574F46",
+   "contorn": "#000000",
+   "icona": "serveis"
+  },
+  "construccions": {
+   "nom": "Construccions",
+   "color": "#F9AC00",
+   "contorn": "#574F46",
+   "icona": "construccio"
+  },
+  "vegetacio": {
+   "nom": "Vegetació",
+   "color": "#348E00",
+   "contorn": "#574F46",
+   "icona": "vegetacio"
+  },
+  "agressions": {
+   "nom": "Agressions",
+   "color": "#E2001A",
+   "contorn": "#574F46",
+   "icona": "agressio"
+  }
+ },
+ "icones": {
+  "reg": [
+   106,
+   130
+  ],
+  "assut": [
+   108,
+   130
+  ],
+  "noria": [
+   108,
+   130
+  ],
+  "font": [
+   108,
+   130
+  ],
+  "mina": [
+   108,
+   128
+  ],
+  "aliviadero": [
+   108,
+   130
+  ],
+  "gola": [
+   108,
+   130
+  ],
+  "partidor": [
+   108,
+   128
+  ],
+  "anell": [
+   108,
+   128
+  ],
+  "sifo": [
+   108,
+   130
+  ],
+  "canaleta": [
+   108,
+   128
+  ],
+  "roll": [
+   108,
+   130
+  ],
+  "fila": [
+   108,
+   130
+  ],
+  "aljub": [
+   108,
+   128
+  ],
+  "bassa": [
+   108,
+   130
+  ],
+  "pou": [
+   108,
+   130
+  ],
+  "atandador": [
+   108,
+   128
+  ],
+  "reg_altre": [
+   108,
+   130
+  ],
+  "serveis": [
+   118,
+   118
+  ],
+  "gas": [
+   118,
+   118
+  ],
+  "aigua_elevat": [
+   118,
+   118
+  ],
+  "bombeig": [
+   118,
+   118
+  ],
+  "depuradora": [
+   118,
+   118
+  ],
+  "potabilitzadora": [
+   118,
+   118
+  ],
+  "subestacio": [
+   118,
+   118
+  ],
+  "contenidor": [
+   118,
+   118
+  ],
+  "ecoparc": [
+   118,
+   118
+  ],
+  "tanca_cami": [
+   118,
+   118
+  ],
+  "construccio": [
+   130,
+   130
+  ],
+  "moli": [
+   130,
+   130
+  ],
+  "religios": [
+   128,
+   130
+  ],
+  "castell": [
+   128,
+   130
+  ],
+  "nau": [
+   128,
+   130
+  ],
+  "xemeneia": [
+   128,
+   128
+  ],
+  "cementeri": [
+   128,
+   130
+  ],
+  "cebera": [
+   128,
+   132
+  ],
+  "transformador": [
+   128,
+   130
+  ],
+  "motor": [
+   134,
+   130
+  ],
+  "caseta": [
+   128,
+   130
+  ],
+  "construccio_altre": [
+   128,
+   130
+  ],
+  "vegetacio": [
+   130,
+   130
+  ],
+  "frutal": [
+   102,
+   144
+  ],
+  "no_frutal": [
+   100,
+   144
+  ],
+  "canyar": [
+   130,
+   130
+  ],
+  "barreja": [
+   100,
+   142
+  ],
+  "agressio": [
+   132,
+   112
+  ],
+  "aparcament": [
+   134,
+   114
+  ],
+  "tanca_publicitaria": [
+   134,
+   114
+  ],
+  "abocador": [
+   134,
+   114
+  ],
+  "torre_tensio": [
+   136,
+   114
+  ],
+  "agressio_altre": [
+   134,
+   116
+  ]
+ },
+ "punts": [
+  {
+   "variable": "Abocament (sòlid ó liquid)",
+   "icona": "abocador",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Altres agressions (text lliure)",
+   "icona": "agressio_altre",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Aparcament",
+   "icona": "aparcament",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Tanques publicitaries",
+   "icona": "tanca_publicitaria",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Torre de tensió",
+   "icona": "torre_tensio",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Alqueria",
+   "icona": "construccio",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Barraca",
+   "icona": "construccio",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Vil·la",
+   "icona": "construccio",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Altre (text lliure)",
+   "icona": "construccio_altre",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Caseta de ferramentes",
+   "icona": "caseta",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Castell",
+   "icona": "castell",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Cebera",
+   "icona": "cebera",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Cementeri",
+   "icona": "cementeri",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Dipòsit",
+   "icona": "construccio_altre",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Ermita",
+   "icona": "religios",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Indústria",
+   "icona": "nau",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Nau",
+   "icona": "nau",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Magatzem",
+   "icona": "nau",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Molí",
+   "icona": "moli",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Motor",
+   "icona": "motor",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Subestació",
+   "icona": "subestacio",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Transformador",
+   "icona": "transformador",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Xemeneia ó fumeral",
+   "icona": "xemeneia",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "icona": "serveis",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Contenidor",
+   "icona": "contenidor",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Depuradora",
+   "icona": "depuradora",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Dipòsit d'aigua elevat",
+   "icona": "aigua_elevat",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Dipòsit de gas",
+   "icona": "gas",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Ecoparc",
+   "icona": "ecoparc",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Estació de bombeig",
+   "icona": "bombeig",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Potabilitzadora",
+   "icona": "potabilitzadora",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Tanca",
+   "icona": "tanca_cami",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Torre d'alta tensió",
+   "icona": "torre_tensio",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Torre de mitja o baixa tensió",
+   "icona": "torre_tensio",
+   "familia": "agressions"
+  },
+  {
+   "variable": "Abastiments i serveis",
+   "categoria": "Transformador",
+   "icona": "transformador",
+   "familia": "construccions"
+  },
+  {
+   "variable": "Contenidors (punt de replega de residus)",
+   "icona": "contenidor",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Tanques d'accés als camins",
+   "icona": "tanca_cami",
+   "familia": "serveis"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "icona": "reg",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Aljup",
+   "icona": "aljub",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Almenara ó Aliviadero",
+   "icona": "aliviadero",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Altre element de reg (text lliure)",
+   "icona": "reg_altre",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Anell (canals principals)",
+   "icona": "anell",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Assut",
+   "icona": "assut",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Atandador",
+   "icona": "atandador",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Bassa",
+   "icona": "bassa",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Canaleta",
+   "icona": "canaleta",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Fila (angle)",
+   "icona": "fila",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Font ó ullal",
+   "icona": "font",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Gola",
+   "icona": "gola",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Mina ó canat",
+   "icona": "mina",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Nòria ó sènia",
+   "icona": "noria",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Partidor",
+   "icona": "partidor",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Pou",
+   "icona": "pou",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Roll (perpendicular)",
+   "icona": "roll",
+   "familia": "reg"
+  },
+  {
+   "variable": "Elements del sistema de reg",
+   "categoria": "Sifó (canó)",
+   "icona": "sifo",
+   "familia": "reg"
+  },
+  {
+   "variable": "Altra vegetació (text lliure)",
+   "icona": "vegetacio",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Barreja d'epècies",
+   "icona": "barreja",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Canyar",
+   "icona": "canyar",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Figuera",
+   "icona": "frutal",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Garrofera",
+   "icona": "frutal",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Olivera",
+   "icona": "frutal",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Llidoner",
+   "icona": "no_frutal",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Llorer",
+   "icona": "no_frutal",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Om",
+   "icona": "no_frutal",
+   "familia": "vegetacio"
+  },
+  {
+   "variable": "Xop",
+   "icona": "no_frutal",
+   "familia": "vegetacio"
+  }
+ ],
+ "estilsLinia": {
+  "sequia_obra": {
+   "nom": "Sèquia d'obra",
+   "color": "#009EE0",
+   "amplada": 2.5,
+   "patro": "continua",
+   "glif": "fletxa"
+  },
+  "sequia_terra": {
+   "nom": "Sèquia de terra",
+   "color": "#009EE0",
+   "amplada": 2,
+   "patro": "puntejada",
+   "glif": "fletxa"
+  },
+  "sequia_mixta": {
+   "nom": "Sèquia mixta",
+   "color": "#009EE0",
+   "amplada": 2,
+   "patro": "punt_ratlla",
+   "glif": "fletxa"
+  },
+  "sequia_soterrada": {
+   "nom": "Sèquia soterrada",
+   "color": "#009EE0",
+   "amplada": 2,
+   "patro": "discontinua",
+   "glif": "fletxa"
+  },
+  "cami": {
+   "nom": "Camí",
+   "color": "#574F46",
+   "amplada": 4,
+   "patro": "doble"
+  },
+  "senda": {
+   "nom": "Senda",
+   "color": "#574F46",
+   "amplada": 2,
+   "patro": "discontinua"
+  },
+  "paret_pedra": {
+   "nom": "Paret de pedra",
+   "color": "#574F46",
+   "amplada": 1,
+   "patro": "cap",
+   "glif": "quadrat"
+  },
+  "mur": {
+   "nom": "Mur d'obra",
+   "color": "#574F46",
+   "amplada": 1.5,
+   "patro": "continua",
+   "glif": "mur"
+  },
+  "malla": {
+   "nom": "Malla metàl·lica",
+   "color": "#574F46",
+   "amplada": 1,
+   "patro": "continua",
+   "glif": "travesser"
+  },
+  "tanca_mixta": {
+   "nom": "Mixt (obra i metàl·lica)",
+   "color": "#574F46",
+   "amplada": 1.5,
+   "patro": "cap",
+   "glif": "ziga"
+  },
+  "somiers": {
+   "nom": "Somiers, fustes",
+   "color": "#574F46",
+   "amplada": 1,
+   "patro": "continua",
+   "glif": "x"
+  },
+  "tanca": {
+   "nom": "Tancament",
+   "color": "#574F46",
+   "amplada": 1.5,
+   "patro": "continua"
+  },
+  "tanca_vegetal": {
+   "nom": "Tanca vegetal",
+   "color": "#348E00",
+   "amplada": 1.5,
+   "patro": "cap",
+   "glif": "ona"
+  }
+ },
+ "linies": [
+  {
+   "variable": "Sèquies",
+   "estil": "sequia_obra"
+  },
+  {
+   "variable": "Sèquies",
+   "categoria": "Caixer d'obra",
+   "estil": "sequia_obra"
+  },
+  {
+   "variable": "Sèquies",
+   "categoria": "Caixer de terra",
+   "estil": "sequia_terra"
+  },
+  {
+   "variable": "Sèquies",
+   "categoria": "Mixt (obra i terra)",
+   "estil": "sequia_mixta"
+  },
+  {
+   "variable": "Sèquies",
+   "categoria": "Soterrada",
+   "estil": "sequia_soterrada"
+  },
+  {
+   "variable": "Vials",
+   "estil": "cami"
+  },
+  {
+   "variable": "Vials",
+   "categoria": "Camí",
+   "estil": "cami"
+  },
+  {
+   "variable": "Vials",
+   "categoria": "Senda",
+   "estil": "senda"
+  },
+  {
+   "variable": "Vials",
+   "categoria": "Via pecuària",
+   "estil": "cami"
+  },
+  {
+   "variable": "Tancaments",
+   "estil": "tanca"
+  },
+  {
+   "variable": "Tancaments",
+   "categoria": "Paretó de pedra",
+   "estil": "paret_pedra"
+  },
+  {
+   "variable": "Tancaments",
+   "categoria": "Mur d'obra",
+   "estil": "mur"
+  },
+  {
+   "variable": "Tancaments",
+   "categoria": "Malla metàl·lica",
+   "estil": "malla"
+  },
+  {
+   "variable": "Tancaments",
+   "categoria": "Mixt (part d'obra i part metàl·lica)",
+   "estil": "tanca_mixta"
+  },
+  {
+   "variable": "Tancaments",
+   "categoria": "Matalassos, fustes, enderrocs",
+   "estil": "somiers"
+  },
+  {
+   "variable": "Tancaments",
+   "categoria": "Bardissa",
+   "estil": "tanca_vegetal"
+  }
+ ],
+ "estilsParcela": {
+  "horticola_intensiu": {
+   "nom": "Hortícola intensiu",
+   "color": "#244c0b",
+   "contorn": "#574F46",
+   "trama": null
+  },
+  "horticola_diversificat": {
+   "nom": "Hortícola diversificat",
+   "color": "#244c0b",
+   "contorn": "#574F46",
+   "trama": "ratlles"
+  },
+  "fruiters": {
+   "nom": "Fruiters",
+   "color": "#9ED100",
+   "contorn": "#574F46",
+   "trama": "punts"
+  },
+  "ornamental": {
+   "nom": "Ornamental",
+   "color": "#9ED100",
+   "contorn": "#574F46",
+   "trama": null
+  },
+  "abandonat": {
+   "nom": "Abandonat",
+   "color": "#F9AC00",
+   "contorn": "#574F46",
+   "trama": null
+  },
+  "guaret": {
+   "nom": "Guaret",
+   "color": "#F9AC00",
+   "contorn": "#574F46",
+   "trama": "ratlles"
+  },
+  "per_determinar": {
+   "nom": "Per determinar",
+   "color": "#84786d",
+   "contorn": "#000000",
+   "trama": null
+  },
+  "agrari": {
+   "nom": "Altres usos agraris",
+   "color": "#422515",
+   "contorn": "#574F46",
+   "trama": "punts"
+  },
+  "no_agrari": {
+   "nom": "Altres usos no agraris",
+   "color": "#422515",
+   "contorn": "#574F46",
+   "trama": null
+  }
+ },
+ "parceles": [
+  {
+   "variable": "Parcel·les cultivades",
+   "estil": "horticola_intensiu"
+  },
+  {
+   "variable": "Parcel·les cultivades",
+   "categoria": "Hortícola Intensiu",
+   "estil": "horticola_intensiu"
+  },
+  {
+   "variable": "Parcel·les cultivades",
+   "categoria": "Hortícola Diversificat",
+   "estil": "horticola_diversificat"
+  },
+  {
+   "variable": "Parcel·les cultivades",
+   "categoria": "Fruiters",
+   "estil": "fruiters"
+  },
+  {
+   "variable": "Parcel·les cultivades",
+   "categoria": "Ornamental",
+   "estil": "ornamental"
+  },
+  {
+   "variable": "Parcel·les sense cultivar",
+   "estil": "per_determinar"
+  },
+  {
+   "variable": "Parcel·les sense cultivar",
+   "categoria": "Abandonat",
+   "estil": "abandonat"
+  },
+  {
+   "variable": "Parcel·les sense cultivar",
+   "categoria": "Guaret",
+   "estil": "guaret"
+  },
+  {
+   "variable": "Parcel·les sense cultivar",
+   "categoria": "Per determinar",
+   "estil": "per_determinar"
+  },
+  {
+   "variable": "Parcel·les sense cultivar",
+   "categoria": "Agrari",
+   "estil": "agrari"
+  },
+  {
+   "variable": "Parcel·les sense cultivar",
+   "categoria": "No Agrari",
+   "estil": "no_agrari"
+  }
+ ]
+}

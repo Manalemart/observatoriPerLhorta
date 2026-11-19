@@ -1,5 +1,5 @@
-import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
-import type { Fons, Tema } from './tipus';
+import type { StyleSpecification } from 'maplibre-gl';
+import type { Fons } from './tipus';
 
 const wmts = (servei: string, capa: string) =>
   `https://www.ign.es/wmts/${servei}?service=WMTS&request=GetTile&version=1.0.0&layer=${capa}` +
@@ -23,7 +23,11 @@ export const FONS_INICIAL: Fons = 'pnoa';
 // Vista inicial: los 37 municipios del ámbito
 export const LIMITS_AMBIT: [[number, number], [number, number]] = [[-0.56, 39.33], [-0.25, 39.63]];
 
-export const CAPES_ELEMENTS = ['elements-punts', 'elements-linies', 'elements-poligons'];
+// Les capes on es pot fer clic per a obrir la fitxa (vegeu Mapa.tsx)
+export const CAPES_ELEMENTS = [
+  'elements-icones', 'elements-punts', 'elements-linies', 'elements-linies-discontinua', 'elements-linies-puntejada',
+  'elements-linies-punt-ratlla', 'elements-linies-doble', 'elements-linies-trama', 'elements-poligons',
+];
 
 export function estilBase(): StyleSpecification {
   return {
@@ -46,9 +50,4 @@ export function estilBase(): StyleSpecification {
       layout: { visibility: id === FONS_INICIAL ? 'visible' : 'none' },
     })),
   };
-}
-
-export function colorPerTema(temes: Tema[]): ExpressionSpecification {
-  const parelles = temes.flatMap((t) => [t.id, t.color]);
-  return ['match', ['get', 'tema_id'], ...parelles, '#888888'] as unknown as ExpressionSpecification;
 }

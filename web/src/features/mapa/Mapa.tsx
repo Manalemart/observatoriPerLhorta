@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   GeoJSONSource, Map as MapaGL, NavigationControl, ScaleControl, setWorkerUrl,
-  type ExpressionSpecification, type FilterSpecification, type Point,
+  type ExpressionSpecification, type FilterSpecification, type LayerSpecification, type Point,
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection } from 'geojson';
-import { CAPES_ELEMENTS, colorPerTema, estilBase, FONS, LIMITS_AMBIT } from './estil';
+import { CAPES_ELEMENTS, estilBase, FONS, LIMITS_AMBIT } from './estil';
+import { ambSimbols, indexSimbologia, servirImatges } from './simbologia';
 import type { Dades, Epoca, Esborrany, Fons } from './tipus';
 
 interface Props {
@@ -51,8 +52,32 @@ function visibilitat(mapa: MapaGL, capa: string, visible: boolean) {
   mapa.setLayoutProperty(capa, 'visibility', visible ? 'visible' : 'none');
 }
 
+// Capes dels elements i el seu filtre propi (a banda del de variables i època)
+const PUNT = ['==', ['geometry-type'], 'Point'];
+const LINIA = ['==', ['geometry-type'], 'LineString'];
+const POLIGON = ['==', ['geometry-type'], 'Polygon'];
+const ambPatro = (...patrons: string[]) => ['all', LINIA, ['in', ['get', 's_patro'], ['literal', patrons]]];
+const BASE_CAPES: Record<string, unknown> = {
+  'elements-poligons': POLIGON,
+  'elements-poligons-trama': ['all', POLIGON, ['has', 's_trama']],
+  'elements-poligons-revisar': ['all', POLIGON, PER_REVISAR],
+  'elements-linies': ambPatro('continua'),
+  'elements-linies-discontinua': ambPatro('discontinua'),
+  'elements-linies-puntejada': ambPatro('puntejada'),
+  'elements-linies-punt-ratlla': ambPatro('punt_ratlla'),
+  'elements-linies-doble': ambPatro('doble'),
+  'elements-linies-trama': ambPatro('trama'),
+  'elements-linies-fletxes': ['all', LINIA, ['==', ['get', 's_glif'], 'fletxa']],
+  'elements-punts': PUNT,
+  'elements-punts-no-validats': ['all', PUNT, NO_VALIDAT],
+  'elements-icones': PUNT,
+};
+
+// A partir d'este zoom els punts es dibuixen amb la icona de la guia; abans, un cercle del color
+const ZOOM_ICONES = 14;
+
 function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
-  const color = colorPerTema(dades.temes);
+  servirImatges(mapa);
   mapa.addSource('municipis', { type: 'geojson', data: dades.municipis });
   mapa.addSource('partides', { type: 'geojson', data: dades.partides });
   mapa.addSource('elements', {
@@ -61,6 +86,11 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     attribution: "Observatori Ciutadà de l'Horta · Per l'Horta · Font parcel·les 2018: D. G. del Cadastre",
   });
   mapa.addSource('esborrany', { type: 'geojson', data: BUIT });
+  const filtre = (id: string) => BASE_CAPES[id] as FilterSpecification;
+  const COLOR: ExpressionSpecification = ['get', 's_color'];
+  const AMPLADA: ExpressionSpecification = ['coalesce', ['get', 's_amplada'], 2];
+  // Parcel·les: el color de la guia, una mica transparent per a veure l'ortofoto davall
+  const OPACITAT_PARCELA: ExpressionSpecification = ['case', NO_VALIDAT, 0.3, PER_REVISAR, 0.5, 0.75];
 
   mapa.addLayer({
     id: 'sigpac-linies', type: 'line', source: 'sigpac', 'source-layer': 'recinto', minzoom: 14,
@@ -72,23 +102,48 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     paint: { 'line-color': '#3d3a33', 'line-width': 1.5, 'line-dasharray': [3, 2] },
   });
   mapa.addLayer({
-    id: 'elements-poligons', type: 'fill', source: 'elements',
-    filter: ['==', ['geometry-type'], 'Polygon'],
+    id: 'elements-poligons', type: 'fill', source: 'elements', filter: filtre('elements-poligons'),
     paint: {
-      'fill-color': color,
-      'fill-opacity': ['case', NO_VALIDAT, 0.2, PER_REVISAR, 0.18, 0.45],
-      'fill-outline-color': ['case', NO_VALIDAT, '#0b0b0b', color],
+      'fill-color': COLOR,
+      'fill-opacity': OPACITAT_PARCELA,
+      'fill-outline-color': ['case', NO_VALIDAT, '#0b0b0b', ['get', 's_contorn']],
     },
   });
   mapa.addLayer({
-    id: 'elements-poligons-revisar', type: 'line', source: 'elements', minzoom: 13,
-    filter: ['all', ['==', ['geometry-type'], 'Polygon'], PER_REVISAR] as unknown as FilterSpecification,
-    paint: { 'line-color': color, 'line-width': 1.5, 'line-dasharray': [3, 2] },
+    id: 'elements-poligons-trama', type: 'fill', source: 'elements', filter: filtre('elements-poligons-trama'),
+    paint: { 'fill-pattern': ['get', 's_trama'], 'fill-opacity': OPACITAT_PARCELA },
   });
   mapa.addLayer({
-    id: 'elements-linies', type: 'line', source: 'elements',
-    filter: ['==', ['geometry-type'], 'LineString'],
-    paint: { 'line-color': color, 'line-width': 3 },
+    id: 'elements-poligons-revisar', type: 'line', source: 'elements', minzoom: 13, filter: filtre('elements-poligons-revisar'),
+    paint: { 'line-color': ['get', 's_contorn'], 'line-width': 1.5, 'line-dasharray': [3, 2] },
+  });
+  // Línies: una capa per patró (el traç discontinu no pot dependre de cada element)
+  const linia = (id: string, paint: Record<string, unknown>, layout: Record<string, unknown> = {}) =>
+    mapa.addLayer({
+      id, type: 'line', source: 'elements', filter: filtre(id),
+      layout: { 'line-join': 'round', ...layout },
+      paint: { 'line-color': COLOR, 'line-width': AMPLADA, ...paint },
+    } as LayerSpecification);
+  linia('elements-linies', {});
+  linia('elements-linies-discontinua', { 'line-dasharray': [3, 2] });
+  linia('elements-linies-puntejada', { 'line-dasharray': [0.1, 2] }, { 'line-cap': 'round' });
+  linia('elements-linies-punt-ratlla', { 'line-dasharray': [4, 1.5, 0.1, 1.5] }, { 'line-cap': 'round' });
+  // Camí: dos traços paral·lels
+  linia('elements-linies-doble', { 'line-width': 1.2, 'line-gap-width': 2.5 });
+  // Tancaments i tanca vegetal: el tram dibuixat (quadrats, travessers, ziga-zaga...) repetit
+  mapa.addLayer({
+    id: 'elements-linies-trama', type: 'line', source: 'elements', filter: filtre('elements-linies-trama'),
+    layout: { 'line-join': 'round' },
+    paint: { 'line-pattern': ['get', 's_imatge'], 'line-width': 8 },
+  });
+  // Sèquies: fletxes en el sentit de l'aigua (el del traç)
+  mapa.addLayer({
+    id: 'elements-linies-fletxes', type: 'symbol', source: 'elements', minzoom: 15, filter: filtre('elements-linies-fletxes'),
+    layout: {
+      'symbol-placement': 'line', 'symbol-spacing': 70,
+      'icon-image': ['get', 's_imatge'], 'icon-rotation-alignment': 'map',
+      'icon-allow-overlap': true, 'icon-ignore-placement': true,
+    },
   });
   // Partidas por encima de las parcelas del inventario (que las tapaban) y con un borde
   // blanco debajo: el topográfico ya tiene tramas verdes y en la ortofoto no se veían.
@@ -102,17 +157,34 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     layout: { 'line-join': 'round' },
     paint: { 'line-color': '#215c00', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.2, 15, 2.5] },
   });
-  // Lo no validado (solo lo ve quien tiene permiso) lleva contorno negro
+  // Punts a zoom baix: cercle del color de la família. Lo de 2018 sense revisar, buit;
+  // lo no validat (només ho veu qui té permís), amb contorn negre.
   mapa.addLayer({
-    id: 'elements-punts', type: 'circle', source: 'elements',
-    filter: ['==', ['geometry-type'], 'Point'],
+    id: 'elements-punts', type: 'circle', source: 'elements', maxzoom: ZOOM_ICONES, filter: filtre('elements-punts'),
     paint: {
-      'circle-color': ['case', PER_REVISAR, '#ffffff', color],
-      'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 15, 7],
-      'circle-stroke-color': ['case', NO_VALIDAT, '#0b0b0b', PER_REVISAR, color, '#ffffff'],
-      // zoom solo vale en un interpolate de primer nivel: el case va dentro de cada parada
-      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 10, ['case', PER_REVISAR, 1.5, 1.5], 15, ['case', PER_REVISAR, 3, 1.5]],
+      'circle-color': ['case', PER_REVISAR, '#ffffff', COLOR],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, ZOOM_ICONES, 6],
+      'circle-stroke-color': ['case', NO_VALIDAT, '#0b0b0b', PER_REVISAR, COLOR, '#ffffff'],
+      'circle-stroke-width': 1.5,
     },
+  });
+  // A prop: la icona de la guia. Lo de 2018 sense revisar, més pàl·lid; lo no validat, amb un anell negre
+  mapa.addLayer({
+    id: 'elements-punts-no-validats', type: 'circle', source: 'elements', minzoom: ZOOM_ICONES,
+    filter: filtre('elements-punts-no-validats'),
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], ZOOM_ICONES, 15, 19, 24],
+      'circle-color': 'rgba(255,255,255,0.6)', 'circle-stroke-color': '#0b0b0b', 'circle-stroke-width': 2,
+    },
+  });
+  mapa.addLayer({
+    id: 'elements-icones', type: 'symbol', source: 'elements', minzoom: ZOOM_ICONES, filter: filtre('elements-icones'),
+    layout: {
+      'icon-image': ['get', 's_icona'],
+      'icon-size': ['interpolate', ['linear'], ['zoom'], ZOOM_ICONES, 0.22, 17, 0.32, 19, 0.42],
+      'icon-allow-overlap': true, 'icon-ignore-placement': true,
+    },
+    paint: { 'icon-opacity': ['case', PER_REVISAR, 0.6, 1] },
   });
   mapa.addLayer({
     id: 'seleccio-poligon', type: 'line', source: 'elements',
@@ -123,7 +195,7 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
     id: 'seleccio-punt', type: 'circle', source: 'elements',
     filter: ['==', ['get', 'id'], ''],
     paint: {
-      'circle-radius': 10,
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], ZOOM_ICONES - 1, 10, ZOOM_ICONES, 17, 19, 26],
       'circle-color': 'rgba(0,0,0,0)',
       'circle-stroke-color': '#0b0b0b',
       'circle-stroke-width': 3,
@@ -157,8 +229,12 @@ export function Mapa({
   const [llest, setLlest] = useState(false);
 
   // Los manejadores del mapa viven tanto como él: leen siempre el último valor de estos refs
-  const ultim = useRef({ onSeleccionar, capturant, ignorarClics, onClicCaptura, elements });
-  ultim.current = { onSeleccionar, capturant, ignorarClics, onClicCaptura, elements };
+  // Cada element amb el seu símbol de la guia (icona, estil de línia o de parcel·la)
+  const index = useMemo(() => indexSimbologia(dades.temes), [dades.temes]);
+  const simbolitzats = useMemo(() => ambSimbols(elements, index), [elements, index]);
+
+  const ultim = useRef({ onSeleccionar, capturant, ignorarClics, onClicCaptura, elements: simbolitzats });
+  ultim.current = { onSeleccionar, capturant, ignorarClics, onClicCaptura, elements: simbolitzats };
 
   useEffect(() => {
     if (!contenidor.current) return;
@@ -215,8 +291,8 @@ export function Mapa({
 
   useEffect(() => {
     if (!llest) return;
-    mapaRef.current?.getSource<GeoJSONSource>('elements')?.setData(elements);
-  }, [elements, llest]);
+    mapaRef.current?.getSource<GeoJSONSource>('elements')?.setData(simbolitzats);
+  }, [simbolitzats, llest]);
 
   useEffect(() => {
     if (!llest) return;
@@ -242,12 +318,9 @@ export function Mapa({
     const mapa = mapaRef.current;
     if (!mapa || !llest) return;
     const actives = ['in', ['get', 'variable_id'], ['literal', [...variablesActives]]];
-    const perTipus = (tipus: string, ...mes: unknown[]) =>
-      ['all', ['==', ['geometry-type'], tipus], actives, FILTRE_EPOCA[epoca], ...mes] as unknown as FilterSpecification;
-    mapa.setFilter('elements-punts', perTipus('Point'));
-    mapa.setFilter('elements-linies', perTipus('LineString'));
-    mapa.setFilter('elements-poligons', perTipus('Polygon'));
-    mapa.setFilter('elements-poligons-revisar', perTipus('Polygon', PER_REVISAR));
+    for (const [capa, base] of Object.entries(BASE_CAPES)) {
+      mapa.setFilter(capa, ['all', base, actives, FILTRE_EPOCA[epoca]] as unknown as FilterSpecification);
+    }
   }, [variablesActives, epoca, llest]);
 
   useEffect(() => {

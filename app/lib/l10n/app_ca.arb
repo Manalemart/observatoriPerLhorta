@@ -239,6 +239,8 @@
   "revisioFotoOpcional": "Foto de com està hui (opcional)",
   "revisioTreureFoto": "Lleva la foto",
   "revisioLlicenciaFotos": "Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.",
+  "llegendaTitol": "Llegenda",
+  "llegendaExplicacio": "Els símbols de la guia de l'Observatori. De prop, el que és de l'inventari de 2017-2018 i encara no s'ha revisat es veu més pàl·lid.",
   "avisosTitol": "Avisos",
   "avisosBuit": "No tens cap avís.",
   "avisosSenseConnexio": "Sense connexió: no es poden consultar els avisos.",

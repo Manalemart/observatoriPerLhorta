@@ -4,11 +4,11 @@
 -- Generado desde la BD legacy restaurada (observatori-revival).
 -- ═══════════════════════════════════════════════════════════════════════════
 
-insert into public.temes (nom, ordre, color) values ('Agressions', 1, '#c9302c') on conflict (nom) do nothing;
-insert into public.temes (nom, ordre, color) values ('Construccions', 2, '#1f5fb0') on conflict (nom) do nothing;
-insert into public.temes (nom, ordre, color) values ('Infraestructura', 3, '#d65db1') on conflict (nom) do nothing;
-insert into public.temes (nom, ordre, color) values ('Ús del sòl', 4, '#eda100') on conflict (nom) do nothing;
-insert into public.temes (nom, ordre, color) values ('Vegetació', 5, '#1baf7a') on conflict (nom) do nothing;
+insert into public.temes (nom, ordre, color) values ('Agressions', 1, '#E2001A') on conflict (nom) do nothing;
+insert into public.temes (nom, ordre, color) values ('Construccions', 2, '#F9AC00') on conflict (nom) do nothing;
+insert into public.temes (nom, ordre, color) values ('Infraestructura', 3, '#009EE0') on conflict (nom) do nothing;
+insert into public.temes (nom, ordre, color) values ('Ús del sòl', 4, '#9ED100') on conflict (nom) do nothing;
+insert into public.temes (nom, ordre, color) values ('Vegetació', 5, '#348E00') on conflict (nom) do nothing;
 
 insert into public.variables (tema_id, nom, geometria, text_lliure) select id, 'Abocament (sòlid ó liquid)', 'punt', false from public.temes where nom = 'Agressions' on conflict (tema_id, nom) do nothing;
 insert into public.variables (tema_id, nom, geometria, text_lliure) select id, 'Altres agressions (text lliure)', 'punt', true from public.temes where nom = 'Agressions' on conflict (tema_id, nom) do nothing;

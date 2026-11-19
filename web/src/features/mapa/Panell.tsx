@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { FeatureCollection } from 'geojson';
 import { FONS } from './estil';
+import { MostraSimbol } from './Llegenda';
+import { indexSimbologia, type IndexSimbols } from './simbologia';
 import type { Dades, Epoca, Fons, Tema } from './tipus';
 
 const EPOQUES: Epoca[] = ['tot', '2018', 'noves'];
@@ -24,8 +26,19 @@ interface Props {
   onSigpac: (v: boolean) => void;
 }
 
-function FilaTema({ tema, recompte, actives, onCanvi }: {
+/**
+ * Si alguna categoria té símbol propi (reg, serveis, línies, parcel·les), la llegenda les mostra
+ * totes, també les que porten el de la variable: així cada símbol té el seu nom.
+ */
+function categoriesAmbSimbol(index: IndexSimbols, v: Tema['variables'][number]) {
+  const general = JSON.stringify(index.simbol(v.id));
+  const llista = v.categories.filter((c) => c.actiu).map((c) => ({ c, s: index.simbol(v.id, c.id) }));
+  return llista.some(({ s }) => JSON.stringify(s) !== general) ? llista : null;
+}
+
+function FilaTema({ tema, index, recompte, actives, onCanvi }: {
   tema: Tema;
+  index: IndexSimbols;
   recompte: Map<number, number>;
   actives: Set<number>;
   onCanvi: (v: Set<number>) => void;
@@ -76,19 +89,35 @@ function FilaTema({ tema, recompte, actives, onCanvi }: {
       </div>
       {obert && (
         <ul className="variables">
-          {tema.variables.map((v) => (
-            <li key={v.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={actives.has(v.id)}
-                  onChange={(e) => canviarVariable(v.id, e.target.checked)}
-                />
-                <span>{v.nom}</span>
-              </label>
-              <span className="recompte">{fmt.format(recompte.get(v.id) ?? 0)}</span>
-            </li>
-          ))}
+          {tema.variables.map((v) => {
+            const categories = categoriesAmbSimbol(index, v);
+            return (
+              <li key={v.id} className={categories ? 'amb-categories' : undefined}>
+                <div className="variable-fila">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={actives.has(v.id)}
+                      onChange={(e) => canviarVariable(v.id, e.target.checked)}
+                    />
+                    <MostraSimbol simbol={index.simbol(v.id)} />
+                    <span>{v.nom}</span>
+                  </label>
+                  <span className="recompte">{fmt.format(recompte.get(v.id) ?? 0)}</span>
+                </div>
+                {categories && (
+                  <ul className="categories-simbol" aria-label={t('panell.simbolsDe', { variable: v.nom })}>
+                    {categories.map(({ c, s: simbol }) => (
+                      <li key={c.id}>
+                        <MostraSimbol simbol={simbol} />
+                        <span>{c.nom}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </li>
@@ -125,6 +154,7 @@ export function Panell({
   );
   const fmt = new Intl.NumberFormat(i18n.language);
   const totes = useMemo(() => new Set(dades.temes.flatMap((x) => x.variables.map((v) => v.id))), [dades.temes]);
+  const index = useMemo(() => indexSimbologia(dades.temes), [dades.temes]);
 
   return (
     <div className="panell-contingut">
@@ -170,6 +200,7 @@ export function Panell({
             <FilaTema
               key={tema.id}
               tema={tema}
+              index={index}
               recompte={recompte}
               actives={variablesActives}
               onCanvi={onVariablesActives}

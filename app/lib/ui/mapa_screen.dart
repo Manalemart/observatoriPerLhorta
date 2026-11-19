@@ -14,12 +14,15 @@ import '../l10n/app_localizations.dart';
 import '../services/cataleg.dart';
 import '../services/paquets.dart';
 import '../services/sessio.dart';
+import '../services/simbologia.dart';
 import '../services/sincronitzacio.dart';
 import 'accio_revisio.dart';
 import 'aportar_screen.dart' show VistaMapa;
+import 'capa_simbologia.dart';
 import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
 import 'entrada_screen.dart';
+import 'llegenda.dart';
 
 const _esperaMoviment = Duration(milliseconds: 400);
 
@@ -221,7 +224,8 @@ class _MapaScreenState extends State<MapaScreen> {
     final t = L.of(context);
     final sessio = context.watch<Sessio>();
     final temes = context.watch<Cataleg>().temes;
-    final colors = {for (final x in temes) x.id: colorDesDeHex(x.color)};
+    final simbologia = context.read<Simbologia>();
+    final colorTema = {for (final x in temes) x.id: x.color};
 
     if (sessio.necessitaAlies && !_dialegAlies) {
       _dialegAlies = true;
@@ -235,46 +239,40 @@ class _MapaScreenState extends State<MapaScreen> {
     final poligons = <Polygon<Map<String, dynamic>>>[];
     final linies = <Polyline<Map<String, dynamic>>>[];
     final punts = <Marker>[];
+    final trames = <ParcelaAmbTrama>[];
+    final glifs = <LiniaAmbGlif>[];
     for (final f in _elements) {
       final geo = f['geometry'] as Map<String, dynamic>;
       final prop = f['properties'] as Map<String, dynamic>;
-      final color = colors[prop['tema_id']] ?? Colors.grey;
       final validat = prop['estat'] == 'validat';
+      final perRevisar = prop['per_revisar'] == true;
       final coord = geo['coordinates'] as List;
-      switch (geo['type']) {
-        case 'Point':
-          punts.add(
-            Marker(
-              point: _ll(coord),
-              width: 24,
-              height: 24,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => _obrirFitxa(prop, _ll(coord)),
-                child: Center(
-                  child: Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: validat ? Colors.white : Colors.black, width: 2),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        case 'LineString':
-          linies.add(
-            Polyline(points: [for (final c in coord) _ll(c as List)], color: color, strokeWidth: 4, hitValue: prop),
-          );
-        case 'Polygon':
-          poligons.add(_poligon(coord, color, validat, prop));
-        case 'MultiPolygon':
-          for (final p in coord) {
-            poligons.add(_poligon(p as List, color, validat, prop));
+      // Símbol de la guia de disseny segons la variable i la categoria (docs/simbologia)
+      final simbol = simbologia.simbol(
+        geometria: geo['type'] as String,
+        variable: prop['variable'] as String?,
+        categoria: prop['categoria'] as String?,
+        tema: prop['tema'] as String?,
+        colorTema: colorTema[prop['tema_id']],
+      );
+      switch ((geo['type'], simbol)) {
+        case ('Point', final SimbolPunt s):
+          punts.add(_marcador(s, prop, _ll(coord), validat: validat, perRevisar: perRevisar));
+        case ('LineString', final SimbolLinia s):
+          final llista = [for (final c in coord) _ll(c as List)];
+          linies.add(_linia(llista, s, prop));
+          if (s.glif != null) glifs.add(LiniaAmbGlif(llista, s));
+        case ('Polygon' || 'MultiPolygon', final SimbolParcela s):
+          final opacitat = !validat ? 0.3 : (perRevisar ? 0.5 : 0.75);
+          for (final p in geo['type'] == 'Polygon' ? [coord] : coord) {
+            final anells = [
+              for (final anell in p as List) [for (final c in anell as List) _ll(c as List)],
+            ];
+            poligons.add(_poligon(anells, s, opacitat, validat: validat, perRevisar: perRevisar, prop: prop));
+            if (s.trama != null) trames.add(ParcelaAmbTrama(anells, s.trama!, opacitat));
           }
+        default:
+          break;
       }
     }
 
@@ -299,6 +297,7 @@ class _MapaScreenState extends State<MapaScreen> {
                 },
                 child: PolygonLayer<Map<String, dynamic>>(polygons: poligons, hitNotifier: _toc),
               ),
+              CapaSimbologia(parceles: trames),
               GestureDetector(
                 onTap: () {
                   final hit = _toc.value;
@@ -306,6 +305,7 @@ class _MapaScreenState extends State<MapaScreen> {
                 },
                 child: PolylineLayer<Map<String, dynamic>>(polylines: linies, hitNotifier: _toc),
               ),
+              CapaSimbologia(linies: glifs),
               MarkerLayer(markers: punts),
               if (_posicio != null)
                 CircleLayer(
@@ -343,6 +343,11 @@ class _MapaScreenState extends State<MapaScreen> {
                                   style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.format_list_bulleted),
+                                tooltip: t.llegendaTitol,
+                                onPressed: () => mostrarLlegenda(context),
                               ),
                               PopupMenuButton<Fons>(
                                 icon: const Icon(Icons.layers_outlined),
@@ -421,16 +426,86 @@ class _MapaScreenState extends State<MapaScreen> {
     );
   }
 
-  Polygon<Map<String, dynamic>> _poligon(List anells, Color color, bool validat, Map<String, dynamic> prop) => Polygon(
-    points: [for (final c in anells.first as List) _ll(c as List)],
-    holePointsList: [
-      for (final forat in anells.skip(1)) [for (final c in forat as List) _ll(c as List)],
-    ],
-    color: color.withValues(alpha: validat ? 0.4 : 0.2),
-    borderColor: validat ? color : Colors.black,
-    borderStrokeWidth: 1.5,
-    hitValue: prop,
-  );
+  /// Parcel·la: el color de la guia (una mica transparent per a veure l'ortofoto), el contorn
+  /// de la guia; lo no validat amb contorn negre i lo de 2018 sense revisar, discontinu.
+  Polygon<Map<String, dynamic>> _poligon(
+    List<List<LatLng>> anells,
+    SimbolParcela s,
+    double opacitat, {
+    required bool validat,
+    required bool perRevisar,
+    required Map<String, dynamic> prop,
+  }) =>
+      Polygon(
+        points: anells.first,
+        holePointsList: anells.skip(1).toList(),
+        color: s.color.withValues(alpha: opacitat),
+        borderColor: validat ? s.contorn : Colors.black,
+        borderStrokeWidth: perRevisar ? 1.5 : 1,
+        pattern: perRevisar ? StrokePattern.dashed(segments: const [6, 4]) : const StrokePattern.solid(),
+        hitValue: prop,
+      );
+
+  /// Línia: traç de la guia. Les que només són glif (paret, tanca mixta, tanca vegetal) es
+  /// dibuixen en CapaSimbologia: ací queda un traç transparent per a poder tocar-les.
+  Polyline<Map<String, dynamic>> _linia(List<LatLng> punts, SimbolLinia s, Map<String, dynamic> prop) {
+    final nomesGlif = s.glif != null && glifsTrama.contains(s.glif);
+    if (nomesGlif) return Polyline(points: punts, color: Colors.transparent, strokeWidth: 8, hitValue: prop);
+    if (s.patro == 'doble') {
+      // Camí: dos traços paral·lels (la vora) amb el centre clar
+      return Polyline(
+        points: punts,
+        color: Colors.white.withValues(alpha: 0.85),
+        strokeWidth: 2.5,
+        borderColor: s.color,
+        borderStrokeWidth: 1.2,
+        hitValue: prop,
+      );
+    }
+    return Polyline(
+      points: punts,
+      color: s.color,
+      strokeWidth: s.amplada + 0.5,
+      pattern: switch (s.patro) {
+        'discontinua' => StrokePattern.dashed(segments: const [6, 4]),
+        'puntejada' => const StrokePattern.dotted(spacingFactor: 2),
+        'punt_ratlla' => StrokePattern.dashed(segments: const [8, 3, 1.5, 3]),
+        _ => const StrokePattern.solid(),
+      },
+      hitValue: prop,
+    );
+  }
+
+  /// Punt: la icona de la guia. Lo de 2018 sense revisar, més pàl·lid; lo no validat, amb anell negre.
+  Marker _marcador(SimbolPunt s, Map<String, dynamic> prop, LatLng punt, {required bool validat, required bool perRevisar}) =>
+      Marker(
+        point: punt,
+        width: 40,
+        height: 40,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _obrirFitxa(prop, punt),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              if (!validat)
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.6),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                ),
+              Opacity(
+                opacity: perRevisar ? 0.6 : 1,
+                child: Image.asset(s.asset, width: 30, height: 30, fit: BoxFit.contain, filterQuality: FilterQuality.medium),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 LatLng _ll(List c) => LatLng((c[1] as num).toDouble(), (c[0] as num).toDouble());

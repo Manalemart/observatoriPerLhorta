@@ -783,6 +783,18 @@ abstract class L {
   /// **'Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.'**
   String get revisioLlicenciaFotos;
 
+  /// No description provided for @llegendaTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llegenda'**
+  String get llegendaTitol;
+
+  /// No description provided for @llegendaExplicacio.
+  ///
+  /// In ca, this message translates to:
+  /// **'Els símbols de la guia de l\'Observatori. De prop, el que és de l\'inventari de 2017-2018 i encara no s\'ha revisat es veu més pàl·lid.'**
+  String get llegendaExplicacio;
+
   /// No description provided for @avisosTitol.
   ///
   /// In ca, this message translates to:

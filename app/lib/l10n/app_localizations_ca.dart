@@ -424,6 +424,13 @@ class LCa extends L {
       'Les fotos es publiquen amb CC BY-SA 4.0. Evita que isquen persones o matrícules.';
 
   @override
+  String get llegendaTitol => 'Llegenda';
+
+  @override
+  String get llegendaExplicacio =>
+      'Els símbols de la guia de l\'Observatori. De prop, el que és de l\'inventari de 2017-2018 i encara no s\'ha revisat es veu més pàl·lid.';
+
+  @override
   String get avisosTitol => 'Avisos';
 
   @override
