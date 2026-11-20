@@ -1,13 +1,13 @@
 import { useEffect, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// ⚠️ BORRADOR. Lo tienen que revisar Per l'Horta y su asesoría antes de abrir la web.
-// Los datos entre [corchetes] están por completar. Texto legal: va aquí y no en
-// locales/ porque, si llega el castellano, se traduce como documento, no frase a frase.
-const PENDENT = (s: string) => <mark className="pendent">[{s}]</mark>;
+// Texto legal: va aquí y no en locales/ porque, si llega el castellano, se traduce como
+// documento, no frase a frase. Datos de la entidad: su aviso legal (perlhorta.info/avis-legal).
+// Lo tienen que revisar Per l'Horta y su asesoría antes de abrir la web.
 
-const TITULAR = "Per l'Horta";
-const CORREU = PENDENT('correu de contacte');
+const TITULAR = "l'Associació Per l'Horta";
+const CORREU = <a href="mailto:perlhorta@perlhorta.info">perlhorta@perlhorta.info</a>;
+const CORREU_DESENVOLUPAMENT = <a href="mailto:desarrollo@mediamapes.com">desarrollo@mediamapes.com</a>;
 
 function Seccio({ id, titol, children }: { id: string; titol: string; children: ReactNode }) {
   return (
@@ -36,10 +36,14 @@ export function Legal() {
 
       <Seccio id="avis-legal" titol="Avís legal">
         <p>
-          L'Observatori Ciutadà de l'Horta és una iniciativa de {TITULAR}, amb NIF {PENDENT('NIF')} i domicili a{' '}
-          {PENDENT('adreça')}. Contacte: {CORREU}.
+          L'Observatori Ciutadà de l'Horta és una iniciativa de {TITULAR}, associació sense ànim de lucre amb
+          CIF G-97295737, inscrita en el Registre d'Associacions de la Comunitat Valenciana i amb domicili al
+          carrer de Santa Teresa, 10, 46001 València. Contacte: {CORREU} · 722 172 079.
         </p>
-        <p>El desenvolupament tècnic i tecnològic és de MAM — Mediambient i Mapes.</p>
+        <p>
+          El desenvolupament tècnic i tecnològic és de MAM — Mediambient i Mapes. Per a qüestions tècniques de la
+          web o de l'aplicació: {CORREU_DESENVOLUPAMENT}.
+        </p>
         <p>
           El codi font és lliure, amb llicència AGPL-3.0. Les dades de l'inventari es publiquen amb llicència
           CC BY 4.0 i les fotografies aportades, amb CC BY-SA 4.0.
@@ -54,9 +58,23 @@ export function Legal() {
       <Seccio id="privacitat" titol="Política de privacitat">
         <h3>Qui tracta les teues dades</h3>
         <p>
-          El responsable és {TITULAR} ({CORREU}). MAM — Mediambient i Mapes manté la plataforma com a encarregat
-          del tractament. Les dades s'allotgen en {PENDENT('Supabase, regió de la Unió Europea')} i la web, en{' '}
-          {PENDENT('Vercel')}.
+          El responsable és {TITULAR} (CIF G-97295737, carrer de Santa Teresa, 10, 46001 València; {CORREU}).
+          MAM — Mediambient i Mapes manté la plataforma com a encarregat del tractament ({CORREU_DESENVOLUPAMENT}).
+        </p>
+
+        <h3>On s'allotgen</h3>
+        <ul>
+          <li>
+            La base de dades, els comptes i les fotografies, en Supabase, en un centre de dades de Londres (Regne
+            Unit).
+          </li>
+          <li>La web, en Vercel, que la servix des de Londres.</li>
+          <li>Els correus d'entrada i d'avisos s'envien amb Brevo, des de la Unió Europea.</li>
+        </ul>
+        <p>
+          El Regne Unit té una decisió d'adequació de la Comissió Europea: la llei hi garantix una protecció de
+          les dades equivalent a la de la Unió Europea. Supabase i Vercel actuen com a subencarregats del
+          tractament, amb contractes que inclouen les clàusules contractuals tipus de la Comissió Europea.
         </p>
 
         <h3>Quines dades</h3>

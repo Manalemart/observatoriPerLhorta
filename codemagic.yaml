@@ -1,0 +1,144 @@
+# Codemagic: compilar la app sense Mac (vegeu docs/CODEMAGIC.md).
+#
+# Grups de variables que s'han de crear en Codemagic (Team/App settings → Environment variables):
+#   observatori: SUPABASE_URL, SUPABASE_KEY (la clau pública, anon/publishable)
+#   captures:    CAPTURES_EMAIL, CAPTURES_PASSWORD (compte de prova amb contrasenya i àlies)
+# Integracions:
+#   App Store Connect: una clau d'API amb el nom «observatori-asc» (Team settings → Integrations)
+#   Firma d'Android: el keystore de publicació pujat amb la referència «observatori-play»
+#
+# Les versions (1.0.0) ixen de app/pubspec.yaml; el número de compilació el posa cada flux.
+
+definitions:
+  flutter: &flutter 3.41.6
+  xcode: &xcode latest
+  maquina: &maquina mac_mini_m2
+  preparar: &preparar
+    name: Dependències
+    script: |
+      cd app
+      flutter pub get
+  analitzar: &analitzar
+    name: Anàlisi i proves
+    script: |
+      cd app
+      flutter analyze
+      flutter test
+
+workflows:
+  # ─── iOS → TestFlight ──────────────────────────────────────────────────
+  ios-testflight:
+    name: iOS · TestFlight
+    instance_type: *maquina
+    max_build_duration: 60
+    integrations:
+      app_store_connect: observatori-asc
+    environment:
+      flutter: *flutter
+      xcode: *xcode
+      cocoapods: default
+      groups:
+        - observatori
+      vars:
+        BUNDLE_ID: com.mamlabsfera.observatoriPerlhorta
+        # L'identificador numèric de la app en App Store Connect (App Information → Apple ID)
+        APP_STORE_APPLE_ID: "0000000000"
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.mamlabsfera.observatoriPerlhorta
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "app-v*"
+    scripts:
+      - *preparar
+      - *analitzar
+      - name: Perfils de firma
+        script: xcode-project use-profiles
+      - name: Pods
+        script: |
+          cd app/ios
+          pod install --repo-update
+      - name: IPA
+        script: |
+          cd app
+          ULTIM=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 2)
+          flutter build ipa --release \
+            --build-number=$((ULTIM + 1)) \
+            --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_KEY="$SUPABASE_KEY"
+    artifacts:
+      - app/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+
+  # ─── iOS → captures de l'App Store (iPhone 6,9" i iPad 13") ─────────────
+  ios-captures:
+    name: iOS · Captures
+    instance_type: *maquina
+    max_build_duration: 60
+    environment:
+      flutter: *flutter
+      xcode: *xcode
+      cocoapods: default
+      groups:
+        - observatori
+        - captures
+    scripts:
+      - *preparar
+      - name: Pods
+        script: |
+          cd app/ios
+          pod install --repo-update
+      - name: iPhone 6,9" (1320 × 2868)
+        script: |
+          cd app
+          bash ios/eines/captures.sh "iPhone 17 Pro Max|iPhone 16 Pro Max" iphone-6.9
+      - name: iPad 13" (2064 × 2752)
+        script: |
+          cd app
+          bash ios/eines/captures.sh "iPad Pro 13-inch (M5)|iPad Pro 13-inch (M4)" ipad-13
+    artifacts:
+      - app/captures/**/*.png
+
+  # ─── Android → Google Play ─────────────────────────────────────────────
+  android-play:
+    name: Android · Google Play
+    instance_type: *maquina
+    max_build_duration: 60
+    environment:
+      flutter: *flutter
+      groups:
+        - observatori
+      android_signing:
+        - observatori-play
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "app-v*"
+    scripts:
+      - *preparar
+      - *analitzar
+      - name: App bundle
+        script: |
+          cd app
+          # Codemagic compta les compilacions d'este flux; +10 perquè quede per damunt de les fetes a mà
+          flutter build appbundle --release \
+            --build-number=$((BUILD_NUMBER + 10)) \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_KEY="$SUPABASE_KEY"
+    artifacts:
+      - app/build/app/outputs/bundle/release/*.aab
+    # La primera versió s'ha de pujar a mà en Play Console. Després, per a publicar sola en
+    # proves internes, afegiu el compte de servei de Google Cloud i descomenteu:
+    # publishing:
+    #   google_play:
+    #     credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+    #     track: internal
+    #     submit_as_draft: true
