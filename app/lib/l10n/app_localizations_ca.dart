@@ -588,7 +588,7 @@ class LCa extends L {
 
   @override
   String get compteDadesWeb =>
-      'Si abans vols una còpia de les teues dades, la pots descarregar en la web, en «El meu compte».';
+      'Si abans vols una còpia de les teues dades, tria «Descarrega les meues dades» en el perfil.';
 
   @override
   String get compteIrreversible => 'No es pot desfer.';
@@ -673,4 +673,21 @@ class LCa extends L {
   @override
   String get filtresEpocaNota =>
       '«De 2018»: el que ve de l\'inventari de 2017-2018 i encara no s\'ha revisat. «Noves»: les aportacions i el que ja s\'ha revisat.';
+
+  @override
+  String get aliesCanviarTitol => 'Canvia l\'àlies';
+
+  @override
+  String get dadesBoto => 'Descarrega les meues dades';
+
+  @override
+  String get dadesPreparant => 'Preparant les teues dades…';
+
+  @override
+  String get dadesAssumpte =>
+      'Les meues dades de l\'Observatori Ciutadà de l\'Horta';
+
+  @override
+  String get dadesError =>
+      'No s\'han pogut descarregar les dades. Comprova la connexió.';
 }

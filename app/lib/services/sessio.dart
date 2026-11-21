@@ -74,6 +74,10 @@ class Sessio extends ChangeNotifier {
     await _client.rpc('esborrar_compte');
   }
 
+  /// Tot el que l'Observatori guarda de la persona (RGPD art. 15 i 20).
+  Future<Map<String, dynamic>> lesMeuesDades() async =>
+      (await _client.rpc('les_meues_dades')) as Map<String, dynamic>;
+
   /// Tanca la sessió només ací (el compte ja no existeix: el servidor no cal avisar-lo).
   Future<void> tancarLocal() => _client.auth.signOut(scope: SignOutScope.local);
 

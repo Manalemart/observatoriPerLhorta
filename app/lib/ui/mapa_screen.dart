@@ -28,6 +28,7 @@ import 'fitxa_mapa.dart';
 import 'entrada_screen.dart';
 import 'filtres_mapa.dart';
 import 'esborrar_compte.dart';
+import 'les_meues_dades.dart';
 import 'llegenda.dart';
 
 const _esperaMoviment = Duration(milliseconds: 400);
@@ -222,6 +223,25 @@ class _MapaScreenState extends State<MapaScreen> {
                 subtitle: Text(sessio.email ?? ''),
               ),
               const Divider(),
+              ListTile(
+                leading: const Icon(Icons.edit_outlined),
+                title: Text(t.aliesCanviarTitol),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  canviarAlies(context, sessio.alies);
+                },
+              ),
+              Builder(
+                // El seu context fa d'origen del full de compartir en iPad
+                builder: (fila) => ListTile(
+                  leading: const Icon(Icons.download_outlined),
+                  title: Text(t.dadesBoto),
+                  onTap: () async {
+                    await compartirLesMeuesDades(fila);
+                    if (ctx.mounted) Navigator.of(ctx).pop();
+                  },
+                ),
+              ),
               ListTile(
                 leading: const Icon(Icons.description_outlined),
                 title: Text(t.perfilLlicencies),

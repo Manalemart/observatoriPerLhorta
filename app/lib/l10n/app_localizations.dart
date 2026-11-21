@@ -1068,7 +1068,7 @@ abstract class L {
   /// No description provided for @compteDadesWeb.
   ///
   /// In ca, this message translates to:
-  /// **'Si abans vols una còpia de les teues dades, la pots descarregar en la web, en «El meu compte».'**
+  /// **'Si abans vols una còpia de les teues dades, tria «Descarrega les meues dades» en el perfil.'**
   String get compteDadesWeb;
 
   /// No description provided for @compteIrreversible.
@@ -1220,6 +1220,36 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'«De 2018»: el que ve de l\'inventari de 2017-2018 i encara no s\'ha revisat. «Noves»: les aportacions i el que ja s\'ha revisat.'**
   String get filtresEpocaNota;
+
+  /// No description provided for @aliesCanviarTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Canvia l\'àlies'**
+  String get aliesCanviarTitol;
+
+  /// No description provided for @dadesBoto.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descarrega les meues dades'**
+  String get dadesBoto;
+
+  /// No description provided for @dadesPreparant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Preparant les teues dades…'**
+  String get dadesPreparant;
+
+  /// No description provided for @dadesAssumpte.
+  ///
+  /// In ca, this message translates to:
+  /// **'Les meues dades de l\'Observatori Ciutadà de l\'Horta'**
+  String get dadesAssumpte;
+
+  /// No description provided for @dadesError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut descarregar les dades. Comprova la connexió.'**
+  String get dadesError;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

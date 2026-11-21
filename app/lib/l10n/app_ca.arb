@@ -314,7 +314,7 @@
   "compteEsborraAvisos": "els avisos, el resum per correu i les partides que apadrines;",
   "compteEsborraDispositiu": "el que hi ha guardat en este dispositiu: aportacions i revisions sense enviar i els mapes descarregats.",
   "compteEsQueda": "Les aportacions que ja s'han validat formen part de l'inventari públic i obert (CC BY 4.0, i les fotos CC BY-SA 4.0): es queden, però sense cap vincle amb tu.",
-  "compteDadesWeb": "Si abans vols una còpia de les teues dades, la pots descarregar en la web, en «El meu compte».",
+  "compteDadesWeb": "Si abans vols una còpia de les teues dades, tria «Descarrega les meues dades» en el perfil.",
   "compteIrreversible": "No es pot desfer.",
   "compteEscriu": "Per a confirmar-ho, escriu {paraula}",
   "@compteEscriu": {"placeholders": {"paraula": {"type": "String"}}},
@@ -341,5 +341,10 @@
   "filtresEpocaTot": "Tot",
   "filtresEpoca2018": "De 2018",
   "filtresEpocaNoves": "Noves",
-  "filtresEpocaNota": "«De 2018»: el que ve de l'inventari de 2017-2018 i encara no s'ha revisat. «Noves»: les aportacions i el que ja s'ha revisat."
+  "filtresEpocaNota": "«De 2018»: el que ve de l'inventari de 2017-2018 i encara no s'ha revisat. «Noves»: les aportacions i el que ja s'ha revisat.",
+  "aliesCanviarTitol": "Canvia l'àlies",
+  "dadesBoto": "Descarrega les meues dades",
+  "dadesPreparant": "Preparant les teues dades…",
+  "dadesAssumpte": "Les meues dades de l'Observatori Ciutadà de l'Horta",
+  "dadesError": "No s'han pogut descarregar les dades. Comprova la connexió."
 }

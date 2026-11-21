@@ -224,16 +224,27 @@ Future<void> demanarAlies(BuildContext context) => showDialog<void>(
       builder: (_) => const _DialegAlies(),
     );
 
+/// Canviar l'àlies des del perfil (es pot cancel·lar).
+Future<void> canviarAlies(BuildContext context, String? actual) => showDialog<void>(
+      context: context,
+      builder: (_) => _DialegAlies(actual: actual),
+    );
+
 class _DialegAlies extends StatefulWidget {
-  const _DialegAlies();
+  const _DialegAlies({this.actual});
+
+  /// Amb valor: es canvia l'àlies (es pot cancel·lar). Sense: primer accés (obligatori).
+  final String? actual;
 
   @override
   State<_DialegAlies> createState() => _DialegAliesState();
 }
 
 class _DialegAliesState extends State<_DialegAlies> {
-  final _nom = TextEditingController();
+  late final _nom = TextEditingController(text: widget.actual ?? '');
   String? _error;
+
+  bool get _canviant => widget.actual != null;
 
   @override
   void dispose() {
@@ -245,9 +256,9 @@ class _DialegAliesState extends State<_DialegAlies> {
   Widget build(BuildContext context) {
     final t = L.of(context);
     return PopScope(
-      canPop: false,
+      canPop: _canviant,
       child: AlertDialog(
-        title: Text(t.aliesTitol),
+        title: Text(_canviant ? t.aliesCanviarTitol : t.aliesTitol),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -257,6 +268,7 @@ class _DialegAliesState extends State<_DialegAlies> {
           ],
         ),
         actions: [
+          if (_canviant) TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(t.comuCancelar)),
           FilledButton(
             onPressed: () async {
               final nom = _nom.text.trim();
