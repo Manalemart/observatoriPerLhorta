@@ -611,4 +611,18 @@ class LCa extends L {
   @override
   String get compteEsborrat =>
       'S\'ha esborrat el compte. Gràcies per haver participat en l\'Observatori.';
+
+  @override
+  String get entradaContrasenya => 'Contrasenya';
+
+  @override
+  String get entradaEntrar => 'Entra';
+
+  @override
+  String get entradaContrasenyaErronia =>
+      'El correu o la contrasenya no són correctes.';
+
+  @override
+  String get entradaExplicacioRevisio =>
+      'Compte de revisió: entra amb la contrasenya.';
 }

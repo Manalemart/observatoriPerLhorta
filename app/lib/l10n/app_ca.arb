@@ -321,5 +321,9 @@
   "compteEsborrarBoto": "Esborra el meu compte",
   "compteEsborrant": "Esborrant…",
   "compteEsborrarError": "No s'ha pogut esborrar el compte. Comprova la connexió i torna-ho a provar, o escriu a perlhorta@perlhorta.info.",
-  "compteEsborrat": "S'ha esborrat el compte. Gràcies per haver participat en l'Observatori."
+  "compteEsborrat": "S'ha esborrat el compte. Gràcies per haver participat en l'Observatori.",
+  "entradaContrasenya": "Contrasenya",
+  "entradaEntrar": "Entra",
+  "entradaContrasenyaErronia": "El correu o la contrasenya no són correctes.",
+  "entradaExplicacioRevisio": "Compte de revisió: entra amb la contrasenya."
 }

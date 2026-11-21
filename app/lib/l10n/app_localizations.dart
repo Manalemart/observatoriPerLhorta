@@ -1106,6 +1106,30 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'S\'ha esborrat el compte. Gràcies per haver participat en l\'Observatori.'**
   String get compteEsborrat;
+
+  /// No description provided for @entradaContrasenya.
+  ///
+  /// In ca, this message translates to:
+  /// **'Contrasenya'**
+  String get entradaContrasenya;
+
+  /// No description provided for @entradaEntrar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Entra'**
+  String get entradaEntrar;
+
+  /// No description provided for @entradaContrasenyaErronia.
+  ///
+  /// In ca, this message translates to:
+  /// **'El correu o la contrasenya no són correctes.'**
+  String get entradaContrasenyaErronia;
+
+  /// No description provided for @entradaExplicacioRevisio.
+  ///
+  /// In ca, this message translates to:
+  /// **'Compte de revisió: entra amb la contrasenya.'**
+  String get entradaExplicacioRevisio;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

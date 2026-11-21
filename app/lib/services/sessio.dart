@@ -46,6 +46,13 @@ class Sessio extends ChangeNotifier {
   Future<void> demanarCodi(String email) =>
       _client.auth.signInWithOtp(email: email, emailRedirectTo: Config.redireccioEntrada);
 
+  /// El compte de revisió de les botigues entra amb contrasenya (vegeu Config.compteRevisio).
+  bool esCompteRevisio(String email) =>
+      Config.compteRevisio.isNotEmpty && email.trim().toLowerCase() == Config.compteRevisio.toLowerCase();
+
+  Future<void> entrarAmbContrasenya(String email, String contrasenya) =>
+      _client.auth.signInWithPassword(email: email.trim(), password: contrasenya);
+
   Future<void> verificarCodi(String email, String codi) =>
       _client.auth.verifyOTP(type: OtpType.email, email: email, token: codi);
 

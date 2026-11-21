@@ -28,15 +28,17 @@
    - En local, per a firmar sense Codemagic: `app/android/key.properties` (fora del repo) amb `storeFile`, `storePassword`, `keyAlias` i `keyPassword`. Sense, el build de *release* es firma amb la clau de depuració (serveix per a provar, no per a Play).
    - La **primera** versió es puja a mà en Play Console. Després, si es vol, Codemagic pot publicar en proves internes (secció comentada al final de `codemagic.yaml`).
 
-## Compte de prova per a les captures
+## Compte de revisió (Apple i Google) i de les captures
 
-La prova `app/integration_test/captures_test.dart` entra amb **correu i contrasenya** (la app, amb codi), així que el compte s'ha de crear així:
+Els revisors de les botigues no poden rebre el codi del correu. Per això **un sol compte**, `test@mediamapes.com`, entra amb contrasenya: en escriure eixe correu, la pantalla d'entrada demana la contrasenya en lloc d'enviar l'enllaç. Qualsevol altre correu entra com sempre. El mateix compte servix per a les captures (`CAPTURES_EMAIL` = el mateix correu, `CAPTURES_PASSWORD` = la seua contrasenya).
 
-1. Supabase → *Authentication → Users → Add user → Create new user*, amb correu i contrasenya i «Auto Confirm User».
+La prova `app/integration_test/captures_test.dart` també entra amb correu i contrasenya. Com es crea el compte:
+
+1. Supabase → *Authentication → Users → Add user → Create new user*, amb el correu `test@mediamapes.com`, una contrasenya llarga i «Auto Confirm User». La contrasenya no va al repo (el correu està en `app/lib/core/config.dart`; si es canvia, es canvia allí).
 2. Entrar una vegada a la web o a la app amb eixe correu per a posar-li l'**àlies** (si no, la prova es queda en el diàleg de l'àlies).
 3. Millor si apadrina una partida i té alguna aportació: les captures de Partides i Avisos no ixen buides.
 
-El mateix compte servix per als **revisors d'Apple**, que també han de poder entrar (vegeu [botigues/README.md](botigues/README.md#bloquejos)).
+El correu i la contrasenya es posen en App Store Connect (*App Review Information → Sign-in required*) i en Play Console (*App content → App access*). Millor si el compte no és coordinador: així el revisor veu la app com qualsevol persona.
 
 ## Les captures
 

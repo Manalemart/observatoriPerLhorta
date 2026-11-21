@@ -2,7 +2,7 @@
 
 Textos per a copiar i pegar en Play Console i App Store Connect, en valencià (idioma principal: **català**, que és com el llisten les dues botigues). Versió **1.0.0**.
 
-> ⚠️ **Abans d'enviar-la a revisió** (vegeu [Bloquejos](#bloquejos)): un compte de prova per als revisors d'Apple.
+> ⚠️ **Abans d'enviar-la a revisió**: crear el compte de revisió en Supabase i posar-lo en les dues botigues ([CODEMAGIC.md](../CODEMAGIC.md#compte-de-revisió-apple-i-google-i-de-les-captures)).
 
 ## Dades generals
 
@@ -111,7 +111,8 @@ Resultat esperat: **PEGI 3 / 4+**.
 ```
 L'app és l'Observatori Ciutadà de l'Horta, un inventari ciutadà del paisatge agrícola de València (Espanya), de l'associació sense ànim de lucre Per l'Horta. L'app està en català (valencià).
 
-Entrada: amb el correu, sense contrasenya (enllaç o codi). Compte de prova: <correu> / <codi o instruccions>.
+Entrada: la gent entra amb el correu, sense contrasenya (enllaç o codi). Per a la revisió hi ha un compte que entra amb contrasenya: escriviu el correu de prova i l'app demanarà la contrasenya.
+Compte de prova: test@mediamapes.com / <contrasenya>.
 
 Contingut generat pels usuaris: tot es revisa per la coordinació abans de publicar-se.
 La ubicació només es demana quan la persona toca «La meua posició» o situa una aportació.
@@ -132,7 +133,7 @@ A més, Play demana una **icona de 512 × 512** ([`icona-512.png`](icona-512.png
 ## Bloquejos
 
 1. ~~Esborrar el compte des de la app~~: fet (app i web `/compte`).
-2. **Compte de prova per a Apple.** El revisor ha de poder entrar, i l'entrada és amb un codi que arriba al correu. Cal un camí per al revisor (per exemple, un compte de prova que entra amb un codi fix) i posar-lo en «Informació per als revisors».
+2. ~~Compte de prova per a Apple~~: fet. Falta crear-lo en Supabase i posar-lo en les botigues ([CODEMAGIC.md](../CODEMAGIC.md#compte-de-revisió-apple-i-google-i-de-les-captures)).
 3. **Google Play, compte personal nou**: si el compte de desenvolupador és personal i s'ha creat després del 13/11/2023, abans de publicar cal una prova tancada amb 12 persones durant 14 dies. Amb un compte d'organització (Per l'Horta, amb número D-U-N-S) no cal.
 
 Els gràfics de Play es tornen a generar amb `python docs/botigues/generar_grafics.py`.

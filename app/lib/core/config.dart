@@ -9,6 +9,12 @@ class Config {
 
   static const paquet = 'com.mamlabsfera.observatori_perlhorta';
 
+  /// Compte de revisió de les botigues (Apple i Google no poden rebre el codi del correu).
+  /// Només este correu entra amb contrasenya; la resta, sempre amb enllaç o codi.
+  /// La contrasenya només és en Supabase. Es pot canviar en compilar
+  /// (--dart-define=COMPTE_REVISIO=...) o desactivar amb --dart-define=COMPTE_REVISIO=
+  static const compteRevisio = String.fromEnvironment('COMPTE_REVISIO', defaultValue: 'test@mediamapes.com');
+
   /// Vuelta a la app desde el enlace del correo. El esquema no puede ser el nombre del
   /// paquete: los esquemas de URL no admiten «_». Tiene que estar en las Redirect URLs de
   /// Supabase y en el intent-filter de AndroidManifest.xml.

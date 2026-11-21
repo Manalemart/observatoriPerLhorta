@@ -21,6 +21,7 @@ class EntradaScreen extends StatefulWidget {
 class _EntradaScreenState extends State<EntradaScreen> {
   final _correu = TextEditingController();
   final _codi = TextEditingController();
+  final _contrasenya = TextEditingController();
   bool _codiEnviat = false;
   bool _ambCodi = false;
   bool _treballant = false;
@@ -30,6 +31,7 @@ class _EntradaScreenState extends State<EntradaScreen> {
   void dispose() {
     _correu.dispose();
     _codi.dispose();
+    _contrasenya.dispose();
     super.dispose();
   }
 
@@ -93,11 +95,42 @@ class _EntradaScreenState extends State<EntradaScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _codiEnviat ? t.entradaCodiEnviat(_correu.text.trim()) : t.entradaExplicacio,
+                    _codiEnviat
+                        ? t.entradaCodiEnviat(_correu.text.trim())
+                        : sessio.esCompteRevisio(_correu.text)
+                            ? t.entradaExplicacioRevisio
+                            : t.entradaExplicacio,
                     style: estilProsa(context).copyWith(fontSize: 17),
                   ),
                   const SizedBox(height: 20),
-                  if (!_codiEnviat) ...[
+                  if (!_codiEnviat && sessio.esCompteRevisio(_correu.text)) ...[
+                    // Només el compte de revisió de les botigues: no pot rebre el correu
+                    TextField(
+                      controller: _correu,
+                      onChanged: (_) => setState(() {}),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(labelText: t.entradaCorreu),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _contrasenya,
+                      onChanged: (_) => setState(() {}),
+                      obscureText: true,
+                      autofillHints: const [AutofillHints.password],
+                      decoration: InputDecoration(labelText: t.entradaContrasenya),
+                    ),
+                    if (_error != null) _Error(_error!),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: _treballant || _contrasenya.text.isEmpty
+                          ? null
+                          : () => _fer(
+                                () => sessio.entrarAmbContrasenya(_correu.text, _contrasenya.text),
+                                t.entradaContrasenyaErronia,
+                              ),
+                      child: Text(t.entradaEntrar),
+                    ),
+                  ] else if (!_codiEnviat) ...[
                     TextField(
                       controller: _correu,
                       onChanged: (_) => setState(() {}),
