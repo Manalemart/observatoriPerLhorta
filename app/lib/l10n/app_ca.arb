@@ -333,5 +333,13 @@
   "cercadorError": "No s'ha pogut buscar. Comprova la connexió.",
   "cercadorMunicipi": "Municipi",
   "cercadorPartida": "Partida · {municipi}",
-  "@cercadorPartida": {"placeholders": {"municipi": {"type": "String"}}}
+  "@cercadorPartida": {"placeholders": {"municipi": {"type": "String"}}},
+  "filtresTitol": "Filtres",
+  "filtresTot": "Mostra-ho tot",
+  "filtresTemes": "Temes",
+  "filtresEpoca": "Època",
+  "filtresEpocaTot": "Tot",
+  "filtresEpoca2018": "De 2018",
+  "filtresEpocaNoves": "Noves",
+  "filtresEpocaNota": "«De 2018»: el que ve de l'inventari de 2017-2018 i encara no s'ha revisat. «Noves»: les aportacions i el que ja s'ha revisat."
 }

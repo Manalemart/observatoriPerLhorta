@@ -648,4 +648,29 @@ class LCa extends L {
   String cercadorPartida(String municipi) {
     return 'Partida · $municipi';
   }
+
+  @override
+  String get filtresTitol => 'Filtres';
+
+  @override
+  String get filtresTot => 'Mostra-ho tot';
+
+  @override
+  String get filtresTemes => 'Temes';
+
+  @override
+  String get filtresEpoca => 'Època';
+
+  @override
+  String get filtresEpocaTot => 'Tot';
+
+  @override
+  String get filtresEpoca2018 => 'De 2018';
+
+  @override
+  String get filtresEpocaNoves => 'Noves';
+
+  @override
+  String get filtresEpocaNota =>
+      '«De 2018»: el que ve de l\'inventari de 2017-2018 i encara no s\'ha revisat. «Noves»: les aportacions i el que ja s\'ha revisat.';
 }

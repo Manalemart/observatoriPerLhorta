@@ -1172,6 +1172,54 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'Partida · {municipi}'**
   String cercadorPartida(String municipi);
+
+  /// No description provided for @filtresTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get filtresTitol;
+
+  /// No description provided for @filtresTot.
+  ///
+  /// In ca, this message translates to:
+  /// **'Mostra-ho tot'**
+  String get filtresTot;
+
+  /// No description provided for @filtresTemes.
+  ///
+  /// In ca, this message translates to:
+  /// **'Temes'**
+  String get filtresTemes;
+
+  /// No description provided for @filtresEpoca.
+  ///
+  /// In ca, this message translates to:
+  /// **'Època'**
+  String get filtresEpoca;
+
+  /// No description provided for @filtresEpocaTot.
+  ///
+  /// In ca, this message translates to:
+  /// **'Tot'**
+  String get filtresEpocaTot;
+
+  /// No description provided for @filtresEpoca2018.
+  ///
+  /// In ca, this message translates to:
+  /// **'De 2018'**
+  String get filtresEpoca2018;
+
+  /// No description provided for @filtresEpocaNoves.
+  ///
+  /// In ca, this message translates to:
+  /// **'Noves'**
+  String get filtresEpocaNoves;
+
+  /// No description provided for @filtresEpocaNota.
+  ///
+  /// In ca, this message translates to:
+  /// **'«De 2018»: el que ve de l\'inventari de 2017-2018 i encara no s\'ha revisat. «Noves»: les aportacions i el que ja s\'ha revisat.'**
+  String get filtresEpocaNota;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

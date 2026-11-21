@@ -26,6 +26,7 @@ import 'capa_simbologia.dart';
 import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
 import 'entrada_screen.dart';
+import 'filtres_mapa.dart';
 import 'esborrar_compte.dart';
 import 'llegenda.dart';
 
@@ -48,6 +49,7 @@ class _MapaScreenState extends State<MapaScreen> {
   bool _error = false;
   LatLng? _posicio;
   bool _dialegAlies = false;
+  FiltresMapa _filtres = const FiltresMapa();
 
   /// Partidas que apadrinas: en sus elementos, la ficha deja revisar
   Set<int> _apadrinades = const {};
@@ -62,6 +64,9 @@ class _MapaScreenState extends State<MapaScreen> {
     _reconnexions = _sinc.reconnexions;
     _sinc.addListener(_xarxa);
     _carregarApadrinades();
+    FiltresMapa.carregar().then((f) {
+      if (mounted) setState(() => _filtres = f);
+    });
   }
 
   /// Al volver la red se recarga lo que se vio sin ella
@@ -275,6 +280,7 @@ class _MapaScreenState extends State<MapaScreen> {
       final prop = f['properties'] as Map<String, dynamic>;
       final validat = prop['estat'] == 'validat';
       final perRevisar = prop['per_revisar'] == true;
+      if (!_filtres.mostra(prop['tema_id'] as int?, perRevisar)) continue;
       final coord = geo['coordinates'] as List;
       // Símbol de la guia de disseny segons la variable i la categoria (docs/simbologia)
       final simbol = simbologia.simbol(
@@ -386,6 +392,23 @@ class _MapaScreenState extends State<MapaScreen> {
                                 icon: const Icon(Icons.search),
                                 tooltip: t.cercadorTitol,
                                 onPressed: _cercar,
+                              ),
+                              IconButton(
+                                icon: Badge(
+                                  isLabelVisible: _filtres.actius,
+                                  smallSize: 9,
+                                  child: Icon(_filtres.actius ? Icons.filter_alt : Icons.filter_alt_outlined),
+                                ),
+                                tooltip: t.filtresTitol,
+                                onPressed: () => mostrarFiltres(
+                                  context,
+                                  temes: temes,
+                                  inicial: _filtres,
+                                  onCanvi: (f) {
+                                    setState(() => _filtres = f);
+                                    f.desar();
+                                  },
+                                ),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.format_list_bulleted),
