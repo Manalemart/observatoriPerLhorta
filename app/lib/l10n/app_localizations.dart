@@ -1022,6 +1022,90 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'Fotos (opcionals)'**
   String get aportarFotosTitol;
+
+  /// No description provided for @compteEsborrarTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Esborra el compte'**
+  String get compteEsborrarTitol;
+
+  /// No description provided for @compteEsborraEs.
+  ///
+  /// In ca, this message translates to:
+  /// **'Si esborres el compte, s\'esborra per a sempre:'**
+  String get compteEsborraEs;
+
+  /// No description provided for @compteEsborraCompte.
+  ///
+  /// In ca, this message translates to:
+  /// **'el compte: el correu, l\'àlies i les sessions obertes;'**
+  String get compteEsborraCompte;
+
+  /// No description provided for @compteEsborraPendents.
+  ///
+  /// In ca, this message translates to:
+  /// **'les aportacions que encara no s\'han publicat (pendents o rebutjades), amb les seues fotos;'**
+  String get compteEsborraPendents;
+
+  /// No description provided for @compteEsborraAvisos.
+  ///
+  /// In ca, this message translates to:
+  /// **'els avisos, el resum per correu i les partides que apadrines;'**
+  String get compteEsborraAvisos;
+
+  /// No description provided for @compteEsborraDispositiu.
+  ///
+  /// In ca, this message translates to:
+  /// **'el que hi ha guardat en este dispositiu: aportacions i revisions sense enviar i els mapes descarregats.'**
+  String get compteEsborraDispositiu;
+
+  /// No description provided for @compteEsQueda.
+  ///
+  /// In ca, this message translates to:
+  /// **'Les aportacions que ja s\'han validat formen part de l\'inventari públic i obert (CC BY 4.0, i les fotos CC BY-SA 4.0): es queden, però sense cap vincle amb tu.'**
+  String get compteEsQueda;
+
+  /// No description provided for @compteDadesWeb.
+  ///
+  /// In ca, this message translates to:
+  /// **'Si abans vols una còpia de les teues dades, la pots descarregar en la web, en «El meu compte».'**
+  String get compteDadesWeb;
+
+  /// No description provided for @compteIrreversible.
+  ///
+  /// In ca, this message translates to:
+  /// **'No es pot desfer.'**
+  String get compteIrreversible;
+
+  /// No description provided for @compteEscriu.
+  ///
+  /// In ca, this message translates to:
+  /// **'Per a confirmar-ho, escriu {paraula}'**
+  String compteEscriu(String paraula);
+
+  /// No description provided for @compteEsborrarBoto.
+  ///
+  /// In ca, this message translates to:
+  /// **'Esborra el meu compte'**
+  String get compteEsborrarBoto;
+
+  /// No description provided for @compteEsborrant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Esborrant…'**
+  String get compteEsborrant;
+
+  /// No description provided for @compteEsborrarError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut esborrar el compte. Comprova la connexió i torna-ho a provar, o escriu a perlhorta@perlhorta.info.'**
+  String get compteEsborrarError;
+
+  /// No description provided for @compteEsborrat.
+  ///
+  /// In ca, this message translates to:
+  /// **'S\'ha esborrat el compte. Gràcies per haver participat en l\'Observatori.'**
+  String get compteEsborrat;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

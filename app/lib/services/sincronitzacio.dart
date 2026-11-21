@@ -74,6 +74,17 @@ class Sincronitzacio extends ChangeNotifier {
     await carregar();
   }
 
+  /// Esborra tot el que hi ha per enviar (en esborrar el compte).
+  Future<void> buidar() async {
+    for (final a in await cola.totes()) {
+      await cola.esborrar(a.id);
+    }
+    for (final r in await cola.revisions()) {
+      await cola.esborrarRevisio(r.id);
+    }
+    await carregar();
+  }
+
   Future<void> reintentar(String id) async {
     await cola.marcarPendent(id);
     await carregar();

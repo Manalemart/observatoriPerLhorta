@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // Texto legal: va aquí y no en locales/ porque, si llega el castellano, se traduce como
 // documento, no frase a frase. Datos de la entidad: su aviso legal (perlhorta.info/avis-legal).
@@ -117,14 +117,23 @@ export function Legal() {
 
         <h3>Quant de temps</h3>
         <p>
-          El compte es conserva mentre no demanes esborrar-lo. Les aportacions validades formen part d'un inventari
-          públic i obert: si esborres el compte, es conserven sense cap vincle amb tu.
+          El compte es conserva mentre no l'esborres. Pots esborrar-lo quan vulgues, tu mateix, des de{' '}
+          <Link to="/compte">El meu compte</Link> en la web o des del perfil de l'aplicació: s'esborren al moment el
+          compte, l'àlies, els avisos, les partides apadrinades i les aportacions que encara no s'han publicat, amb
+          les seues fotos. Les aportacions validades formen part d'un inventari públic i obert: es conserven, però
+          sense cap vincle amb tu.
+        </p>
+        <p>
+          Les còpies de seguretat de la base de dades caduquen soles: les dades esborrades hi poden quedar, sense
+          cap ús, fins que caduquen (com a màxim 30 dies).
         </p>
 
         <h3>Els teus drets</h3>
         <p>
-          Pots accedir a les teues dades, rectificar-les, demanar que s'esborren, oposar-te al tractament, limitar-lo
-          o demanar-ne una còpia escrivint a {CORREU}. Si no estàs d'acord amb la resposta, pots reclamar davant
+          Pots accedir a les teues dades i descarregar-ne una còpia, canviar l'àlies i esborrar el compte tu mateix
+          des de <Link to="/compte">El meu compte</Link>. També pots exercir qualsevol d'estos drets (accés,
+          rectificació, supressió, oposició, limitació i portabilitat) escrivint a {CORREU}: et respondrem en un
+          termini màxim d'un mes. Si no estàs d'acord amb la resposta, pots reclamar davant
           l'Agència Espanyola de Protecció de Dades (aepd.es).
         </p>
 

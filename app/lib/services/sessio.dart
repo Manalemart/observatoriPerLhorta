@@ -56,6 +56,20 @@ class Sessio extends ChangeNotifier {
 
   Future<void> eixir() => _client.auth.signOut();
 
+  /// Esborra el compte en el servidor (RGPD art. 17): primer les fotos de Storage que no
+  /// són d'elements validats, després el compte (vegeu la migració esborrar_compte).
+  /// La sessió es tanca a banda, amb [tancarLocal], quan també s'ha netejat el dispositiu.
+  Future<void> esborrarCompte() async {
+    final fotos = ((await _client.rpc('fotos_per_esborrar')) as List).cast<String>();
+    for (var i = 0; i < fotos.length; i += 1000) {
+      await _client.storage.from('fotos').remove(fotos.sublist(i, i + 1000 > fotos.length ? fotos.length : i + 1000));
+    }
+    await _client.rpc('esborrar_compte');
+  }
+
+  /// Tanca la sessió només ací (el compte ja no existeix: el servidor no cal avisar-lo).
+  Future<void> tancarLocal() => _client.auth.signOut(scope: SignOutScope.local);
+
   @override
   void dispose() {
     _sub.cancel();

@@ -24,6 +24,7 @@ import 'capa_simbologia.dart';
 import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
 import 'entrada_screen.dart';
+import 'esborrar_compte.dart';
 import 'llegenda.dart';
 
 const _esperaMoviment = Duration(milliseconds: 400);
@@ -212,6 +213,14 @@ class _MapaScreenState extends State<MapaScreen> {
                 onTap: () {
                   Navigator.of(ctx).pop();
                   sessio.eixir();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_forever_outlined, color: Theme.of(ctx).colorScheme.error),
+                title: Text(t.compteEsborrarTitol, style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  obrirEsborrarCompte(context);
                 },
               ),
             ],

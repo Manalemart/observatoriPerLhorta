@@ -14,6 +14,8 @@ export interface Perfil {
 
 interface Valor {
   session: Session | null;
+  /** Ja se sap si hi ha sessió (al principi es llig de l'emmagatzematge, de manera asíncrona). */
+  sessioLlesta: boolean;
   perfil: Perfil | null;
   uid: string | null;
   esCoordinador: boolean;
@@ -41,11 +43,12 @@ function partidesDelToken(token: string | undefined): number[] {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [sessioLlesta, setSessioLlesta] = useState(false);
   const [perfil, setPerfil] = useState<Perfil | null>(null);
   const uid = session?.user.id ?? null;
 
   useEffect(() => {
-    void supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    void supabase.auth.getSession().then(({ data }) => { setSession(data.session); setSessioLlesta(true); });
     const { data } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
     return () => data.subscription.unsubscribe();
   }, []);
@@ -66,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const partides = partidesDelToken(session?.access_token);
     return {
       session,
+      sessioLlesta,
       perfil,
       uid,
       esCoordinador,
@@ -75,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       recarregarPerfil,
       eixir: async () => { await supabase.auth.signOut(); },
     };
-  }, [session, perfil, uid, recarregarPerfil]);
+  }, [session, sessioLlesta, perfil, uid, recarregarPerfil]);
 
   return <Context.Provider value={valor}>{children}</Context.Provider>;
 }

@@ -2,7 +2,7 @@
 
 Textos per a copiar i pegar en Play Console i App Store Connect, en valencià (idioma principal: **català**, que és com el llisten les dues botigues). Versió **1.0.0**.
 
-> ⚠️ **Abans d'enviar-la a revisió** (vegeu [Bloquejos](#bloquejos)): esborrar el compte des de la app i un compte de prova per als revisors d'Apple.
+> ⚠️ **Abans d'enviar-la a revisió** (vegeu [Bloquejos](#bloquejos)): un compte de prova per als revisors d'Apple.
 
 ## Dades generals
 
@@ -20,6 +20,7 @@ Textos per a copiar i pegar en Play Console i App Store Connect, en valencià (i
 | Correu de contacte | `desarrollo@mediamapes.com` |
 | Web | `https://<domini>` |
 | Política de privacitat | `https://<domini>/legal#privacitat` |
+| Esborrar el compte (Play: *Data deletion URL*) | `https://<domini>/compte` |
 | URL d'assistència (App Store) | `https://<domini>/legal` |
 | Copyright (App Store) | `2026 Associació Per l'Horta` |
 
@@ -101,7 +102,8 @@ Resultat esperat: **PEGI 3 / 4+**.
 
 - Seguiment (tracking) / publicitat: **No**.
 - Xifrat en trànsit: **Sí** (HTTPS).
-- Es poden demanar que s'esborren: **Sí** (vegeu [Bloquejos](#bloquejos): falta fer-ho des de la app).
+- Es pot esborrar el compte: **Sí**, des de la app (perfil → «Esborra el compte») i des de la web (`/compte`), al moment. Les aportacions validades es queden en l'inventari obert sense vincle amb la persona; la resta s'esborra.
+- Còpia de les dades: des de la web (`/compte` → «Descarrega les meues dades», JSON).
 - Les fotos perden les metadades (també el GPS de la càmera) en pujar-se.
 
 ## Informació per als revisors d'Apple
@@ -113,6 +115,7 @@ Entrada: amb el correu, sense contrasenya (enllaç o codi). Compte de prova: <co
 
 Contingut generat pels usuaris: tot es revisa per la coordinació abans de publicar-se.
 La ubicació només es demana quan la persona toca «La meua posició» o situa una aportació.
+Esborrar el compte: perfil (cercle amb la inicial, dalt a la dreta del mapa) → «Esborra el compte».
 ```
 
 ## Captures
@@ -128,7 +131,7 @@ A més, Play demana una **icona de 512 × 512** ([`icona-512.png`](icona-512.png
 
 ## Bloquejos
 
-1. **Esborrar el compte des de la app.** Apple (norma 5.1.1(v)) i Google Play ho exigixen a les apps on es crea un compte; Play, a més, una pàgina web per a demanar-ho. Ara només es pot fer per correu.
+1. ~~Esborrar el compte des de la app~~: fet (app i web `/compte`).
 2. **Compte de prova per a Apple.** El revisor ha de poder entrar, i l'entrada és amb un codi que arriba al correu. Cal un camí per al revisor (per exemple, un compte de prova que entra amb un codi fix) i posar-lo en «Informació per als revisors».
 3. **Google Play, compte personal nou**: si el compte de desenvolupador és personal i s'ha creat després del 13/11/2023, abans de publicar cal una prova tancada amb 12 persones durant 14 dies. Amb un compte d'organització (Per l'Horta, amb número D-U-N-S) no cal.
 

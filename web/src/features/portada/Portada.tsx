@@ -257,7 +257,7 @@ export function Portada({ onEntrar }: { onEntrar: () => void }) {
           </div>
           <div>
             <p>{t('llicencia.codi')} · {t('llicencia.dades')}</p>
-            <p><Link to="/legal">{t('legal.enllac')}</Link> · <Link to="/dades">{t('nav.dades')}</Link></p>
+            <p><Link to="/legal">{t('legal.enllac')}</Link> · <Link to="/compte">{t('compte.enllac')}</Link> · <Link to="/dades">{t('nav.dades')}</Link></p>
           </div>
         </div>
       </footer>

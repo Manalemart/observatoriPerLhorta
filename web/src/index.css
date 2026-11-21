@@ -334,7 +334,7 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
   .noticia-targeta img { width: 100%; height: 160px; }
   .campana-llista { position: fixed; top: 6.5rem; left: 16px; right: 16px; width: auto; }
   .capcalera .obrir-panell { display: inline-flex; }
-  .usuari { display: none; }
+  .usuari span { display: none; }
   .capcalera-accions { gap: 0.25rem; }
   .capcalera .boto { padding: 0.35rem 0.5rem; font-size: 0.8rem; }
   .panell {
@@ -402,3 +402,11 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .fulls-qualsevol .camp { flex: 1 1 16rem; margin: 0; }
 .accions-partida { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
 .full-camp { display: flex; flex-direction: column; gap: 0.25rem; }
+
+/* El meu compte */
+.compte-seccio { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--vora); }
+.compte-seccio h2 { font-size: 1.15rem; letter-spacing: 0; text-transform: none; color: var(--text); }
+.compte-seccio ul { list-style: disc; padding-left: 1.25rem; }
+.compte-perill h2 { color: #b3261e; }
+a.usuari { display: inline-flex; align-items: center; gap: 0.3rem; color: inherit; text-decoration: none; }
+a.usuari:hover span { text-decoration: underline; text-underline-offset: 3px; }

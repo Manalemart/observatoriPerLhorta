@@ -558,4 +558,57 @@ class LCa extends L {
 
   @override
   String get aportarFotosTitol => 'Fotos (opcionals)';
+
+  @override
+  String get compteEsborrarTitol => 'Esborra el compte';
+
+  @override
+  String get compteEsborraEs =>
+      'Si esborres el compte, s\'esborra per a sempre:';
+
+  @override
+  String get compteEsborraCompte =>
+      'el compte: el correu, l\'àlies i les sessions obertes;';
+
+  @override
+  String get compteEsborraPendents =>
+      'les aportacions que encara no s\'han publicat (pendents o rebutjades), amb les seues fotos;';
+
+  @override
+  String get compteEsborraAvisos =>
+      'els avisos, el resum per correu i les partides que apadrines;';
+
+  @override
+  String get compteEsborraDispositiu =>
+      'el que hi ha guardat en este dispositiu: aportacions i revisions sense enviar i els mapes descarregats.';
+
+  @override
+  String get compteEsQueda =>
+      'Les aportacions que ja s\'han validat formen part de l\'inventari públic i obert (CC BY 4.0, i les fotos CC BY-SA 4.0): es queden, però sense cap vincle amb tu.';
+
+  @override
+  String get compteDadesWeb =>
+      'Si abans vols una còpia de les teues dades, la pots descarregar en la web, en «El meu compte».';
+
+  @override
+  String get compteIrreversible => 'No es pot desfer.';
+
+  @override
+  String compteEscriu(String paraula) {
+    return 'Per a confirmar-ho, escriu $paraula';
+  }
+
+  @override
+  String get compteEsborrarBoto => 'Esborra el meu compte';
+
+  @override
+  String get compteEsborrant => 'Esborrant…';
+
+  @override
+  String get compteEsborrarError =>
+      'No s\'ha pogut esborrar el compte. Comprova la connexió i torna-ho a provar, o escriu a perlhorta@perlhorta.info.';
+
+  @override
+  String get compteEsborrat =>
+      'S\'ha esborrat el compte. Gràcies per haver participat en l\'Observatori.';
 }

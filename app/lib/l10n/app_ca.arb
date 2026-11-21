@@ -306,5 +306,20 @@
   "aportarPasQue": "Què has vist?",
   "aportarPasOn": "On és?",
   "aportarPasDetalls": "Foto i detalls",
-  "aportarFotosTitol": "Fotos (opcionals)"
+  "aportarFotosTitol": "Fotos (opcionals)",
+  "compteEsborrarTitol": "Esborra el compte",
+  "compteEsborraEs": "Si esborres el compte, s'esborra per a sempre:",
+  "compteEsborraCompte": "el compte: el correu, l'àlies i les sessions obertes;",
+  "compteEsborraPendents": "les aportacions que encara no s'han publicat (pendents o rebutjades), amb les seues fotos;",
+  "compteEsborraAvisos": "els avisos, el resum per correu i les partides que apadrines;",
+  "compteEsborraDispositiu": "el que hi ha guardat en este dispositiu: aportacions i revisions sense enviar i els mapes descarregats.",
+  "compteEsQueda": "Les aportacions que ja s'han validat formen part de l'inventari públic i obert (CC BY 4.0, i les fotos CC BY-SA 4.0): es queden, però sense cap vincle amb tu.",
+  "compteDadesWeb": "Si abans vols una còpia de les teues dades, la pots descarregar en la web, en «El meu compte».",
+  "compteIrreversible": "No es pot desfer.",
+  "compteEscriu": "Per a confirmar-ho, escriu {paraula}",
+  "@compteEscriu": {"placeholders": {"paraula": {"type": "String"}}},
+  "compteEsborrarBoto": "Esborra el meu compte",
+  "compteEsborrant": "Esborrant…",
+  "compteEsborrarError": "No s'ha pogut esborrar el compte. Comprova la connexió i torna-ho a provar, o escriu a perlhorta@perlhorta.info.",
+  "compteEsborrat": "S'ha esborrat el compte. Gràcies per haver participat en l'Observatori."
 }

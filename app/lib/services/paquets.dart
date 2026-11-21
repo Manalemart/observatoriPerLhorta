@@ -190,6 +190,15 @@ class Paquets extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Esborra tots els mapes descarregats i la llista de partides (en esborrar el compte).
+  Future<void> esborrarTot() async {
+    for (final id in _info.keys.toList()) {
+      await esborrar(id);
+    }
+    await magatzem.esborrar(_llista);
+    notifyListeners();
+  }
+
   /// Con red, se refresca la copia del paquete para que sin red se vea lo último.
   Future<void> actualitzarPartida(int partidaId, Map<String, dynamic> p) async {
     if (_info.containsKey(partidaId)) await magatzem.escriureText('$partidaId/partida.json', jsonEncode(p));

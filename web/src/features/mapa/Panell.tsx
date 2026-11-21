@@ -243,7 +243,7 @@ export function Panell({
       </section>
 
       <footer className="peu">
-        {t('llicencia.dades')} · {t('llicencia.codi')} · <Link to="/legal">{t('legal.enllac')}</Link>
+        {t('llicencia.dades')} · {t('llicencia.codi')} · <Link to="/legal">{t('legal.enllac')}</Link> · <Link to="/compte">{t('compte.enllac')}</Link>
       </footer>
     </div>
   );
