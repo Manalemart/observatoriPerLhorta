@@ -1262,6 +1262,84 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'{nom}, en l\'Observatori Ciutadà de l\'Horta'**
   String fitxaCompartirText(String nom);
+
+  /// No description provided for @guiaPerfil.
+  ///
+  /// In ca, this message translates to:
+  /// **'Com funciona'**
+  String get guiaPerfil;
+
+  /// No description provided for @guiaSalta.
+  ///
+  /// In ca, this message translates to:
+  /// **'Salta'**
+  String get guiaSalta;
+
+  /// No description provided for @guiaSeguent.
+  ///
+  /// In ca, this message translates to:
+  /// **'Següent'**
+  String get guiaSeguent;
+
+  /// No description provided for @guiaComenca.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comença'**
+  String get guiaComenca;
+
+  /// No description provided for @guiaPagina.
+  ///
+  /// In ca, this message translates to:
+  /// **'Pàgina {n} de {total}'**
+  String guiaPagina(int n, int total);
+
+  /// No description provided for @guiaMapaTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Benvinguda a l\'Observatori'**
+  String get guiaMapaTitol;
+
+  /// No description provided for @guiaMapaText.
+  ///
+  /// In ca, this message translates to:
+  /// **'L\'inventari obert de l\'Horta de València, fet entre totes i tots. Al mapa hi ha més de 7.000 elements: sèquies, alqueries, arbres, camins… Acosta\'t i toca\'n un per a veure la fitxa.'**
+  String get guiaMapaText;
+
+  /// No description provided for @guiaAportaTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aporta el que veus'**
+  String get guiaAportaTitol;
+
+  /// No description provided for @guiaAportaText.
+  ///
+  /// In ca, this message translates to:
+  /// **'Amb «Aporta» tries què és, ho situes al mapa (un punt, una línia o una parcel·la) i hi afegeixes fotos. La coordinació ho revisa abans de publicar-ho.'**
+  String get guiaAportaText;
+
+  /// No description provided for @guiaPartidaTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Revisa una partida'**
+  String get guiaPartidaTitol;
+
+  /// No description provided for @guiaPartidaText.
+  ///
+  /// In ca, this message translates to:
+  /// **'Si apadrines una partida, en «Partides» pots descarregar-ne el mapa i revisar-la al camp, encara que no hi haja cobertura: el que revises s\'envia sol en tornar la connexió.'**
+  String get guiaPartidaText;
+
+  /// No description provided for @guiaObertTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dades obertes'**
+  String get guiaObertTitol;
+
+  /// No description provided for @guiaObertText.
+  ///
+  /// In ca, this message translates to:
+  /// **'El que es valida passa a l\'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t\'avisem en «Avisos».'**
+  String get guiaObertText;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

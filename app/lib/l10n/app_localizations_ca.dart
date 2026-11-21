@@ -698,4 +698,49 @@ class LCa extends L {
   String fitxaCompartirText(String nom) {
     return '$nom, en l\'Observatori Ciutadà de l\'Horta';
   }
+
+  @override
+  String get guiaPerfil => 'Com funciona';
+
+  @override
+  String get guiaSalta => 'Salta';
+
+  @override
+  String get guiaSeguent => 'Següent';
+
+  @override
+  String get guiaComenca => 'Comença';
+
+  @override
+  String guiaPagina(int n, int total) {
+    return 'Pàgina $n de $total';
+  }
+
+  @override
+  String get guiaMapaTitol => 'Benvinguda a l\'Observatori';
+
+  @override
+  String get guiaMapaText =>
+      'L\'inventari obert de l\'Horta de València, fet entre totes i tots. Al mapa hi ha més de 7.000 elements: sèquies, alqueries, arbres, camins… Acosta\'t i toca\'n un per a veure la fitxa.';
+
+  @override
+  String get guiaAportaTitol => 'Aporta el que veus';
+
+  @override
+  String get guiaAportaText =>
+      'Amb «Aporta» tries què és, ho situes al mapa (un punt, una línia o una parcel·la) i hi afegeixes fotos. La coordinació ho revisa abans de publicar-ho.';
+
+  @override
+  String get guiaPartidaTitol => 'Revisa una partida';
+
+  @override
+  String get guiaPartidaText =>
+      'Si apadrines una partida, en «Partides» pots descarregar-ne el mapa i revisar-la al camp, encara que no hi haja cobertura: el que revises s\'envia sol en tornar la connexió.';
+
+  @override
+  String get guiaObertTitol => 'Dades obertes';
+
+  @override
+  String get guiaObertText =>
+      'El que es valida passa a l\'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t\'avisem en «Avisos».';
 }

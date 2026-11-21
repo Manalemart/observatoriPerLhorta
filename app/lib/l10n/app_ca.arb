@@ -349,5 +349,19 @@
   "dadesError": "No s'han pogut descarregar les dades. Comprova la connexió.",
   "fitxaCompartir": "Comparteix",
   "fitxaCompartirText": "{nom}, en l'Observatori Ciutadà de l'Horta",
-  "@fitxaCompartirText": {"placeholders": {"nom": {"type": "String"}}}
+  "@fitxaCompartirText": {"placeholders": {"nom": {"type": "String"}}},
+  "guiaPerfil": "Com funciona",
+  "guiaSalta": "Salta",
+  "guiaSeguent": "Següent",
+  "guiaComenca": "Comença",
+  "guiaPagina": "Pàgina {n} de {total}",
+  "@guiaPagina": {"placeholders": {"n": {"type": "int"}, "total": {"type": "int"}}},
+  "guiaMapaTitol": "Benvinguda a l'Observatori",
+  "guiaMapaText": "L'inventari obert de l'Horta de València, fet entre totes i tots. Al mapa hi ha més de 7.000 elements: sèquies, alqueries, arbres, camins… Acosta't i toca'n un per a veure la fitxa.",
+  "guiaAportaTitol": "Aporta el que veus",
+  "guiaAportaText": "Amb «Aporta» tries què és, ho situes al mapa (un punt, una línia o una parcel·la) i hi afegeixes fotos. La coordinació ho revisa abans de publicar-ho.",
+  "guiaPartidaTitol": "Revisa una partida",
+  "guiaPartidaText": "Si apadrines una partida, en «Partides» pots descarregar-ne el mapa i revisar-la al camp, encara que no hi haja cobertura: el que revises s'envia sol en tornar la connexió.",
+  "guiaObertTitol": "Dades obertes",
+  "guiaObertText": "El que es valida passa a l'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t'avisem en «Avisos»."
 }

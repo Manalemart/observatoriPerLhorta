@@ -27,6 +27,7 @@ import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
 import 'entrada_screen.dart';
 import 'filtres_mapa.dart';
+import 'guia.dart';
 import 'esborrar_compte.dart';
 import 'les_meues_dades.dart';
 import 'llegenda.dart';
@@ -51,6 +52,7 @@ class _MapaScreenState extends State<MapaScreen> {
   LatLng? _posicio;
   bool _dialegAlies = false;
   FiltresMapa _filtres = const FiltresMapa();
+  bool _guiaComprovada = false;
 
   /// Partidas que apadrinas: en sus elementos, la ficha deja revisar
   Set<int> _apadrinades = const {};
@@ -186,6 +188,13 @@ class _MapaScreenState extends State<MapaScreen> {
     nom: prop['variable'] as String?,
   );
 
+  /// La guia de benvinguda, la primera vegada (després de l'àlies).
+  Future<void> _guiaSiCal() async {
+    _guiaComprovada = true;
+    if (await guiaVista() || !mounted) return;
+    await mostrarGuia(context);
+  }
+
   /// Busca un municipi o una partida i hi porta el mapa.
   Future<void> _cercar() async {
     final t = L.of(context);
@@ -243,6 +252,14 @@ class _MapaScreenState extends State<MapaScreen> {
                 ),
               ),
               ListTile(
+                leading: const Icon(Icons.help_outline),
+                title: Text(t.guiaPerfil),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  mostrarGuia(context);
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.description_outlined),
                 title: Text(t.perfilLlicencies),
                 onTap: () {
@@ -287,7 +304,11 @@ class _MapaScreenState extends State<MapaScreen> {
         if (!mounted) return;
         await demanarAlies(context);
         _dialegAlies = false;
+        if (mounted) _guiaSiCal();
       });
+    } else if (!sessio.necessitaAlies && sessio.entrada && !_guiaComprovada) {
+      _guiaComprovada = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _guiaSiCal());
     }
 
     final poligons = <Polygon<Map<String, dynamic>>>[];
