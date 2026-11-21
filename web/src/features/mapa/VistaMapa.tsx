@@ -7,6 +7,7 @@ import { Aportar } from '../aportar/Aportar';
 import { FitxaElement } from './FitxaElement';
 import { FONS_INICIAL } from './estil';
 import { Mapa } from './Mapa';
+import { Cercador } from './Cercador';
 import { Panell } from './Panell';
 import type { Dades, Epoca, Esborrany, Fons, Variable } from './tipus';
 
@@ -40,6 +41,7 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
   );
   const [variableCaptura, setVariableCaptura] = useState<Variable | null>(null);
   const [esborrany, setEsborrany] = useState<Esborrany>(null);
+  const [enquadrar, setEnquadrar] = useState<{ caixa: [number, number, number, number]; n: number } | null>(null);
   const clicCaptura = useRef<((lng: number, lat: number) => void) | null>(null);
 
   const onSeleccionar = useCallback((ids: string[]) => {
@@ -120,7 +122,11 @@ export function VistaMapa({ dades, elements, recarregarElements, panellObert, on
           ignorarClics={aportant}
           onClicCaptura={onClicCaptura}
           esborrany={esborrany}
+          enquadrar={enquadrar}
         />
+        {!aportant && (
+          <Cercador onTriar={(l) => setEnquadrar((x) => ({ caixa: [l.oest, l.sud, l.est, l.nord], n: (x?.n ?? 0) + 1 }))} />
+        )}
         {!aportant && (
           <button
             type="button"

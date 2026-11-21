@@ -1130,6 +1130,48 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'Compte de revisió: entra amb la contrasenya.'**
   String get entradaExplicacioRevisio;
+
+  /// No description provided for @cercadorTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Busca un lloc'**
+  String get cercadorTitol;
+
+  /// No description provided for @cercadorEtiqueta.
+  ///
+  /// In ca, this message translates to:
+  /// **'Municipi o partida'**
+  String get cercadorEtiqueta;
+
+  /// No description provided for @cercadorAjuda.
+  ///
+  /// In ca, this message translates to:
+  /// **'Escriu el nom d\'un municipi o d\'una partida.'**
+  String get cercadorAjuda;
+
+  /// No description provided for @cercadorCap.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cap municipi ni partida amb eixe nom.'**
+  String get cercadorCap;
+
+  /// No description provided for @cercadorError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut buscar. Comprova la connexió.'**
+  String get cercadorError;
+
+  /// No description provided for @cercadorMunicipi.
+  ///
+  /// In ca, this message translates to:
+  /// **'Municipi'**
+  String get cercadorMunicipi;
+
+  /// No description provided for @cercadorPartida.
+  ///
+  /// In ca, this message translates to:
+  /// **'Partida · {municipi}'**
+  String cercadorPartida(String municipi);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

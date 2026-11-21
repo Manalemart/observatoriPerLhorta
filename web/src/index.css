@@ -410,3 +410,18 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .compte-perill h2 { color: #b3261e; }
 a.usuari { display: inline-flex; align-items: center; gap: 0.3rem; color: inherit; text-decoration: none; }
 a.usuari:hover span { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Buscador del mapa */
+.cercador { position: absolute; top: 0.625rem; left: 0.625rem; z-index: 2; width: min(22rem, calc(100% - 20rem)); }
+.cercador input { width: 100%; height: 40px; padding: 0 0.75rem 0 2.25rem; border: 1px solid var(--vora); border-radius: 999px; background: var(--superficie); color: var(--text); box-shadow: var(--ombra); font: inherit; font-size: 0.95rem; }
+.cercador input:focus { outline: 2px solid var(--marca); outline-offset: 1px; }
+.cercador-icona { position: absolute; left: 0.75rem; top: 11px; color: var(--text-2); pointer-events: none; }
+.cercador-llista { position: absolute; top: calc(100% + 4px); left: 0; right: 0; margin: 0; padding: 0.25rem 0; list-style: none; background: var(--superficie); border: 1px solid var(--vora); border-radius: 10px; box-shadow: var(--ombra); max-height: 60vh; overflow-y: auto; }
+.cercador-llista li { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.5rem 0.9rem; cursor: pointer; }
+.cercador-llista li.actiu, .cercador-llista li:hover { background: var(--superficie-2); }
+.cercador-nom { font-weight: 600; }
+.cercador-tipus { font-size: 0.78rem; color: var(--text-2); }
+.cercador-llista li.cercador-buit { cursor: default; color: var(--text-2); }
+@media (max-width: 767px) {
+  .cercador { top: 3.4rem; left: 0.5rem; width: calc(100% - 3.75rem); }
+}

@@ -625,4 +625,27 @@ class LCa extends L {
   @override
   String get entradaExplicacioRevisio =>
       'Compte de revisió: entra amb la contrasenya.';
+
+  @override
+  String get cercadorTitol => 'Busca un lloc';
+
+  @override
+  String get cercadorEtiqueta => 'Municipi o partida';
+
+  @override
+  String get cercadorAjuda => 'Escriu el nom d\'un municipi o d\'una partida.';
+
+  @override
+  String get cercadorCap => 'Cap municipi ni partida amb eixe nom.';
+
+  @override
+  String get cercadorError => 'No s\'ha pogut buscar. Comprova la connexió.';
+
+  @override
+  String get cercadorMunicipi => 'Municipi';
+
+  @override
+  String cercadorPartida(String municipi) {
+    return 'Partida · $municipi';
+  }
 }

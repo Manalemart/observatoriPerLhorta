@@ -325,5 +325,13 @@
   "entradaContrasenya": "Contrasenya",
   "entradaEntrar": "Entra",
   "entradaContrasenyaErronia": "El correu o la contrasenya no són correctes.",
-  "entradaExplicacioRevisio": "Compte de revisió: entra amb la contrasenya."
+  "entradaExplicacioRevisio": "Compte de revisió: entra amb la contrasenya.",
+  "cercadorTitol": "Busca un lloc",
+  "cercadorEtiqueta": "Municipi o partida",
+  "cercadorAjuda": "Escriu el nom d'un municipi o d'una partida.",
+  "cercadorCap": "Cap municipi ni partida amb eixe nom.",
+  "cercadorError": "No s'ha pogut buscar. Comprova la connexió.",
+  "cercadorMunicipi": "Municipi",
+  "cercadorPartida": "Partida · {municipi}",
+  "@cercadorPartida": {"placeholders": {"municipi": {"type": "String"}}}
 }

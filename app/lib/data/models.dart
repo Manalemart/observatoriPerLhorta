@@ -183,3 +183,37 @@ class RevisioLocal {
   /// Ya reducidas y sin GPS (prepararFoto). Se suben antes de revisar_element().
   final List<Uint8List> fotos;
 }
+
+/// Un lloc del buscador del mapa (cercar_llocs): municipi o partida, amb la seua caixa.
+class Lloc {
+  const Lloc({
+    required this.tipus,
+    required this.id,
+    required this.nom,
+    this.municipi,
+    required this.oest,
+    required this.sud,
+    required this.est,
+    required this.nord,
+  });
+
+  factory Lloc.fromJson(Map<String, dynamic> j) => Lloc(
+        tipus: j['tipus'] as String,
+        id: j['id'] as int,
+        nom: j['nom'] as String,
+        municipi: j['municipi'] as String?,
+        oest: (j['oest'] as num).toDouble(),
+        sud: (j['sud'] as num).toDouble(),
+        est: (j['est'] as num).toDouble(),
+        nord: (j['nord'] as num).toDouble(),
+      );
+
+  /// 'municipi' | 'partida'
+  final String tipus;
+  final int id;
+  final String nom;
+  final String? municipi;
+  final double oest, sud, est, nord;
+
+  bool get esMunicipi => tipus == 'municipi';
+}

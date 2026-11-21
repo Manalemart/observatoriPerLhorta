@@ -28,6 +28,8 @@ interface Props {
   ignorarClics: boolean;
   onClicCaptura: (lng: number, lat: number) => void;
   esborrany: Esborrany;
+  /** Centra el mapa en esta caixa [oest, sud, est, nord] (buscador). `n` canvia a cada petició. */
+  enquadrar?: { caixa: [number, number, number, number]; n: number } | null;
 }
 
 // Worker servido tal cual desde public/ (lo copian predev y prebuild): Vite le inyecta su
@@ -245,7 +247,7 @@ function afegirCapes(mapa: MapaGL, dades: Dades, elements: FeatureCollection) {
 
 export function Mapa({
   dades, elements, fons, variablesActives, epoca, veurePartides, veureMunicipis, veureSigpac,
-  seleccionat, onSeleccionar, capturant, ignorarClics, onClicCaptura, esborrany,
+  seleccionat, onSeleccionar, capturant, ignorarClics, onClicCaptura, esborrany, enquadrar,
 }: Props) {
   const contenidor = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<MapaGL | null>(null);
@@ -394,6 +396,14 @@ export function Mapa({
     mapa.setFilter('seleccio-punt', filtre(['Point']));
     mapa.setFilter('seleccio-poligon', filtre(['Polygon', 'LineString']));
   }, [seleccionat, llest]);
+
+  useEffect(() => {
+    const mapa = mapaRef.current;
+    if (!mapa || !llest || !enquadrar) return;
+    const [o, s, e, n] = enquadrar.caixa;
+    // Per dalt, l'espai del buscador i del botó d'aportar
+    mapa.fitBounds([[o, s], [e, n]], { padding: { top: 120, bottom: 48, left: 48, right: 48 }, maxZoom: 17, duration: 800 });
+  }, [enquadrar, llest]);
 
   return <div ref={contenidor} className="mapa" role="application" aria-label="Mapa de l'inventari" />;
 }

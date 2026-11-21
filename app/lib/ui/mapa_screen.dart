@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../core/config.dart';
 import '../core/tema_app.dart';
+import '../data/models.dart' show Lloc;
 import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
@@ -20,6 +21,7 @@ import 'accio_revisio.dart';
 import 'adaptatiu.dart';
 import 'aportar_screen.dart' show VistaMapa;
 import 'capa_punts.dart';
+import 'cercador.dart';
 import 'capa_simbologia.dart';
 import 'capes_mapa.dart';
 import 'fitxa_mapa.dart';
@@ -177,6 +179,22 @@ class _MapaScreenState extends State<MapaScreen> {
     punt: punt,
     nom: prop['variable'] as String?,
   );
+
+  /// Busca un municipi o una partida i hi porta el mapa.
+  Future<void> _cercar() async {
+    final t = L.of(context);
+    final api = context.read<ApiObservatori>();
+    final lloc = await showSearch<Lloc?>(
+      context: context,
+      delegate: CercadorLlocs(cercar: api.cercarLlocs, etiqueta: t.cercadorEtiqueta),
+    );
+    if (lloc == null || !mounted) return;
+    _mapa.fitCamera(CameraFit.bounds(
+      bounds: LatLngBounds(LatLng(lloc.sud, lloc.oest), LatLng(lloc.nord, lloc.est)),
+      padding: const EdgeInsets.fromLTRB(32, 140, 32, 120),
+      maxZoom: 17,
+    ));
+  }
 
   void _obrirPerfil() {
     final t = L.of(context);
@@ -363,6 +381,11 @@ class _MapaScreenState extends State<MapaScreen> {
                                   style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.search),
+                                tooltip: t.cercadorTitol,
+                                onPressed: _cercar,
                               ),
                               IconButton(
                                 icon: const Icon(Icons.format_list_bulleted),

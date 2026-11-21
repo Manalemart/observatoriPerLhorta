@@ -38,6 +38,12 @@ class ApiObservatori implements ApiAportacions, ApiAvisos {
     return [for (final f in files) Tema.fromJson(f)];
   }
 
+  /// Buscador del mapa: municipis i partides per nom.
+  Future<List<Lloc>> cercarLlocs(String text) async {
+    final r = await _client.rpc('cercar_llocs', params: {'p_text': text, 'p_limit': 10}) as List;
+    return [for (final j in r.cast<Map<String, dynamic>>()) Lloc.fromJson(j)];
+  }
+
   Future<List<Map<String, dynamic>>> elementsBbox(double minx, double miny, double maxx, double maxy) async {
     final r = await _client.rpc('elements_bbox', params: {'p_minx': minx, 'p_miny': miny, 'p_maxx': maxx, 'p_maxy': maxy});
     return ((r as Map<String, dynamic>)['features'] as List).cast<Map<String, dynamic>>();

@@ -112,6 +112,13 @@
     "aliesExplicacio": "Tria un àlies. La coordinació l'utilitzarà per a identificar-te.",
     "alies": "Àlies"
   },
+  "cercador": {
+    "etiqueta": "Busca en el mapa",
+    "placeholder": "Busca un municipi o una partida",
+    "municipi": "Municipi",
+    "partida": "Partida · {{municipi}}",
+    "cap": "Cap municipi ni partida amb eixe nom."
+  },
   "compte": {
     "titol": "El meu compte",
     "enllac": "El meu compte",
