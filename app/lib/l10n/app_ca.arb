@@ -363,5 +363,16 @@
   "guiaPartidaTitol": "Revisa una partida",
   "guiaPartidaText": "Si apadrines una partida, en «Partides» pots descarregar-ne el mapa i revisar-la al camp, encara que no hi haja cobertura: el que revises s'envia sol en tornar la connexió.",
   "guiaObertTitol": "Dades obertes",
-  "guiaObertText": "El que es valida passa a l'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t'avisem en «Avisos»."
+  "guiaObertText": "El que es valida passa a l'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t'avisem en «Avisos».",
+  "llistaAccions": "Accions",
+  "llistaCorregir": "Corregeix la descripció",
+  "llistaCorregirRebutjada": "La coordinació la va rebutjar. En corregir-la, torna a revisió.",
+  "llistaCorregida": "Descripció corregida.",
+  "llistaCorregidaRevisio": "Corregida: torna a revisió.",
+  "llistaRetirar": "Retira",
+  "llistaRetirarTitol": "Retirar l'aportació?",
+  "llistaRetirarText": "S'esborrarà «{titol}», amb les seues fotos. No es pot desfer.",
+  "@llistaRetirarText": {"placeholders": {"titol": {"type": "String"}}},
+  "llistaRetirada": "Aportació retirada.",
+  "llistaErrorAccio": "No s'ha pogut fer. Comprova la connexió i torna-ho a provar."
 }

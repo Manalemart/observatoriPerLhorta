@@ -139,6 +139,7 @@ class AportacioRemota {
     required this.estat,
     required this.creadaEn,
     this.motiuRebuig,
+    this.descripcio,
   });
 
   factory AportacioRemota.fromJson(Map<String, dynamic> j) => AportacioRemota(
@@ -147,6 +148,7 @@ class AportacioRemota {
         estat: j['estat'] as String,
         creadaEn: DateTime.parse(j['created_at'] as String),
         motiuRebuig: j['motiu_rebuig'] as String?,
+        descripcio: j['descripcio'] as String?,
       );
 
   final String id;
@@ -154,6 +156,10 @@ class AportacioRemota {
   final String estat;
   final DateTime creadaEn;
   final String? motiuRebuig;
+  final String? descripcio;
+
+  /// Encara no s'ha publicat: qui l'ha feta la pot corregir o retirar.
+  bool get editable => estat != 'validat';
 }
 
 /// «Igual / Ha canviat / No el trobe» hecho en el campo: se guarda en el móvil y se envía

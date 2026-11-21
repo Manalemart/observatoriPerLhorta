@@ -73,6 +73,46 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
     }
   }
 
+  Future<void> _corregir(AportacioRemota a) async {
+    final t = L.of(context);
+    final api = context.read<ApiObservatori>();
+    final avis = ScaffoldMessenger.of(context);
+    final text = await showDialog<String>(
+      context: context,
+      builder: (_) => _DialegDescripcio(inicial: a.descripcio ?? '', rebutjada: a.estat == 'rebutjat'),
+    );
+    if (text == null || !mounted) return;
+    try {
+      await api.corregirDescripcio(a.id, text.trim().isEmpty ? null : text.trim()).timeout(_espera);
+      avis.showSnackBar(SnackBar(content: Text(a.estat == 'rebutjat' ? t.llistaCorregidaRevisio : t.llistaCorregida)));
+      await _carregar();
+    } catch (_) {
+      avis.showSnackBar(SnackBar(content: Text(t.llistaErrorAccio)));
+    }
+  }
+
+  Future<void> _retirar(AportacioRemota a) async {
+    final t = L.of(context);
+    final api = context.read<ApiObservatori>();
+    final avis = ScaffoldMessenger.of(context);
+    final si = await confirmar(
+      context,
+      titol: t.llistaRetirarTitol,
+      text: t.llistaRetirarText(a.titol),
+      cancelar: t.comuCancelar,
+      acceptar: t.llistaRetirar,
+      destructiu: true,
+    );
+    if (!si || !mounted) return;
+    try {
+      await api.retirarAportacio(a.id).timeout(_espera);
+      avis.showSnackBar(SnackBar(content: Text(t.llistaRetirada)));
+      await _carregar();
+    } catch (_) {
+      avis.showSnackBar(SnackBar(content: Text(t.llistaErrorAccio)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = L.of(context);
@@ -169,10 +209,65 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
                   }}',
                   if (a.motiuRebuig != null) t.llistaMotiu(a.motiuRebuig!),
                 ].join('\n')),
+                trailing: a.editable
+                    ? PopupMenuButton<String>(
+                        tooltip: t.llistaAccions,
+                        onSelected: (accio) => accio == 'corregir' ? _corregir(a) : _retirar(a),
+                        itemBuilder: (_) => [
+                          PopupMenuItem(value: 'corregir', child: Text(t.llistaCorregir)),
+                          PopupMenuItem(value: 'retirar', child: Text(t.llistaRetirar)),
+                        ],
+                      )
+                    : null,
               ),
           ],
         ),
       )),
+    );
+  }
+}
+
+class _DialegDescripcio extends StatefulWidget {
+  const _DialegDescripcio({required this.inicial, required this.rebutjada});
+  final String inicial;
+  final bool rebutjada;
+
+  @override
+  State<_DialegDescripcio> createState() => _DialegDescripcioState();
+}
+
+class _DialegDescripcioState extends State<_DialegDescripcio> {
+  late final _text = TextEditingController(text: widget.inicial);
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = L.of(context);
+    return AlertDialog(
+      title: Text(t.llistaCorregir),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        if (widget.rebutjada) ...[
+          Text(t.llistaCorregirRebutjada),
+          const SizedBox(height: 12),
+        ],
+        TextField(
+          controller: _text,
+          autofocus: true,
+          minLines: 3,
+          maxLines: 6,
+          maxLength: 2000,
+          decoration: InputDecoration(labelText: t.aportarDescripcio),
+        ),
+      ]),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(t.comuCancelar)),
+        FilledButton(onPressed: () => Navigator.of(context).pop(_text.text), child: Text(t.aliesDesar)),
+      ],
     );
   }
 }

@@ -103,7 +103,16 @@ Future<bool> confirmar(
             content: Text(text),
             actions: [
               TextButton(onPressed: () => Navigator.pop(c, false), child: Text(cancelar)),
-              FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(acceptar)),
+              FilledButton(
+                style: destructiu
+                    ? FilledButton.styleFrom(
+                        backgroundColor: Theme.of(c).colorScheme.error,
+                        foregroundColor: Theme.of(c).colorScheme.onError,
+                      )
+                    : null,
+                onPressed: () => Navigator.pop(c, true),
+                child: Text(acceptar),
+              ),
             ],
           ),
         );

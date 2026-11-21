@@ -743,4 +743,38 @@ class LCa extends L {
   @override
   String get guiaObertText =>
       'El que es valida passa a l\'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t\'avisem en «Avisos».';
+
+  @override
+  String get llistaAccions => 'Accions';
+
+  @override
+  String get llistaCorregir => 'Corregeix la descripció';
+
+  @override
+  String get llistaCorregirRebutjada =>
+      'La coordinació la va rebutjar. En corregir-la, torna a revisió.';
+
+  @override
+  String get llistaCorregida => 'Descripció corregida.';
+
+  @override
+  String get llistaCorregidaRevisio => 'Corregida: torna a revisió.';
+
+  @override
+  String get llistaRetirar => 'Retira';
+
+  @override
+  String get llistaRetirarTitol => 'Retirar l\'aportació?';
+
+  @override
+  String llistaRetirarText(String titol) {
+    return 'S\'esborrarà «$titol», amb les seues fotos. No es pot desfer.';
+  }
+
+  @override
+  String get llistaRetirada => 'Aportació retirada.';
+
+  @override
+  String get llistaErrorAccio =>
+      'No s\'ha pogut fer. Comprova la connexió i torna-ho a provar.';
 }

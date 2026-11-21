@@ -1340,6 +1340,66 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'El que es valida passa a l\'inventari públic, sense el teu nom ni el teu correu. Quan revisen les teues aportacions, t\'avisem en «Avisos».'**
   String get guiaObertText;
+
+  /// No description provided for @llistaAccions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Accions'**
+  String get llistaAccions;
+
+  /// No description provided for @llistaCorregir.
+  ///
+  /// In ca, this message translates to:
+  /// **'Corregeix la descripció'**
+  String get llistaCorregir;
+
+  /// No description provided for @llistaCorregirRebutjada.
+  ///
+  /// In ca, this message translates to:
+  /// **'La coordinació la va rebutjar. En corregir-la, torna a revisió.'**
+  String get llistaCorregirRebutjada;
+
+  /// No description provided for @llistaCorregida.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descripció corregida.'**
+  String get llistaCorregida;
+
+  /// No description provided for @llistaCorregidaRevisio.
+  ///
+  /// In ca, this message translates to:
+  /// **'Corregida: torna a revisió.'**
+  String get llistaCorregidaRevisio;
+
+  /// No description provided for @llistaRetirar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Retira'**
+  String get llistaRetirar;
+
+  /// No description provided for @llistaRetirarTitol.
+  ///
+  /// In ca, this message translates to:
+  /// **'Retirar l\'aportació?'**
+  String get llistaRetirarTitol;
+
+  /// No description provided for @llistaRetirarText.
+  ///
+  /// In ca, this message translates to:
+  /// **'S\'esborrarà «{titol}», amb les seues fotos. No es pot desfer.'**
+  String llistaRetirarText(String titol);
+
+  /// No description provided for @llistaRetirada.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aportació retirada.'**
+  String get llistaRetirada;
+
+  /// No description provided for @llistaErrorAccio.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut fer. Comprova la connexió i torna-ho a provar.'**
+  String get llistaErrorAccio;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

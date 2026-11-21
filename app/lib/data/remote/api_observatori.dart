@@ -109,11 +109,27 @@ class ApiObservatori implements ApiAportacions, ApiAvisos {
   Future<List<AportacioRemota>> lesMeues() async {
     final files = await _client
         .from('elements')
-        .select('id, text_lliure, estat, created_at, motiu_rebuig, variable:variables(nom)')
+        .select('id, text_lliure, descripcio, estat, created_at, motiu_rebuig, variable:variables(nom)')
         .eq('autor_id', _uid)
         .order('created_at', ascending: false)
         .limit(100);
     return [for (final f in files) AportacioRemota.fromJson(f)];
+  }
+
+  /// Corregir la descripció d'una aportació pròpia sense publicar. Si estava rebutjada,
+  /// torna a revisió (ho fa elements_abans_escriure).
+  Future<void> corregirDescripcio(String id, String? descripcio) async {
+    final r = await _client.from('elements').update({'descripcio': descripcio}).eq('id', id).select('id');
+    if (r.isEmpty) throw RebuigServidor('No es pot corregir');
+  }
+
+  /// Retirar una aportació pròpia sense publicar: primer les fotos (Storage), després la fila.
+  Future<void> retirarAportacio(String id) async {
+    final fotos = await _client.from('element_fotos').select('storage_path').eq('element_id', id);
+    final camins = [for (final f in fotos) f['storage_path'] as String];
+    if (camins.isNotEmpty) await _client.storage.from('fotos').remove(camins);
+    final r = await _client.from('elements').delete().eq('id', id).select('id');
+    if (r.isEmpty) throw RebuigServidor('No es pot retirar');
   }
 
   // ─── Revisión del inventario (padrí) ───────────────────────────────────
