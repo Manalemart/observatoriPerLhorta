@@ -160,6 +160,9 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
             )}
           </p>
           <h2>{fitxa.text_lliure ?? fitxa.variable.nom}</h2>
+          {fitxa.estat === 'validat' && (
+            <Compartir id={fitxa.id} titol={fitxa.text_lliure ?? fitxa.variable.nom} />
+          )}
           {fitxa.estat === 'rebutjat' && fitxa.motiu_rebuig && (
             <p className="motiu" role="status"><strong>{t('fitxa.motiu')}:</strong> {fitxa.motiu_rebuig}</p>
           )}
@@ -246,5 +249,40 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
         </>
       )}
     </aside>
+  );
+}
+
+/** Enllaç a l'element en la web: amb el full de compartir del sistema si n'hi ha; si no, al porta-retalls. */
+function Compartir({ id, titol }: { id: string; titol: string }) {
+  const { t } = useTranslation();
+  const [copiat, setCopiat] = useState(false);
+  const url = `${window.location.origin}/mapa?element=${id}`;
+  const compartir = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: titol, text: t('fitxa.compartirText', { titol }), url });
+        return;
+      } catch (e) {
+        if ((e as Error).name === 'AbortError') return; // l'ha tancat
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiat(true);
+      setTimeout(() => setCopiat(false), 2500);
+    } catch {
+      window.prompt(t('fitxa.compartirCopia'), url);
+    }
+  };
+  return (
+    <p className="fitxa-compartir">
+      <button type="button" className="boto petit" onClick={() => void compartir()}>
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4" /><path d="m15.4 6.5-6.8 4" />
+        </svg>
+        {t('fitxa.compartir')}
+      </button>
+      {copiat && <span role="status" className="nota"> {t('fitxa.enllacCopiat')}</span>}
+    </p>
   );
 }

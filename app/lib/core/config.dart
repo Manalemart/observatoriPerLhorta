@@ -9,6 +9,11 @@ class Config {
 
   static const paquet = 'com.mamlabsfera.observatori_perlhorta';
 
+  /// Adreça de la web pública, per a compartir enllaços als elements (`/mapa?element=…`).
+  /// Buida = encara no hi ha domini: la app no mostra «Comparteix».
+  /// Es passa en compilar: --dart-define=URL_WEB=https://...
+  static const urlWeb = String.fromEnvironment('URL_WEB');
+
   /// Compte de revisió de les botigues (Apple i Google no poden rebre el codi del correu).
   /// Només este correu entra amb contrasenya; la resta, sempre amb enllaç o codi.
   /// La contrasenya només és en Supabase. Es pot canviar en compilar

@@ -40,6 +40,8 @@ const MARGE_CLIC_PX = 5;
 const BUIT: FeatureCollection = { type: 'FeatureCollection', features: [] };
 const COLOR_ESBORRANY = '#0b0b0b';
 // map.remove() borra el hash de la URL: sin esto, el doble montaje de StrictMode pierde la vista
+// Enllaç compartit (/mapa?element=…) sense vista en el hash: el mapa s'acosta a l'element
+const ELEMENT_INICIAL = new URLSearchParams(window.location.search).get('element');
 const HASH_INICIAL = /^#[\d.]+\/-?[\d.]+\/-?[\d.]+/.test(window.location.hash) ? window.location.hash : '';
 
 const NO_VALIDAT: ExpressionSpecification = ['!=', ['get', 'estat'], 'validat'];
@@ -396,6 +398,27 @@ export function Mapa({
     mapa.setFilter('seleccio-punt', filtre(['Point']));
     mapa.setFilter('seleccio-poligon', filtre(['Polygon', 'LineString']));
   }, [seleccionat, llest]);
+
+  const centrat = useRef(false);
+  useEffect(() => {
+    const mapa = mapaRef.current;
+    if (!mapa || !llest || centrat.current || !ELEMENT_INICIAL || HASH_INICIAL) return;
+    const f = simbolitzats.features.find((x) => x.properties?.id === ELEMENT_INICIAL);
+    if (!f?.geometry) return;
+    centrat.current = true;
+    const coords: number[][] = [];
+    const recorre = (c: unknown): void => {
+      if (Array.isArray(c) && typeof c[0] === 'number') coords.push(c as number[]);
+      else if (Array.isArray(c)) c.forEach(recorre);
+    };
+    recorre((f.geometry as { coordinates: unknown }).coordinates);
+    const xs = coords.map((c) => c[0]), ys = coords.map((c) => c[1]);
+    mapa.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], {
+      // En pantalla estreta la fitxa ocupa la meitat de baix: l'element, damunt d'ella
+      padding: { top: 120, bottom: window.innerWidth < 768 ? Math.round(window.innerHeight * 0.55) : 48, left: 48, right: 48 },
+      maxZoom: 17, duration: 0,
+    });
+  }, [simbolitzats, llest]);
 
   useEffect(() => {
     const mapa = mapaRef.current;

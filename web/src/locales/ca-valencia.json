@@ -38,6 +38,10 @@
     "pnoa": "PNOA màxima actualitat"
   },
   "fitxa": {
+    "compartir": "Comparteix",
+    "compartirText": "{{titol}}, en l'Observatori Ciutadà de l'Horta",
+    "compartirCopia": "Copia l'enllaç:",
+    "enllacCopiat": "Enllaç copiat.",
     "tancar": "Tanca la fitxa",
     "carregant": "Carregant la fitxa…",
     "error": "No s'ha pogut carregar la fitxa.",

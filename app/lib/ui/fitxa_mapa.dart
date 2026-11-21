@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../core/config.dart';
 import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
 
@@ -61,7 +63,26 @@ class FitxaMapa extends StatelessWidget {
               _Pastilla(text: estat, icona: perRevisar ? Icons.event_note_outlined : null),
             ]),
             const SizedBox(height: 12),
-            Text(prop['variable'] as String? ?? '', style: Theme.of(context).textTheme.headlineSmall),
+            Row(children: [
+              Expanded(child: Text(prop['variable'] as String? ?? '', style: Theme.of(context).textTheme.headlineSmall)),
+              if (validat && Config.urlWeb.isNotEmpty && prop['id'] != null)
+                Builder(
+                  // El seu context fa d'origen del full de compartir en iPad
+                  builder: (b) => IconButton(
+                    icon: Icon(Theme.of(context).platform == TargetPlatform.iOS ? Icons.ios_share : Icons.share_outlined),
+                    tooltip: t.fitxaCompartir,
+                    onPressed: () {
+                      final caixa = b.findRenderObject() as RenderBox?;
+                      final nom = prop['variable'] as String? ?? '';
+                      SharePlus.instance.share(ShareParams(
+                        uri: Uri.parse('${Config.urlWeb}/mapa?element=${prop['id']}'),
+                        subject: t.fitxaCompartirText(nom),
+                        sharePositionOrigin: caixa == null ? null : caixa.localToGlobal(Offset.zero) & caixa.size,
+                      ));
+                    },
+                  ),
+                ),
+            ]),
             if (prop['categoria'] != null) ...[
               const SizedBox(height: 4),
               Text(prop['categoria'] as String, style: TextStyle(fontWeight: FontWeight.w600, color: cs.onSurfaceVariant)),

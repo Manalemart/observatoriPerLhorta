@@ -690,4 +690,12 @@ class LCa extends L {
   @override
   String get dadesError =>
       'No s\'han pogut descarregar les dades. Comprova la connexió.';
+
+  @override
+  String get fitxaCompartir => 'Comparteix';
+
+  @override
+  String fitxaCompartirText(String nom) {
+    return '$nom, en l\'Observatori Ciutadà de l\'Horta';
+  }
 }

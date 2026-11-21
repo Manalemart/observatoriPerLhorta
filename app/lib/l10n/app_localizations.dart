@@ -1250,6 +1250,18 @@ abstract class L {
   /// In ca, this message translates to:
   /// **'No s\'han pogut descarregar les dades. Comprova la connexió.'**
   String get dadesError;
+
+  /// No description provided for @fitxaCompartir.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comparteix'**
+  String get fitxaCompartir;
+
+  /// No description provided for @fitxaCompartirText.
+  ///
+  /// In ca, this message translates to:
+  /// **'{nom}, en l\'Observatori Ciutadà de l\'Horta'**
+  String fitxaCompartirText(String nom);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

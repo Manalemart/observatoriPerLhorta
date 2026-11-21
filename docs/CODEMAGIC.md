@@ -14,6 +14,7 @@
 2. **Variables** (*Environment variables*), en dos grups:
    - `observatori`: `SUPABASE_URL` = `https://fmhioekwuvzzdgtghwcx.supabase.co` i `SUPABASE_KEY` = la clau pública (*anon*, la mateixa que porta la web). Marcar-les com a *secure*.
    - `captures`: `CAPTURES_EMAIL` i `CAPTURES_PASSWORD`, d'un compte de prova (vegeu més avall).
+   - Quan la web tinga domini: `URL_WEB` (p. ex. `https://observatori.perlhorta.info`) en el grup `observatori` i, en `codemagic.yaml`, `--dart-define=URL_WEB="$URL_WEB"` en els dos `flutter build`. Sense, la app no mostra «Comparteix» en les fitxes.
 3. **App Store Connect** (cal el compte de desenvolupador d'Apple):
    - Crear la app en App Store Connect amb el bundle ID `com.mamlabsfera.observatoriPerlhorta`.
    - *Users and Access → Integrations → App Store Connect API*: una clau amb rol *App Manager*. En Codemagic, *Team settings → Integrations → App Store Connect*, amb el nom **`observatori-asc`**.

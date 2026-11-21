@@ -346,5 +346,8 @@
   "dadesBoto": "Descarrega les meues dades",
   "dadesPreparant": "Preparant les teues dades…",
   "dadesAssumpte": "Les meues dades de l'Observatori Ciutadà de l'Horta",
-  "dadesError": "No s'han pogut descarregar les dades. Comprova la connexió."
+  "dadesError": "No s'han pogut descarregar les dades. Comprova la connexió.",
+  "fitxaCompartir": "Comparteix",
+  "fitxaCompartirText": "{nom}, en l'Observatori Ciutadà de l'Horta",
+  "@fitxaCompartirText": {"placeholders": {"nom": {"type": "String"}}}
 }
