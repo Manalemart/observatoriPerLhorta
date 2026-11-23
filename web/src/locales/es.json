@@ -363,7 +363,8 @@
   "idioma": {
     "etiqueta": "Idioma",
     "ca": "Valencià",
-    "es": "Castellano"
+    "es": "Castellano",
+    "en": "English"
   },
   "fulls": {
     "titol": "Hojas de campo",

@@ -789,4 +789,7 @@ class LEs extends L {
 
   @override
   String get idiomaEs => 'Castellano';
+
+  @override
+  String get idiomaEn => 'English';
 }

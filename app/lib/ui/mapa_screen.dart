@@ -203,6 +203,7 @@ class _MapaScreenState extends State<MapaScreen> {
       (null, t.idiomaSistema),
       (Idioma.valencia, t.idiomaCa),
       (Idioma.castella, t.idiomaEs),
+      (Idioma.angles, t.idiomaEn),
     ];
     await showDialog<void>(
       context: context,
@@ -285,6 +286,7 @@ class _MapaScreenState extends State<MapaScreen> {
                 subtitle: Text(switch (context.read<Idioma>().triat?.languageCode) {
                   'ca' => t.idiomaCa,
                   'es' => t.idiomaEs,
+                  'en' => t.idiomaEn,
                   _ => t.idiomaSistema,
                 }),
                 onTap: () {

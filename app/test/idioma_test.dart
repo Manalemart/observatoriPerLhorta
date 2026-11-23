@@ -6,11 +6,12 @@ import 'package:observatori_horta/ui/guia.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  test('sense triar: castellà si el dispositiu ho està; per a la resta, valencià', () {
+  test('sense triar: valencià, castellà o, per a la resta, anglés', () {
     expect(Idioma.resoldre(const Locale('es', 'ES')), Idioma.castella);
     expect(Idioma.resoldre(const Locale('ca')), Idioma.valencia);
-    expect(Idioma.resoldre(const Locale('en')), Idioma.valencia);
-    expect(Idioma.resoldre(null), Idioma.valencia);
+    expect(Idioma.resoldre(const Locale('en')), Idioma.angles);
+    expect(Idioma.resoldre(const Locale('fr')), Idioma.angles);
+    expect(Idioma.resoldre(null), Idioma.angles);
   });
 
   test("l'idioma triat es recorda", () async {
@@ -34,5 +35,18 @@ void main() {
     expect(find.text('BIENVENIDA AL OBSERVATORIO'), findsOneWidget);
     expect(find.text('Siguiente'), findsOneWidget);
     expect(find.text('Salta'), findsOneWidget);
+  });
+
+  testWidgets('la guia es veu en anglés', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.pumpWidget(MaterialApp(
+      locale: Idioma.angles,
+      supportedLocales: L.supportedLocales,
+      localizationsDelegates: L.localizationsDelegates,
+      home: const PantallaGuia(),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('WELCOME TO THE OBSERVATORY'), findsOneWidget);
+    expect(find.text('Next'), findsOneWidget);
   });
 }

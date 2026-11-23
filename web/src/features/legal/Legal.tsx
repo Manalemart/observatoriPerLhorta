@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { LegalEs } from './LegalEs';
+import { LegalEn } from './LegalEn';
 
 // Texto legal: va aquí y no en locales/ porque se traduce como documento, no frase a frase
 // (la versión en castellano está en LegalEs.tsx: si cambia uno, hay que cambiar el otro). Datos de la entidad: su aviso legal (perlhorta.info/avis-legal).
@@ -27,6 +28,7 @@ export function Legal() {
   }, [hash]);
   const { i18n } = useTranslation();
   if (i18n.language === 'es') return <LegalEs />;
+  if (i18n.language === 'en') return <LegalEn />;
 
   return (
     <main className="pagina pagina-estreta legal">
