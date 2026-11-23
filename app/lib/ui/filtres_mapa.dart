@@ -99,7 +99,7 @@ Future<void> mostrarFiltres(
                         height: 18,
                         decoration: BoxDecoration(color: colorDesDeHex(tema.color), borderRadius: BorderRadius.circular(4)),
                       ),
-                      title: Text(tema.nom),
+                      title: Text(tema.nomVisible),
                     ),
                   const SizedBox(height: 16),
                   EtiquetaSeccio(t.filtresEpoca, padding: EdgeInsets.zero),

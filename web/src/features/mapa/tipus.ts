@@ -6,12 +6,16 @@ export type Estat = 'pendent' | 'validat' | 'rebutjat';
 export interface Categoria {
   id: number;
   nom: string;
+  nom_es?: string | null;
+  nom_en?: string | null;
   actiu: boolean;
 }
 
 export interface Variable {
   id: number;
   nom: string;
+  nom_es?: string | null;
+  nom_en?: string | null;
   tema_id: number;
   geometria: GeometriaVariable;
   text_lliure: boolean;
@@ -22,6 +26,8 @@ export interface Variable {
 export interface Tema {
   id: number;
   nom: string;
+  nom_es?: string | null;
+  nom_en?: string | null;
   color: string;
   variables: Variable[];
 }

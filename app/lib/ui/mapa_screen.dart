@@ -186,7 +186,7 @@ class _MapaScreenState extends State<MapaScreen> {
     substitueixId: prop['id'] as String,
     variableId: prop['variable_id'] as int,
     punt: punt,
-    nom: prop['variable'] as String?,
+    nom: context.read<Cataleg>().nomVariable(prop['variable_id'], prop['variable'] as String?),
   );
 
   /// La guia de benvinguda, la primera vegada (després de l'àlies).

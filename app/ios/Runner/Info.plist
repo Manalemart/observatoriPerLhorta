@@ -12,6 +12,7 @@
 	<array>
 		<string>ca</string>
 		<string>es</string>
+		<string>en</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>

@@ -2,14 +2,27 @@ import 'dart:typed_data';
 
 import 'package:latlong2/latlong.dart';
 
+import '../core/localitzacio.dart';
+
 class Categoria {
-  const Categoria({required this.id, required this.nom});
-  factory Categoria.fromJson(Map<String, dynamic> j) => Categoria(id: j['id'] as int, nom: j['nom'] as String);
+  const Categoria({required this.id, required this.nom, this.nomEs, this.nomEn});
+  factory Categoria.fromJson(Map<String, dynamic> j) => Categoria(
+        id: j['id'] as int,
+        nom: j['nom'] as String,
+        nomEs: j['nom_es'] as String?,
+        nomEn: j['nom_en'] as String?,
+      );
 
   final int id;
-  final String nom;
 
-  Map<String, dynamic> toJson() => {'id': id, 'nom': nom, 'actiu': true};
+  /// En valencià: és la clau (simbologia, exportacions). Per a mostrar, [nomVisible].
+  final String nom;
+  final String? nomEs;
+  final String? nomEn;
+
+  String get nomVisible => nomEnIdioma(nom, nomEs, nomEn);
+
+  Map<String, dynamic> toJson() => {'id': id, 'nom': nom, 'nom_es': nomEs, 'nom_en': nomEn, 'actiu': true};
 }
 
 enum GeometriaVariable { punt, linia, poligon, parcela }
@@ -18,6 +31,8 @@ class Variable {
   const Variable({
     required this.id,
     required this.nom,
+    this.nomEs,
+    this.nomEn,
     required this.geometria,
     required this.textLliure,
     required this.categories,
@@ -26,6 +41,8 @@ class Variable {
   factory Variable.fromJson(Map<String, dynamic> j) => Variable(
         id: j['id'] as int,
         nom: j['nom'] as String,
+        nomEs: j['nom_es'] as String?,
+        nomEn: j['nom_en'] as String?,
         geometria: GeometriaVariable.values.byName(j['geometria'] as String),
         textLliure: j['text_lliure'] as bool,
         categories: [
@@ -36,6 +53,9 @@ class Variable {
 
   final int id;
   final String nom;
+  final String? nomEs;
+  final String? nomEn;
+  String get nomVisible => nomEnIdioma(nom, nomEs, nomEn);
   final GeometriaVariable geometria;
   final bool textLliure;
   final List<Categoria> categories;
@@ -43,6 +63,8 @@ class Variable {
   Map<String, dynamic> toJson() => {
         'id': id,
         'nom': nom,
+        'nom_es': nomEs,
+        'nom_en': nomEn,
         'geometria': geometria.name,
         'text_lliure': textLliure,
         'actiu': true,
@@ -51,11 +73,13 @@ class Variable {
 }
 
 class Tema {
-  const Tema({required this.id, required this.nom, required this.color, required this.variables});
+  const Tema({required this.id, required this.nom, this.nomEs, this.nomEn, required this.color, required this.variables});
 
   factory Tema.fromJson(Map<String, dynamic> j) => Tema(
         id: j['id'] as int,
         nom: j['nom'] as String,
+        nomEs: j['nom_es'] as String?,
+        nomEn: j['nom_en'] as String?,
         color: j['color'] as String?,
         variables: [
           for (final v in (j['variables'] as List).cast<Map<String, dynamic>>())
@@ -65,12 +89,17 @@ class Tema {
 
   final int id;
   final String nom;
+  final String? nomEs;
+  final String? nomEn;
+  String get nomVisible => nomEnIdioma(nom, nomEs, nomEn);
   final String? color;
   final List<Variable> variables;
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'nom': nom,
+        'nom_es': nomEs,
+        'nom_en': nomEn,
         'color': color,
         'variables': [for (final v in variables) v.toJson()],
       };
@@ -144,7 +173,7 @@ class AportacioRemota {
 
   factory AportacioRemota.fromJson(Map<String, dynamic> j) => AportacioRemota(
         id: j['id'] as String,
-        titol: (j['text_lliure'] as String?) ?? (j['variable'] as Map<String, dynamic>)['nom'] as String,
+        titol: (j['text_lliure'] as String?) ?? _nomJson(j['variable'] as Map<String, dynamic>),
         estat: j['estat'] as String,
         creadaEn: DateTime.parse(j['created_at'] as String),
         motiuRebuig: j['motiu_rebuig'] as String?,
@@ -223,3 +252,9 @@ class Lloc {
 
   bool get esMunicipi => tipus == 'municipi';
 }
+
+/// El nom d'una fila del catàleg ({nom, nom_es, nom_en}) en l'idioma actual.
+String _nomJson(Map<String, dynamic> j) => nomEnIdioma(j['nom'] as String, j['nom_es'] as String?, j['nom_en'] as String?);
+
+/// Igual, per a qui el necessite fora d'este fitxer (avisos).
+String nomCatalegJson(Map<String, dynamic>? j) => j == null ? '' : _nomJson(j);
