@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { FeatureCollection } from 'geojson';
 import { supabase } from '../../lib/supabase';
 import type { Dades, Fitxa, Tema } from './tipus';
@@ -85,6 +86,22 @@ export async function carregarFitxa(id: string, ambSessio: boolean): Promise<Fit
   return data as unknown as Fitxa;
 }
 
-export function urlFoto(storagePath: string): string {
-  return supabase.storage.from('fotos').getPublicUrl(storagePath).data.publicUrl;
+/**
+ * URL de les fotos. El bucket és privat: cada foto es veu amb una URL signada, que només es
+ * pot demanar si es pot veure (pot_veure_foto: les validades, tothom; les pendents, qui
+ * les ha fetes, el padrí o padrina i la coordinació). Valen una hora.
+ */
+export function useUrlsFotos(camins: string[]): Record<string, string> {
+  const clau = camins.join('|');
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (!clau) return;
+    let viu = true;
+    void supabase.storage.from('fotos').createSignedUrls(clau.split('|'), 3600).then(({ data }) => {
+      if (!viu || !data) return;
+      setUrls(Object.fromEntries(data.filter((d) => d.signedUrl && d.path).map((d) => [d.path!, d.signedUrl])));
+    });
+    return () => { viu = false; };
+  }, [clau]);
+  return urls;
 }
