@@ -12,6 +12,7 @@ import 'data/local/crear_cola.dart';
 import 'data/local/magatzem.dart';
 import 'data/remote/api_observatori.dart';
 import 'services/avisos.dart';
+import 'services/avisos_push.dart';
 import 'services/cataleg.dart';
 import 'services/paquets.dart';
 import 'services/sessio.dart';
@@ -53,6 +54,11 @@ Future<void> main() async {
   final simbologia = await Simbologia.carregar();
 
   await sincronitzacio.carregar();
+
+  final push = AvisosPush(client, onObrir: obrirAvisos);
+  await push.iniciar();
+  sessio.abansDEixir = push.oblidar;
+  String idioma() => WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'es' ? 'es' : 'ca';
   // Al recuperar la red se envía lo pendiente y se recargan las pantallas. Sin sesión no se puede
   void ambXarxa(List<ConnectivityResult> r) {
     if (!r.contains(ConnectivityResult.none) && sessio.entrada) {
@@ -71,6 +77,7 @@ Future<void> main() async {
       cataleg.carregar();
       sincronitzacio.enviar();
       avisos.carregar();
+      push.registrar(idioma: idioma());
     } else {
       avisos.buidar();
     }
@@ -79,6 +86,7 @@ Future<void> main() async {
     cataleg.carregar();
     sincronitzacio.enviar();
     avisos.carregar();
+    push.registrar(idioma: idioma());
   }
 
   runApp(MultiProvider(
@@ -86,6 +94,7 @@ Future<void> main() async {
       Provider.value(value: api),
       Provider.value(value: sigpac),
       Provider.value(value: simbologia),
+      Provider.value(value: push),
       ChangeNotifierProvider.value(value: sessio),
       ChangeNotifierProvider.value(value: cataleg),
       ChangeNotifierProvider.value(value: sincronitzacio),

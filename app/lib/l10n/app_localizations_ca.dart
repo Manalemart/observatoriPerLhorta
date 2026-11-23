@@ -777,4 +777,11 @@ class LCa extends L {
   @override
   String get llistaErrorAccio =>
       'No s\'ha pogut fer. Comprova la connexió i torna-ho a provar.';
+
+  @override
+  String get avisosPush => 'Avisos al mòbil';
+
+  @override
+  String get avisosPushDetall =>
+      'Quan validen o revisen les teues aportacions, o n\'hi ha de noves en les teues partides';
 }

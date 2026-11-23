@@ -21,6 +21,12 @@ import 'ui/revisio_screen.dart';
 
 final _arrel = GlobalKey<NavigatorState>();
 
+/// En tocar un avís push: la pantalla «Avisos».
+void obrirAvisos() {
+  final c = _arrel.currentContext;
+  if (c != null) GoRouter.of(c).go('/avisos');
+}
+
 class ObservatoriApp extends StatefulWidget {
   const ObservatoriApp({super.key, required this.sessio});
 

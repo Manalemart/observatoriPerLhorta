@@ -61,7 +61,13 @@ class Sessio extends ChangeNotifier {
     await _recarregarAlies();
   }
 
-  Future<void> eixir() => _client.auth.signOut();
+  /// Abans de tancar la sessió (els avisos push d'este mòbil deixen d'arribar).
+  Future<void> Function()? abansDEixir;
+
+  Future<void> eixir() async {
+    await abansDEixir?.call();
+    await _client.auth.signOut();
+  }
 
   /// Esborra el compte en el servidor (RGPD art. 17): primer les fotos de Storage que no
   /// són d'elements validats, després el compte (vegeu la migració esborrar_compte).
@@ -79,7 +85,10 @@ class Sessio extends ChangeNotifier {
       (await _client.rpc('les_meues_dades')) as Map<String, dynamic>;
 
   /// Tanca la sessió només ací (el compte ja no existeix: el servidor no cal avisar-lo).
-  Future<void> tancarLocal() => _client.auth.signOut(scope: SignOutScope.local);
+  Future<void> tancarLocal() async {
+    await abansDEixir?.call();
+    await _client.auth.signOut(scope: SignOutScope.local);
+  }
 
   @override
   void dispose() {

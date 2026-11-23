@@ -10,7 +10,7 @@ La carpeta `app/ios` está preparada desde Windows, **sin haber compilado nunca*
 | Bundle ID | `com.mamlabsfera.observatoriPerlhorta` | `Runner.xcodeproj/project.pbxproj` |
 | Nombre visible | «Observatori» | `Info.plist` (`CFBundleDisplayName`) |
 | Versión | la de `pubspec.yaml` (`1.0.1+2` → `CFBundleShortVersionString` 1.0.1, `CFBundleVersion` 2) | automática |
-| iOS mínimo | **13.0** | `Podfile`, `project.pbxproj` |
+| iOS mínimo | **15.0** | `Podfile`, `project.pbxproj` |
 | Idioma | `ca` | `Info.plist` |
 | Esquema del enlace de acceso | `observatoriplh://login-callback` | `Info.plist` (`CFBundleURLTypes`) |
 | Icono | símbolo vectorial del manual, fondo blanco, sin transparencia | `Assets.xcassets/AppIcon.appiconset` |
@@ -21,7 +21,7 @@ La carpeta `app/ios` está preparada desde Windows, **sin haber compilado nunca*
 ### Decisiones
 
 - **Bundle ID.** Android usa `com.mamlabsfera.observatori_perlhorta`, pero en iOS el guion bajo no es válido en un bundle ID; se usa `com.mamlabsfera.observatoriPerlhorta` (mismo dominio, camelCase). Una vez registrado en App Store Connect **no se puede cambiar**.
-- **iOS 13.0.** Es el mínimo de Flutter 3.41 y el que piden `app_links` (enlace de acceso de Supabase), `connectivity_plus`, `image_picker_ios`, `url_launcher_ios` y `shared_preferences_foundation`. `geolocator_apple` (11.0) y `sqlite3_flutter_libs` (12.0) piden menos.
+- **iOS 15.0.** Lo pide Firebase (`firebase_core` 5, para los avisos push). Antes era 13.0: es el mínimo de Flutter 3.41 y el que piden `app_links` (enlace de acceso de Supabase), `connectivity_plus`, `image_picker_ios`, `url_launcher_ios` y `shared_preferences_foundation`. `geolocator_apple` (11.0) y `sqlite3_flutter_libs` (12.0) piden menos.
 - **Permisos** (`Info.plist`, en valenciano):
   - `NSCameraUsageDescription`: hacer fotos de lo que se aporta o revisa.
   - `NSPhotoLibraryUsageDescription`: elegir fotos de la fototeca.

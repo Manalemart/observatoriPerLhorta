@@ -99,6 +99,7 @@ Resultat esperat: **PEGI 3 / 4+**.
 | Fotos | Sí, opcional | Funcionament: aportacions | Sí | No (es publiquen, sense autor, si es validen) |
 | Altre contingut (descripcions) | Sí, opcional | Funcionament | Sí | No |
 | Identificador d'usuari | Sí | Compte | Sí | No |
+| Identificadors del dispositiu (token de notificacions) | Sí, opcional (si s'accepten els avisos) | Funcionament: avisos al mòbil | Sí | Sí, amb Google (Firebase Cloud Messaging) com a encarregat: només per a lliurar l'avís |
 
 - Seguiment (tracking) / publicitat: **No**.
 - Xifrat en trànsit: **Sí** (HTTPS).
