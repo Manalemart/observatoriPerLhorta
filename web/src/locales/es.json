@@ -1,0 +1,386 @@
+{
+  "app": {
+    "titol": "Observatorio Ciudadano de la Huerta",
+    "promou": "Una iniciativa de Per l'Horta"
+  },
+  "panell": {
+    "obrir": "Capas y filtros",
+    "tancar": "Cierra el panel",
+    "fons": "Mapa de fondo",
+    "capes": "Capas de referencia",
+    "partides": "Partidas",
+    "municipis": "Municipios",
+    "sigpac": "Recintos SIGPAC",
+    "sigpacZoom": "Visibles al acercar el mapa",
+    "inventari": "Inventario",
+    "elements_one": "{{count, number}} elemento validado",
+    "elements_other": "{{count, number}} elementos validados",
+    "visibles": "{{visibles, number}} de {{total, number}} visibles",
+    "tots": "Todos",
+    "cap": "Ninguno",
+    "desplegar": "Muestra las variables de {{tema}}",
+    "plegar": "Oculta las variables de {{tema}}",
+    "noValidats_one": "y {{count}} no validado que puedes ver (contorno negro)",
+    "noValidats_other": "y {{count}} no validados que puedes ver (contorno negro)",
+    "epoca": "Época de los datos",
+    "epoques": {
+      "tot": "Todo",
+      "2018": "2017-2018",
+      "noves": "Nuevas"
+    },
+    "simbolsDe": "Símbolos de {{variable}}",
+    "llegenda2018": "2017-2018 · por revisar",
+    "llegendaNoves": "Nuevas o revisadas",
+    "llegendaNota": "Los puntos huecos son del inventario de 2017-2018 y aún no se han vuelto a revisar."
+  },
+  "mapa": {
+    "etiqueta": "Mapa del inventario"
+  },
+  "fons": {
+    "topo": "Topográfico IGN",
+    "pnoa": "PNOA máxima actualidad"
+  },
+  "fitxa": {
+    "compartir": "Comparte",
+    "compartirText": "{{titol}}, en el Observatorio Ciudadano de la Huerta",
+    "compartirCopia": "Copia el enlace:",
+    "enllacCopiat": "Enlace copiado.",
+    "tancar": "Cierra la ficha",
+    "carregant": "Cargando la ficha…",
+    "error": "No se ha podido cargar la ficha.",
+    "tema": "Tema",
+    "categoria": "Categoría",
+    "partida": "Partida",
+    "municipi": "Municipio",
+    "data": "Fecha de alta",
+    "estat": "Estado",
+    "origen": "Origen",
+    "fotos": "Fotografías",
+    "foto": "Fotografía del elemento ({{n}} de {{total}})",
+    "estats": {
+      "pendent": "Pendiente de validar",
+      "validat": "Validado",
+      "rebutjat": "Rechazado"
+    },
+    "origens": {
+      "legacy_2018": "Inventario 2017-2018",
+      "web": "Aportación web",
+      "app": "Aportación desde la app"
+    },
+    "motiu": "Motivo del rechazo",
+    "confirmarEsborrar": "¿Quieres borrar este elemento? No se puede deshacer.",
+    "reobrir": "Vuelve a pendiente",
+    "posicio": "Elemento {{n}} de {{total}} en este punto",
+    "anterior": "Elemento anterior",
+    "seguent": "Elemento siguiente",
+    "inventari2018": "Inventario 2018",
+    "ultimaRevisio": "Última revisión",
+    "revisio2018_one": "2017-2018 · hace {{count}} año",
+    "revisio2018_other": "2017-2018 · hace {{count}} años",
+    "encaraAixi": "¿Sigue así?",
+    "encaraAixiText": "Como padrino o madrina de la partida, confírmalo, cuenta qué ha cambiado o márcalo si ya no está.",
+    "continuaIgual": "Sí, sigue igual",
+    "haCanviat": "Ha cambiado",
+    "gracies": "¡Gracias! Queda registrado que sigue igual.",
+    "errorConfirmar": "No se ha podido registrar la revisión. Vuelve a intentarlo.",
+    "noElTrobe": "No lo encuentro",
+    "confirmarNoElTrobe": "¿Seguro que ya no está? El elemento se dará de baja: dejará de verse en el mapa, pero queda en el historial."
+  },
+  "estat": {
+    "carregant": "Cargando el inventario…",
+    "error": "No se han podido cargar los datos del Observatorio.",
+    "reintentar": "Vuelve a intentarlo",
+    "noTrobat": "Esta página no existe."
+  },
+  "llicencia": {
+    "dades": "Datos: CC BY 4.0",
+    "codi": "Código: AGPL-3.0"
+  },
+  "comu": {
+    "tancar": "Cierra",
+    "cancelar": "Cancela",
+    "desar": "Guarda",
+    "editar": "Edita",
+    "esborrar": "Borra",
+    "tria": "Elige…",
+    "carregant": "Cargando…",
+    "errorDesar": "No se ha podido guardar. Vuelve a intentarlo."
+  },
+  "auth": {
+    "entrar": "Entra",
+    "eixir": "Sal",
+    "correu": "Correo electrónico",
+    "explicacio": "Te enviaremos un enlace al correo para entrar, sin contraseña.",
+    "enviarEnllac": "Envíame el enlace",
+    "google": "Continúa con Google",
+    "revisaCorreu": "Hemos enviado un enlace a {{email}}. Ábrelo en este mismo navegador para entrar.",
+    "error": "No se ha podido enviar el enlace. Vuelve a intentarlo dentro de un rato.",
+    "benvinguda": "Bienvenida al Observatorio",
+    "aliesExplicacio": "Elige un alias. La coordinación lo usará para identificarte.",
+    "alies": "Alias"
+  },
+  "cercador": {
+    "etiqueta": "Busca en el mapa",
+    "placeholder": "Busca un municipio o una partida",
+    "municipi": "Municipio",
+    "partida": "Partida · {{municipi}}",
+    "cap": "Ningún municipio ni partida con ese nombre."
+  },
+  "compte": {
+    "titol": "Mi cuenta",
+    "enllac": "Mi cuenta",
+    "correu": "Has entrado con {{email}}.",
+    "aliesExplicacio": "La coordinación lo usa para identificarte. No se publica con las aportaciones.",
+    "aliesDesat": "Alias guardado.",
+    "dadesTitol": "Tus datos",
+    "dadesText": "Descarga una copia de todo lo que el Observatorio guarda de ti: la cuenta, el alias, las partidas que apadrinas, las aportaciones y los avisos (en formato JSON).",
+    "dadesBoto": "Descarga mis datos",
+    "dadesError": "No se han podido descargar. Vuelve a intentarlo dentro de un rato.",
+    "esborrarTitol": "Borrar la cuenta",
+    "esborraEs": "Si borras la cuenta, se borra para siempre:",
+    "esborraCompte": "la cuenta: el correo, el alias y las sesiones abiertas;",
+    "esborraPendents": "las aportaciones que aún no se han publicado (pendientes o rechazadas), con sus fotos;",
+    "esborraAvisos": "los avisos, el resumen por correo y las partidas que apadrinas.",
+    "esQueda": "Las aportaciones ya validadas forman parte del inventario público y abierto (CC BY 4.0, y las fotos CC BY-SA 4.0): se quedan, pero sin ningún vínculo contigo.",
+    "irreversible": "No se puede deshacer. Si quieres volver a participar, tendrás que crear una cuenta nueva.",
+    "escriu": "Para confirmarlo, escribe {{paraula}}",
+    "esborrarBoto": "Borra mi cuenta",
+    "esborrant": "Borrando…",
+    "esborrarError": "No se ha podido borrar la cuenta. Vuelve a intentarlo o escribe a perlhorta@perlhorta.info.",
+    "esborratTitol": "Cuenta borrada",
+    "esborratText": "Tu cuenta y tus datos se han borrado. Gracias por haber participado en el Observatorio.",
+    "tornarInici": "Vuelve al inicio",
+    "senseSessio": "Para borrar la cuenta, entra con tu correo y, en esta misma página, elige «Borra mi cuenta». También puedes hacerlo desde la aplicación móvil: perfil → Borra la cuenta.",
+    "perCorreu": "Si no puedes entrar, pídelo por correo y lo haremos nosotros en un plazo máximo de un mes:",
+    "queEsborraTitol": "Qué se borra"
+  },
+  "aportar": {
+    "boto": "+ Aporta un elemento",
+    "titol": "Nueva aportación",
+    "variable": "¿Qué es?",
+    "quin": "Especifica cuál",
+    "descripcio": "Descripción (opcional)",
+    "fotos": "Fotografías (opcional, hasta {{max}})",
+    "fotosTriades_one": "{{count}} foto elegida",
+    "fotosTriades_other": "{{count}} fotos elegidas",
+    "llicencia": "Al enviarlo, aceptas publicar los datos con licencia CC BY 4.0 y las fotos con CC BY-SA 4.0. Evita que salgan personas o matrículas. Se revisará antes de publicarlo.",
+    "instruccio": {
+      "punt": "Haz clic en el mapa donde está el elemento.",
+      "linia": "Haz clic en el mapa para marcar cada punto de la línea.",
+      "poligon": "Haz clic en el mapa para marcar cada vértice del polígono.",
+      "parcela": "Acerca el mapa y haz clic sobre la parcela."
+    },
+    "vertexs_one": "{{count}} punto marcado",
+    "vertexs_other": "{{count}} puntos marcados",
+    "puntMarcat": "Posición marcada. Puedes volver a hacer clic para cambiarla.",
+    "desfer": "Deshaz el último punto",
+    "esborrar": "Borra el dibujo",
+    "cercantRecinte": "Buscando el recinto SIGPAC…",
+    "recinte": "Recinto SIGPAC: {{ref}}",
+    "senseRecinte": "Aquí no hay ningún recinto SIGPAC. Prueba en otra posición.",
+    "errorSigpac": "No se ha podido consultar SIGPAC. Vuelve a hacer clic dentro de un rato.",
+    "enviar": "Envía",
+    "enviant": "Enviando…",
+    "errorFotos": "El elemento se ha guardado, pero alguna foto no se ha podido subir.",
+    "substitueix": "Esta aportación sustituirá al elemento anterior cuando se valide. El antiguo queda en el historial."
+  },
+  "validacio": {
+    "titol": "Validación",
+    "tornar": "Vuelve al mapa",
+    "pendents": "Pendientes",
+    "detall": "Elemento seleccionado",
+    "totes": "Todas las partidas",
+    "lesMeues": "Mis partidas",
+    "recompte_one": "{{count}} elemento pendiente",
+    "recompte_other": "{{count}} elementos pendientes",
+    "buit": "No hay nada pendiente de validar.",
+    "error": "No se han podido cargar los pendientes.",
+    "pagina": "Página {{n}} de {{total}}",
+    "validar": "Valida",
+    "rebutjar": "Rechaza",
+    "motiu": "Motivo del rechazo (lo verá quien lo ha aportado)",
+    "confirmarRebuig": "Confirma el rechazo",
+    "senseAcces": "Esta página es para padrinos y coordinación."
+  },
+  "padrinatges": {
+    "titol": "Apadrinamientos",
+    "persona": "Persona",
+    "assignar": "Asigna la partida",
+    "vigents_one": "{{count}} apadrinamiento vigente",
+    "vigents_other": "{{count}} apadrinamientos vigentes",
+    "buit": "Aún no hay ningún apadrinamiento.",
+    "desDe": "desde el {{data}}",
+    "finalitzar": "Finaliza"
+  },
+  "nav": {
+    "titol": "Secciones",
+    "mapa": "Mapa",
+    "noticies": "Noticias",
+    "comparador": "Antes y ahora",
+    "dades": "Datos",
+    "inici": "Inicio"
+  },
+  "dades": {
+    "titol": "Datos abiertos",
+    "intro": "El inventario del Observatorio es público: {{total}} elementos validados, para descargar y reutilizar.",
+    "descarrega": "Descarga",
+    "tots": "Todos",
+    "baixant": "Preparando…",
+    "errorBaixada": "No se ha podido preparar la descarga. Vuelve a intentarlo.",
+    "error": "No se han podido cargar los datos.",
+    "llicencia": "Licencia CC BY 4.0: puedes reutilizarlos citando «Observatori Ciutadà de l'Horta — Per l'Horta». Las parcelas de 2017-2018 proceden de la Dirección General del Catastro.",
+    "perTema": "Elementos por tema",
+    "perMunicipi": "Elementos por municipio",
+    "api": "API pública",
+    "apiIntro": "Los mismos datos, de solo lectura, en JSON, CSV o GeoJSON:",
+    "apiPaginacio": "Cada petición devuelve 1.000 filas como máximo: usa limit y offset para paginar."
+  },
+  "comparador": {
+    "esquerra": "Izquierda",
+    "dreta": "Derecha",
+    "tall": "Posición de la línea de comparación",
+    "actual": "Máxima actualidad (PNOA)"
+  },
+  "partides": {
+    "titol": "Mis partidas",
+    "buit": "Aún no tienes ninguna partida apadrinada.",
+    "error": "No se han podido cargar tus partidas.",
+    "area": "{{ha}} ha",
+    "validats": "Validados",
+    "pendents": "Pendientes",
+    "rebutjats": "Rechazados",
+    "darrera": "Última aportación: {{data}}",
+    "veurePendents": "Ver los pendientes"
+  },
+  "noticies": {
+    "titol": "Noticias y salidas",
+    "nova": "Nueva noticia",
+    "editar": "Edita la noticia",
+    "mostrar": "Muestra",
+    "mostrarTipus": "Tipo",
+    "totes": "Todas",
+    "tipus": {
+      "noticia": "Noticia",
+      "eixida": "Salida de campo"
+    },
+    "esborrany": "Sin publicar",
+    "buit": "Aún no hay nada publicado.",
+    "error": "No se han podido cargar las noticias.",
+    "tornar": "← Todas las noticias",
+    "titolCamp": "Título",
+    "data": "Fecha de la actividad (opcional)",
+    "cos": "Texto",
+    "imatge": "Imagen (opcional)",
+    "publicar": "Publícala: será visible para todo el mundo",
+    "senseAcces": "Esta página es para la coordinación.",
+    "confirmarEsborrar": "¿Quieres borrar esta noticia? No se puede deshacer."
+  },
+  "notificacions": {
+    "titol_one": "Avisos: {{count}} sin leer",
+    "titol_other": "Avisos: {{count}} sin leer",
+    "buit": "No tienes ningún aviso.",
+    "accio": {
+      "validat": "Validado",
+      "rebutjat": "Rechazado",
+      "reobert": "Vuelve a estar pendiente",
+      "nova_aportacio": "Aportación nueva en tu partida: por validar",
+      "revisat": "Revisado por otra persona"
+    },
+    "resultat": {
+      "igual": "Sigue igual",
+      "canviat": "Ha cambiado",
+      "no_trobat": "No se ha encontrado: dado de baja"
+    },
+    "resumCorreu": "Recibe cada día un resumen de los avisos nuevos por correo"
+  },
+  "legal": {
+    "enllac": "Aviso legal y privacidad",
+    "condicions": "Condiciones de uso",
+    "privacitat": "la política de privacidad",
+    "enEntrar": "Al entrar aceptas las condiciones de uso y"
+  },
+  "portada": {
+    "titol": "Miremos la huerta de cerca",
+    "subtitol": "Per l’Horta · ciencia ciudadana",
+    "intro": "es un inventario abierto de la Huerta de Valencia: qué se cultiva, qué se construye y qué la amenaza, partida a partida.",
+    "explora": "Explora el mapa",
+    "aporta": "Aporta una observación",
+    "previsio": "Vista previa del mapa con partidas y elementos",
+    "revisio": {
+      "etiqueta": "El inventario de 2017-2018",
+      "titol": "La huerta ha cambiado. ¿Volvemos a mirarla?",
+      "text": "Entre 2017 y 2018, 80 padrinos y madrinas inventariaron {{n}} elementos. Es el punto de partida, no la foto de hoy: cada partida debe volver a revisarse, y cada cambio que encontramos es un dato nuevo.",
+      "revisa": "Revisa una partida",
+      "consulta": "Consulta el inventario de 2018",
+      "progres": "Partidas con revisiones desde 2026",
+      "de": "de {{n}}",
+      "progresEtiqueta": "{{fet}} de {{total}} partidas con revisiones",
+      "revisats": "Elementos de 2018 confirmados",
+      "noves": "Observaciones nuevas validadas",
+      "apadrinades": "Partidas con padrino o madrina",
+      "ultima": "Última actividad",
+      "mai": "todavía ninguna",
+      "directe": "Cifras en directo."
+    },
+    "funciona": {
+      "titol": "Cómo funciona",
+      "intro": "Cualquier persona puede aportar. Las madrinas y los padrinos de cada partida validan, y el resultado es de todo el mundo.",
+      "observa": "1 · Observa",
+      "observaText": "Camina la huerta y registra lo que ves: una parcela sin cultivar, una alquería, un vertido. La app funciona sin cobertura.",
+      "valida": "2 · Valida",
+      "validaText": "Quien apadrina una partida revisa lo que se aporta en ella. Nadie valida sus propias observaciones.",
+      "comparteix": "3 · Comparte",
+      "comparteixText": "Todo lo que se valida es dato abierto con licencia CC BY 4.0: descárgalo por municipio y tema."
+    },
+    "abansAra": {
+      "titol": "Antes y ahora",
+      "text": "Elige una fecha y mira qué se ha perdido. 18 ortofotos, del vuelo de 1956 a la máxima actualidad del PNOA, para cualquier punto de la huerta.",
+      "obri": "Abre el comparador",
+      "tria": "Elige el año de la foto antigua",
+      "hui": "Hoy · PNOA",
+      "perdudes": "Desde {{any}}, la zona ha perdido {{n}} de 24 parcelas de huerta",
+      "senseCanvis": "Sin cambios desde {{any}}",
+      "abansEtiqueta": "Mitad izquierda de la zona, en {{any}}",
+      "araEtiqueta": "Mitad derecha de la zona, hoy",
+      "anys": "Año de la ortofoto",
+      "nota": "Ilustración. En el comparador, ortofotos reales del ICV y el IGN."
+    },
+    "apadrina": {
+      "titol": "Apadrina una partida",
+      "text": "Elige una partida que conozcas, haz su seguimiento y valida lo que se aporta en ella. Entra con tu correo y la coordinación te la asignará.",
+      "boto": "Quiero apadrinar",
+      "jaDins": "Ya tienes cuenta: la coordinación te puede asignar una partida."
+    },
+    "peu": {
+      "iniciativa": "Una iniciativa de",
+      "tecnic": "Desarrollo: MAM — Mediambient i Mapes"
+    }
+  },
+  "tema": {
+    "aFosc": "Cambia al tema oscuro",
+    "aClar": "Cambia al tema claro"
+  },
+  "idioma": {
+    "etiqueta": "Idioma",
+    "ca": "Valencià",
+    "es": "Castellano"
+  },
+  "fulls": {
+    "titol": "Hojas de campo",
+    "nota": "Hoja de campo: hoja de trabajo en blanco con la partida tan grande como quepa y los recintos SIGPAC, para anotar lo que encuentres. Hoja de revisión: los elementos ya inventariados, numerados, con cuadrícula, detalles ampliados si hace falta y la lista para marcar qué sigue igual y qué ha cambiado.",
+    "fons": "Fondo del plano",
+    "fonsPnoa": "Ortofoto",
+    "fonsTopo": "Topográfico",
+    "qualsevol": "De cualquier partida (coordinación)",
+    "tria": "Elige una partida",
+    "generant": {
+      "dades": "Cargando la partida…",
+      "sigpac": "Consultando el SIGPAC…",
+      "mapa": "Dibujando el plano…",
+      "pdf": "Haciendo el PDF…"
+    },
+    "error": "No se ha podido hacer la hoja de campo. Vuelve a intentarlo.",
+    "botoCamp": "Hoja de campo",
+    "botoRevisio": "Hoja de revisión"
+  }
+}

@@ -33,6 +33,9 @@
     "llegendaNoves": "Noves o revisades",
     "llegendaNota": "Els punts buits són de l’inventari de 2017-2018 i encara no s’han tornat a revisar."
   },
+  "mapa": {
+    "etiqueta": "Mapa de l'inventari"
+  },
   "fons": {
     "topo": "Topogràfic IGN",
     "pnoa": "PNOA màxima actualitat"
@@ -356,6 +359,11 @@
   "tema": {
     "aFosc": "Canvia al tema fosc",
     "aClar": "Canvia al tema clar"
+  },
+  "idioma": {
+    "etiqueta": "Idioma",
+    "ca": "Valencià",
+    "es": "Castellano"
   },
   "fulls": {
     "titol": "Fulls de camp",

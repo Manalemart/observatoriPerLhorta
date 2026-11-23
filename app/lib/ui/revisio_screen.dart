@@ -315,7 +315,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     const Icon(Icons.cloud_off, size: 16),
                     const SizedBox(width: 6),
-                    Text(t.revisioSenseXarxa(DateFormat('d/M/yyyy', 'ca').format(_dadesDe!))),
+                    Text(t.revisioSenseXarxa(DateFormat('d/M/yyyy', Localitzacio.codi).format(_dadesDe!))),
                   ]),
                 ),
               ),

@@ -777,4 +777,16 @@ class LCa extends L {
   @override
   String get llistaErrorAccio =>
       'No s\'ha pogut fer. Comprova la connexió i torna-ho a provar.';
+
+  @override
+  String get perfilIdioma => 'Idioma';
+
+  @override
+  String get idiomaSistema => 'El del dispositiu';
+
+  @override
+  String get idiomaCa => 'Valencià';
+
+  @override
+  String get idiomaEs => 'Castellano';
 }

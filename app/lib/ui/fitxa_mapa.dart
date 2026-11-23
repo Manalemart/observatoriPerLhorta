@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../core/config.dart';
 import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
+import 'adaptatiu.dart';
 
 /// Ficha de un elemento tocado en el mapa, con «És encara així?».
 /// El padrí de la partida lo revisa desde aquí; el resto puede proponer una aportación que lo sustituya
@@ -35,7 +36,7 @@ class FitxaMapa extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = L.of(context);
     final cs = Theme.of(context).colorScheme;
-    final data = DateFormat.yMMMd('ca');
+    final data = DateFormat.yMMMd(Localitzacio.codi);
     final perRevisar = prop['per_revisar'] == true;
     final validat = prop['estat'] == 'validat';
     final revisat = DateTime.tryParse(prop['revisat_at'] as String? ?? '');

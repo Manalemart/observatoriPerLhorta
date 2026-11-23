@@ -89,7 +89,7 @@ class _PartidesScreenState extends State<PartidesScreen> {
   @override
   Widget build(BuildContext context) {
     final t = L.of(context);
-    final ha = NumberFormat.decimalPattern('ca');
+    final ha = NumberFormat.decimalPattern(Localitzacio.codi);
     return Scaffold(
       appBar: AppBar(title: TitolBarra(t.partidesTitol)),
       body: FutureBuilder<List<PartidaApadrinada>>(
@@ -162,7 +162,7 @@ class _PartidesScreenState extends State<PartidesScreen> {
 
 String _mida(int bytes) {
   final mb = bytes / 1e6;
-  return mb < 1 ? '< 1 MB' : '${NumberFormat('0.#', 'ca').format(mb)} MB';
+  return mb < 1 ? '< 1 MB' : '${NumberFormat('0.#', Localitzacio.codi).format(mb)} MB';
 }
 
 /// Debajo de cada partida: si está en el móvil para trabajar sin cobertura.
@@ -211,7 +211,7 @@ class _EstatPaquet extends StatelessWidget {
       child: Row(children: [
         Icon(Icons.offline_pin, size: 20, color: Theme.of(context).colorScheme.primary),
         const SizedBox(width: 8),
-        Expanded(child: Text(t.paquetPreparat(_mida(info.bytes), DateFormat('d/M/yyyy', 'ca').format(info.descarregat)))),
+        Expanded(child: Text(t.paquetPreparat(_mida(info.bytes), DateFormat('d/M/yyyy', Localitzacio.codi).format(info.descarregat)))),
         PopupMenuButton<String>(
           enabled: !preparant,
           onSelected: (v) => v == 'actualitzar' ? onPreparar() : onEsborrar(),
