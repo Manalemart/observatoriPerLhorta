@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import { useTranslation } from 'react-i18next';
+import { idiomaCurt } from '../lib/i18n';
 import { supabase } from '../lib/supabase';
 
 export type Rol = 'ciutada' | 'padri' | 'coordinador' | 'admin';
@@ -10,6 +12,8 @@ export interface Perfil {
   rol: Rol;
   /** Recibe el resumen diario de avisos por correo. */
   resum_correu: boolean;
+  /** Idioma dels correus i els avisos push ('ca', 'es' o 'en'). */
+  idioma: 'ca' | 'es' | 'en';
 }
 
 interface Valor {
@@ -58,11 +62,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setPerfil(null);
       return;
     }
-    const { data } = await supabase.from('perfils').select('id, nom_public, rol, resum_correu').eq('id', uid).single();
+    const { data } = await supabase.from('perfils').select('id, nom_public, rol, resum_correu, idioma').eq('id', uid).single();
     setPerfil(data as Perfil | null);
   }, [uid]);
 
   useEffect(() => { void recarregarPerfil(); }, [recarregarPerfil]);
+
+  // Els correus i els avisos push ixen en l'idioma que es veu en la web
+  const { i18n } = useTranslation();
+  const idioma = idiomaCurt(i18n.language);
+  useEffect(() => {
+    if (!perfil || perfil.idioma === idioma) return;
+    void supabase.from('perfils').update({ idioma }).eq('id', perfil.id).then(({ error }) => {
+      if (!error) setPerfil((p) => (p && p.id === perfil.id ? { ...p, idioma } : p));
+    });
+  }, [perfil, idioma]);
 
   const valor = useMemo<Valor>(() => {
     const esCoordinador = perfil?.rol === 'coordinador' || perfil?.rol === 'admin';
