@@ -4,7 +4,7 @@ import type { Geometry } from 'geojson';
 import { useAuth } from '../../auth/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { traduirErrorServidor } from '../../lib/errorsServidor';
-import { urlFoto } from '../mapa/dades';
+import { useUrlsFotos } from '../mapa/dades';
 import type { Dades } from '../mapa/tipus';
 import { MiniMapa } from './MiniMapa';
 import { LesMeuesPartides } from './LesMeuesPartides';
@@ -38,6 +38,7 @@ function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: (
   const [carregant, setCarregant] = useState(true);
   const [error, setError] = useState(false);
   const [actual, setActual] = useState<Pendent | null>(null);
+  const urls = useUrlsFotos(actual?.fotos.map((f) => f.storage_path) ?? []);
   const [motiu, setMotiu] = useState('');
   const [rebutjant, setRebutjant] = useState(false);
   const [errorAccio, setErrorAccio] = useState<string | null>(null);
@@ -183,9 +184,9 @@ function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: (
             </dl>
             {actual.fotos.length > 0 && (
               <div className="fotos fotos-fila">
-                {actual.fotos.map((f, i) => (
-                  <a key={f.id} href={urlFoto(f.storage_path)} target="_blank" rel="noreferrer">
-                    <img src={urlFoto(f.storage_path)} alt={t('fitxa.foto', { n: i + 1, total: actual.fotos.length })} />
+                {actual.fotos.filter((f) => urls[f.storage_path]).map((f, i) => (
+                  <a key={f.id} href={urls[f.storage_path]} target="_blank" rel="noreferrer">
+                    <img src={urls[f.storage_path]} alt={t('fitxa.foto', { n: i + 1, total: actual.fotos.length })} />
                   </a>
                 ))}
               </div>

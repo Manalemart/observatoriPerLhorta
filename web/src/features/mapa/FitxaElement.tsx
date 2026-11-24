@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../auth/AuthContext';
 import { esborrarFotos } from '../../lib/fotos';
 import { supabase } from '../../lib/supabase';
-import { carregarFitxa, urlFoto } from './dades';
+import { carregarFitxa, useUrlsFotos } from './dades';
 import type { Fitxa } from './tipus';
 import { nomCat } from '../../lib/cataleg';
 
@@ -27,6 +27,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
   const { t, i18n } = useTranslation();
   const { uid, esCoordinador, potRevisar } = useAuth();
   const [fitxa, setFitxa] = useState<Fitxa | null>(null);
+  const urls = useUrlsFotos(fitxa?.fotos.map((f) => f.storage_path) ?? []);
   const [error, setError] = useState(false);
   const [editant, setEditant] = useState(false);
   const [text, setText] = useState('');
@@ -220,10 +221,10 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
           {fitxa.fotos.length > 0 && (
             <div className="fotos">
               <h3>{t('fitxa.fotos')}</h3>
-              {fitxa.fotos.map((f, i) => (
-                <a key={f.id} href={urlFoto(f.storage_path)} target="_blank" rel="noreferrer">
+              {fitxa.fotos.filter((f) => urls[f.storage_path]).map((f, i) => (
+                <a key={f.id} href={urls[f.storage_path]} target="_blank" rel="noreferrer">
                   <img
-                    src={urlFoto(f.storage_path)}
+                    src={urls[f.storage_path]}
                     alt={t('fitxa.foto', { n: i + 1, total: fitxa.fotos.length })}
                     loading="lazy"
                   />
