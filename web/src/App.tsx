@@ -69,11 +69,12 @@ export function App() {
           <select
             className="selector-idioma"
             aria-label={t('idioma.etiqueta')}
-            value={i18n.language === 'es' ? 'es' : 'ca-ES-valencia'}
+            value={i18n.language === 'es' || i18n.language === 'en' ? i18n.language : 'ca-ES-valencia'}
             onChange={(e) => void i18n.changeLanguage(e.target.value)}
           >
             <option value="ca-ES-valencia">VA</option>
             <option value="es">ES</option>
+            <option value="en">EN</option>
           </select>
           <button
             type="button"

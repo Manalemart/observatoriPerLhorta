@@ -363,7 +363,8 @@
   "idioma": {
     "etiqueta": "Idioma",
     "ca": "Valencià",
-    "es": "Castellano"
+    "es": "Castellano",
+    "en": "English"
   },
   "fulls": {
     "titol": "Hojas de campo",
@@ -382,5 +383,44 @@
     "error": "No se ha podido hacer la hoja de campo. Vuelve a intentarlo.",
     "botoCamp": "Hoja de campo",
     "botoRevisio": "Hoja de revisión"
+  },
+  "pdf": {
+    "titolCamp": "HOJA DE CAMPO",
+    "titolRevisio": "HOJA DE REVISIÓN",
+    "fonsPnoa": "ortofoto PNOA",
+    "fonsTopo": "mapa topográfico",
+    "partida": "Partida",
+    "recinte": "Recinto SIGPAC (n.º de parcela)",
+    "discontinu": "Discontinuo: inventario 2017-2018 por revisar",
+    "fonts": "Fondo: {{fons}} © Instituto Geográfico Nacional",
+    "fontsSigpac": " · Recintos SIGPAC © FEGA",
+    "fontsDades": " · Parcelas 2018: D. G. del Catastro · Datos: Observatori Ciutadà de l'Horta — Per l'Horta (CC BY 4.0)",
+    "senseSigpac": "No se ha podido consultar el SIGPAC: el plano va sin recintos.",
+    "subtitolRevisio": "{{municipi}} · {{area}} · {{n}} elementos · sobre {{fons}} · {{data}}",
+    "subtitolCamp": "{{municipi}} · {{area}} · hoja de trabajo en blanco sobre {{fons}}{{sigpac}} · {{data}}",
+    "ambSigpac": " con recintos SIGPAC",
+    "detalls": "Detalles ampliados en las páginas siguientes: {{quadres}}.",
+    "rangElements": "elementos {{de}} a {{a}}",
+    "unElement": "elemento {{n}}",
+    "detallQuadre": "Detalle del cuadro {{quadre}} · {{rang}} · {{municipi}}",
+    "llista": "{{municipi}} · lista para marcar en el campo · {{data}}",
+    "instruccions": "Para cada elemento, marca una casilla y apunta lo que haga falta. El número y el cuadro son los del plano y de los detalles. Después, en la web o en la app, abre el elemento y responde «¿Sigue así?»: si ha cambiado, haz una aportación nueva.",
+    "columnes": [
+      "N.º",
+      "Cuadro",
+      "Elemento",
+      "Tema",
+      "Dato",
+      "Código",
+      "Igual",
+      "Cambiado",
+      "No lo encuentro",
+      "Notas"
+    ],
+    "pendent": "Pendiente de validar",
+    "rebutjat": "Rechazado",
+    "perRevisar": "2018 · por revisar",
+    "revisat": "Revisado {{data}}",
+    "nova": "Nueva"
   }
 }

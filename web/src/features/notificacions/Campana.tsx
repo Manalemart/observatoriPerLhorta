@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { nomCat } from '../../lib/cataleg';
 
 interface Notificacio {
   id: number;
@@ -31,7 +32,7 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
   const carregar = useCallback(async () => {
     const { data } = await supabase
       .from('notificacions')
-      .select('id, element_id, accio, motiu, llegida, created_at, element:elements(text_lliure, variable:variables(nom))')
+      .select('id, element_id, accio, motiu, llegida, created_at, element:elements(text_lliure, variable:variables(nom, nom_es, nom_en))')
       .order('created_at', { ascending: false })
       .limit(MAXIM);
     if (!data) return;
@@ -96,7 +97,7 @@ export function Campana({ onCanvi }: { onCanvi: () => void }) {
               <li key={n.id}>
                 <button type="button" className={`fila ${n.llegida ? '' : 'activa'}`} onClick={() => void obrir(n)}>
                   <span className="fila-text">
-                    <strong>{n.element.text_lliure ?? n.element.variable.nom}</strong>
+                    <strong>{n.element.text_lliure ?? nomCat(n.element.variable)}</strong>
                     <small>
                       {t(`notificacions.accio.${n.accio}`)} · {new Date(n.created_at).toLocaleDateString(i18n.language)}
                     </small>

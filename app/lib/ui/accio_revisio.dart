@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../core/errors_servidor.dart';
 import 'package:uuid/uuid.dart';
 
 import '../data/models.dart';
@@ -45,7 +46,7 @@ Future<bool> enviarRevisio(
   if (queda?.error != null) {
     // El servidor la ha rechazado (p. ej. ya no es padrí): no tiene sentido guardarla
     await sinc.esborrarRevisio(r.id);
-    avis.showSnackBar(SnackBar(content: Text(t.revisioRebutjada(queda!.error!))));
+    avis.showSnackBar(SnackBar(content: Text(t.revisioRebutjada(traduirErrorServidor(queda!.error!)))));
     return false;
   }
   avis.showSnackBar(SnackBar(content: Text(queda == null ? t.revisioFet : t.revisioGuardadaMobil)));

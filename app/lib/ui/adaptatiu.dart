@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+export '../core/localitzacio.dart';
+
 // ─── Tauletes ──────────────────────────────────────────────────────────────
 // Mides de finestra de Material 3: compacta (< 600 dp, mòbil), mitjana (600-839, tauleta
 // vertical o pantalla dividida) i expandida (≥ 840, tauleta horitzontal). En iPad i en
@@ -117,9 +119,4 @@ Future<bool> confirmar(
           ),
         );
   return dialeg.then((resposta) => resposta == true);
-}
-
-/// Codi d'idioma per a DateFormat i NumberFormat ('ca' o 'es'). El posa l'app en construir-se.
-class Localitzacio {
-  static String codi = 'ca';
 }

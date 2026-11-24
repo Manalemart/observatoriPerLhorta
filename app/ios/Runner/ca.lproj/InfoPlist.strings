@@ -1,0 +1,4 @@
+/* Textos dels permisos (Info.plist) en ca */
+"NSCameraUsageDescription" = "L'Observatori usa la càmera per a fer fotos dels elements que aportes o revises a l'horta.";
+"NSPhotoLibraryUsageDescription" = "L'Observatori obri la fototeca perquè tries fotos dels elements que aportes o revises.";
+"NSLocationWhenInUseUsageDescription" = "L'Observatori usa la teua ubicació mentre l'uses per a situar-te al mapa i col·locar les aportacions on estàs.";

@@ -3,11 +3,13 @@ import { useTranslation } from 'react-i18next';
 import type { Geometry } from 'geojson';
 import { useAuth } from '../../auth/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { traduirErrorServidor } from '../../lib/errorsServidor';
 import { urlFoto } from '../mapa/dades';
 import type { Dades } from '../mapa/tipus';
 import { MiniMapa } from './MiniMapa';
 import { LesMeuesPartides } from './LesMeuesPartides';
 import { Padrinatges } from './Padrinatges';
+import { nomCat } from '../../lib/cataleg';
 
 const MIDA_PAGINA = 25;
 
@@ -61,8 +63,8 @@ function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: (
     let consulta = supabase
       .from('elements')
       .select(`id, descripcio, text_lliure, origen, created_at, partida_id, geom,
-        variable:variables(nom, tema:temes(nom, color)),
-        categoria:categories(nom),
+        variable:variables(nom, nom_es, nom_en, tema:temes(nom, nom_es, nom_en, color)),
+        categoria:categories(nom, nom_es, nom_en),
         partida:partides(nom),
         municipi:municipis(nom),
         fotos:element_fotos(id, storage_path)`, { count: 'exact' })
@@ -99,7 +101,7 @@ function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: (
       p_motiu: estat === 'rebutjat' ? motiu.trim() : null,
     });
     if (err) {
-      setErrorAccio(['42501', '22023'].includes(err.code) ? err.message : t('comu.errorDesar'));
+      setErrorAccio(['42501', '22023'].includes(err.code) ? traduirErrorServidor(err.message) : t('comu.errorDesar'));
       return;
     }
     // Pasa al siguiente de la lista
@@ -143,9 +145,9 @@ function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: (
               >
                 <span className="mostra" style={{ background: f.variable.tema.color }} aria-hidden="true" />
                 <span className="fila-text">
-                  <strong>{f.text_lliure ?? f.variable.nom}</strong>
+                  <strong>{f.text_lliure ?? nomCat(f.variable)}</strong>
                   <small>
-                    {[f.categoria?.nom, f.partida?.nom, f.municipi?.nom].filter(Boolean).join(' · ')}
+                    {[f.categoria && nomCat(f.categoria), f.partida?.nom, f.municipi?.nom].filter(Boolean).join(' · ')}
                   </small>
                 </span>
               </button>
@@ -168,12 +170,12 @@ function Pendents({ dades, onCanvi, partidaInicial }: { dades: Dades; onCanvi: (
           <div className="validacio-info">
             <p className="fitxa-tema">
               <span className="mostra" style={{ background: actual.variable.tema.color }} aria-hidden="true" />
-              {actual.variable.tema.nom}
+              {nomCat(actual.variable.tema)}
             </p>
-            <h2>{actual.text_lliure ?? actual.variable.nom}</h2>
+            <h2>{actual.text_lliure ?? nomCat(actual.variable)}</h2>
             {actual.descripcio && <p className="fitxa-descripcio">{actual.descripcio}</p>}
             <dl>
-              {actual.categoria && (<><dt>{t('fitxa.categoria')}</dt><dd>{actual.categoria.nom}</dd></>)}
+              {actual.categoria && (<><dt>{t('fitxa.categoria')}</dt><dd>{nomCat(actual.categoria)}</dd></>)}
               {actual.partida && (<><dt>{t('fitxa.partida')}</dt><dd>{actual.partida.nom}</dd></>)}
               {actual.municipi && (<><dt>{t('fitxa.municipi')}</dt><dd>{actual.municipi.nom}</dd></>)}
               <dt>{t('fitxa.origen')}</dt><dd>{t(`fitxa.origens.${actual.origen}`)}</dd>
