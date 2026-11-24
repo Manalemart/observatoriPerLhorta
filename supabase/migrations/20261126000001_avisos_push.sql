@@ -136,7 +136,7 @@ as $$
     ),
     'perfil', (
       select jsonb_build_object('alies', p.nom_public, 'rol', p.rol, 'resum_correu', p.resum_correu,
-                                'avisos_push', p.avisos_push, 'alta', p.created_at)
+                                'avisos_push', p.avisos_push, 'idioma', p.idioma, 'alta', p.created_at)
       from public.perfils p where p.id = auth.uid()
     ),
     'dispositius_push', coalesce((

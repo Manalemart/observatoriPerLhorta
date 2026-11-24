@@ -8,7 +8,7 @@ notificacions (insert) ─► trigger notificacions_push ─► pg_net ─► fu
 
 | Pieza | Dónde |
 |---|---|
-| Tabla de móviles y funciones `registrar_dispositiu` / `oblidar_dispositiu` | `supabase/migrations/20261123000001_avisos_push.sql` |
+| Tabla de móviles y funciones `registrar_dispositiu` / `oblidar_dispositiu` | `supabase/migrations/20261126000001_avisos_push.sql` |
 | Envío (Firebase Cloud Messaging, API HTTP v1) | `supabase/functions/enviar-push/index.ts` |
 | App: permiso, registro del móvil, abrir «Avisos» al tocar | `app/lib/services/avisos_push.dart` |
 | Interruptor «Avisos al mòbil» | pantalla Avisos de la app (`perfils.avisos_push`) |
