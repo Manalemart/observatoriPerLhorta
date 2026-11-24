@@ -61,16 +61,16 @@ class _Llegenda extends StatelessWidget {
                 decoration: BoxDecoration(color: colorDesDeHex(tema.color), borderRadius: BorderRadius.circular(3)),
               ),
               const SizedBox(width: 8),
-              EtiquetaSeccio(tema.nom, padding: EdgeInsets.zero),
+              EtiquetaSeccio(tema.nomVisible, padding: EdgeInsets.zero),
             ]),
             for (final v in tema.variables) ...[
-              _Fila(simbol: simbol(tema, v), text: v.nom),
+              _Fila(simbol: simbol(tema, v), text: v.nomVisible),
               // Si alguna categoria té símbol propi, totes (així cada símbol té el seu nom)
               if (v.categories.any((c) => simbol(tema, v, c) != simbol(tema, v)))
                 for (final c in v.categories)
                   Padding(
                     padding: const EdgeInsets.only(left: 28),
-                    child: _Fila(simbol: simbol(tema, v, c), text: c.nom, petit: true),
+                    child: _Fila(simbol: simbol(tema, v, c), text: c.nomVisible, petit: true),
                   ),
             ],
           ],

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../data/models.dart' show nomCatalegJson;
+
 /// Un aviso de la campana (tabla `notificacions`, la misma que en la web).
 class Avis {
   const Avis({
@@ -24,7 +26,7 @@ class Avis {
       llegit: j['llegida'] as bool,
       creat: DateTime.parse(j['created_at'] as String),
       elementId: j['element_id'] as String,
-      titol: (e?['text_lliure'] as String?) ?? ((e?['variable'] as Map<String, dynamic>?)?['nom'] as String?) ?? '',
+      titol: (e?['text_lliure'] as String?) ?? nomCatalegJson(e?['variable'] as Map<String, dynamic>?),
       partidaId: e?['partida_id'] as int?,
       partida: p?['nom'] as String?,
     );

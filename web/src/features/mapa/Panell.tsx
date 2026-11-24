@@ -6,6 +6,7 @@ import { FONS } from './estil';
 import { MostraSimbol } from './Llegenda';
 import { indexSimbologia, type IndexSimbols } from './simbologia';
 import type { Dades, Epoca, Fons, Tema } from './tipus';
+import { nomCat } from '../../lib/cataleg';
 
 const EPOQUES: Epoca[] = ['tot', '2018', 'noves'];
 
@@ -74,14 +75,14 @@ function FilaTema({ tema, index, recompte, actives, onCanvi }: {
             onChange={(e) => canviarTema(e.target.checked)}
           />
           <span className="mostra" style={{ background: tema.color }} aria-hidden="true" />
-          <span>{tema.nom}</span>
+          <span>{nomCat(tema)}</span>
         </label>
         <span className="recompte">{fmt.format(total)}</span>
         <button
           type="button"
           className="desplegar"
           aria-expanded={obert}
-          aria-label={t(obert ? 'panell.plegar' : 'panell.desplegar', { tema: tema.nom })}
+          aria-label={t(obert ? 'panell.plegar' : 'panell.desplegar', { tema: nomCat(tema) })}
           onClick={() => setObert(!obert)}
         >
           {obert ? '▾' : '▸'}
@@ -101,16 +102,16 @@ function FilaTema({ tema, index, recompte, actives, onCanvi }: {
                       onChange={(e) => canviarVariable(v.id, e.target.checked)}
                     />
                     <MostraSimbol simbol={index.simbol(v.id)} />
-                    <span>{v.nom}</span>
+                    <span>{nomCat(v)}</span>
                   </label>
                   <span className="recompte">{fmt.format(recompte.get(v.id) ?? 0)}</span>
                 </div>
                 {categories && (
-                  <ul className="categories-simbol" aria-label={t('panell.simbolsDe', { variable: v.nom })}>
+                  <ul className="categories-simbol" aria-label={t('panell.simbolsDe', { variable: nomCat(v) })}>
                     {categories.map(({ c, s: simbol }) => (
                       <li key={c.id}>
                         <MostraSimbol simbol={simbol} />
-                        <span>{c.nom}</span>
+                        <span>{nomCat(c)}</span>
                       </li>
                     ))}
                   </ul>

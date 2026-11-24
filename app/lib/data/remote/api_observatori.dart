@@ -32,7 +32,7 @@ class ApiObservatori implements ApiAportacions, ApiAvisos {
   Future<List<Tema>> cataleg() async {
     final files = await _client
         .from('temes')
-        .select('id, nom, color, variables(id, nom, geometria, text_lliure, actiu, categories(id, nom, actiu))')
+        .select('id, nom, nom_es, nom_en, color, variables(id, nom, nom_es, nom_en, geometria, text_lliure, actiu, categories(id, nom, nom_es, nom_en, actiu))')
         .order('ordre', ascending: true)
         .order('nom', ascending: true, referencedTable: 'variables');
     return [for (final f in files) Tema.fromJson(f)];
@@ -87,7 +87,7 @@ class ApiObservatori implements ApiAportacions, ApiAvisos {
     final r = await _client
         .from('notificacions')
         .select('id, element_id, accio, motiu, llegida, created_at, '
-            'element:elements(text_lliure, partida_id, variable:variables(nom), partida:partides(nom))')
+            'element:elements(text_lliure, partida_id, variable:variables(nom, nom_es, nom_en), partida:partides(nom))')
         .order('created_at', ascending: false)
         .limit(30);
     return r.cast<Map<String, dynamic>>();
@@ -109,7 +109,7 @@ class ApiObservatori implements ApiAportacions, ApiAvisos {
   Future<List<AportacioRemota>> lesMeues() async {
     final files = await _client
         .from('elements')
-        .select('id, text_lliure, descripcio, estat, created_at, motiu_rebuig, variable:variables(nom)')
+        .select('id, text_lliure, descripcio, estat, created_at, motiu_rebuig, variable:variables(nom, nom_es, nom_en)')
         .eq('autor_id', _uid)
         .order('created_at', ascending: false)
         .limit(100);

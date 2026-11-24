@@ -5,6 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import '../core/config.dart';
 import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
+import '../services/cataleg.dart';
+import 'adaptatiu.dart';
 
 /// Ficha de un elemento tocado en el mapa, con «És encara així?».
 /// El padrí de la partida lo revisa desde aquí; el resto puede proponer una aportación que lo sustituya
@@ -35,7 +37,7 @@ class FitxaMapa extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = L.of(context);
     final cs = Theme.of(context).colorScheme;
-    final data = DateFormat.yMMMd('ca');
+    final data = DateFormat.yMMMd(Localitzacio.codi);
     final perRevisar = prop['per_revisar'] == true;
     final validat = prop['estat'] == 'validat';
     final revisat = DateTime.tryParse(prop['revisat_at'] as String? ?? '');
@@ -51,6 +53,11 @@ class FitxaMapa extends StatelessWidget {
         ? t.fitxaRevisat(data.format(revisat.toLocal()))
         : (!perRevisar && creat != null ? t.fitxaAportat(data.format(creat.toLocal())) : null);
     final potRevisar = esPadri && perRevisar && validat;
+    // Noms en l'idioma de la app (l'element du el valencià, la clau)
+    final cat = catalegDe(context);
+    final nomTema = cat?.nomTema(prop['tema_id'], prop['tema'] as String?) ?? prop['tema'] as String?;
+    final nomVariable = cat?.nomVariable(prop['variable_id'], prop['variable'] as String?) ?? prop['variable'] as String? ?? '';
+    final nomCategoria = cat?.nomCategoria(prop['categoria_id'], prop['categoria'] as String?) ?? prop['categoria'] as String?;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -59,12 +66,12 @@ class FitxaMapa extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Wrap(spacing: 8, runSpacing: 8, children: [
-              if (prop['tema'] != null) _Pastilla(color: color, text: prop['tema'] as String),
+              if (nomTema != null && nomTema.isNotEmpty) _Pastilla(color: color, text: nomTema),
               _Pastilla(text: estat, icona: perRevisar ? Icons.event_note_outlined : null),
             ]),
             const SizedBox(height: 12),
             Row(children: [
-              Expanded(child: Text(prop['variable'] as String? ?? '', style: Theme.of(context).textTheme.headlineSmall)),
+              Expanded(child: Text(nomVariable, style: Theme.of(context).textTheme.headlineSmall)),
               if (validat && Config.urlWeb.isNotEmpty && prop['id'] != null)
                 Builder(
                   // El seu context fa d'origen del full de compartir en iPad
@@ -73,7 +80,7 @@ class FitxaMapa extends StatelessWidget {
                     tooltip: t.fitxaCompartir,
                     onPressed: () {
                       final caixa = b.findRenderObject() as RenderBox?;
-                      final nom = prop['variable'] as String? ?? '';
+                      final nom = nomVariable;
                       SharePlus.instance.share(ShareParams(
                         uri: Uri.parse('${Config.urlWeb}/mapa?element=${prop['id']}'),
                         subject: t.fitxaCompartirText(nom),
@@ -83,9 +90,9 @@ class FitxaMapa extends StatelessWidget {
                   ),
                 ),
             ]),
-            if (prop['categoria'] != null) ...[
+            if (nomCategoria != null) ...[
               const SizedBox(height: 4),
-              Text(prop['categoria'] as String, style: TextStyle(fontWeight: FontWeight.w600, color: cs.onSurfaceVariant)),
+              Text(nomCategoria, style: TextStyle(fontWeight: FontWeight.w600, color: cs.onSurfaceVariant)),
             ],
             if (dataText != null) ...[
               const SizedBox(height: 8),

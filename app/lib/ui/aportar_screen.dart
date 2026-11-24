@@ -196,7 +196,7 @@ class _AportarScreenState extends State<AportarScreen> {
     final aportacio = Aportacio(
       id: const Uuid().v4(),
       variableId: v.id,
-      titol: text.isNotEmpty ? text : v.nom,
+      titol: text.isNotEmpty ? text : v.nomVisible,
       creadaEn: DateTime.now(),
       categoriaId: _categoria?.id,
       textLliure: text.isEmpty ? null : text,
@@ -331,7 +331,7 @@ class _AportarScreenState extends State<AportarScreen> {
               SizedBox(
                 width: ample,
                 child: _TargetaTema(
-                  nom: x.nom,
+                  nom: x.nomVisible,
                   color: colorDesDeHex(x.color),
                   triat: _tema?.id == x.id,
                   onTap: () => setState(() {
@@ -352,7 +352,7 @@ class _AportarScreenState extends State<AportarScreen> {
             initialValue: _variable,
             isExpanded: true,
             hint: Text(t.comuTria),
-            items: [for (final x in _tema!.variables) DropdownMenuItem(value: x, child: Text(x.nom))],
+            items: [for (final x in _tema!.variables) DropdownMenuItem(value: x, child: Text(x.nomVisible))],
             onChanged: (x) => setState(() {
               _variable = x;
               _categoria = null;
@@ -368,7 +368,7 @@ class _AportarScreenState extends State<AportarScreen> {
             isExpanded: true,
             decoration: InputDecoration(labelText: t.aportarCategoria),
             hint: Text(t.comuTria),
-            items: [for (final x in v.categories) DropdownMenuItem(value: x, child: Text(x.nom))],
+            items: [for (final x in v.categories) DropdownMenuItem(value: x, child: Text(x.nomVisible))],
             onChanged: (x) => setState(() => _categoria = x),
           ),
         ],

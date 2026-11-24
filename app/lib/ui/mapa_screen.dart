@@ -13,6 +13,7 @@ import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
 import '../services/cataleg.dart';
+import '../services/idioma.dart';
 import '../services/paquets.dart';
 import '../services/sessio.dart';
 import '../services/simbologia.dart';
@@ -185,7 +186,7 @@ class _MapaScreenState extends State<MapaScreen> {
     substitueixId: prop['id'] as String,
     variableId: prop['variable_id'] as int,
     punt: punt,
-    nom: prop['variable'] as String?,
+    nom: context.read<Cataleg>().nomVariable(prop['variable_id'], prop['variable'] as String?),
   );
 
   /// La guia de benvinguda, la primera vegada (després de l'àlies).
@@ -193,6 +194,34 @@ class _MapaScreenState extends State<MapaScreen> {
     _guiaComprovada = true;
     if (await guiaVista() || !mounted) return;
     await mostrarGuia(context);
+  }
+
+  Future<void> _triarIdioma() async {
+    final t = L.of(context);
+    final idioma = context.read<Idioma>();
+    final opcions = <(Locale?, String)>[
+      (null, t.idiomaSistema),
+      (Idioma.valencia, t.idiomaCa),
+      (Idioma.castella, t.idiomaEs),
+      (Idioma.angles, t.idiomaEn),
+    ];
+    await showDialog<void>(
+      context: context,
+      builder: (c) => SimpleDialog(
+        title: Text(t.perfilIdioma),
+        children: [
+          for (final (l, nom) in opcions)
+            ListTile(
+              leading: Icon(idioma.triat == l ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+              title: Text(nom),
+              onTap: () {
+                idioma.triar(l);
+                Navigator.of(c).pop();
+              },
+            ),
+        ],
+      ),
+    );
   }
 
   /// Busca un municipi o una partida i hi porta el mapa.
@@ -250,6 +279,20 @@ class _MapaScreenState extends State<MapaScreen> {
                     if (ctx.mounted) Navigator.of(ctx).pop();
                   },
                 ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.translate),
+                title: Text(t.perfilIdioma),
+                subtitle: Text(switch (context.read<Idioma>().triat?.languageCode) {
+                  'ca' => t.idiomaCa,
+                  'es' => t.idiomaEs,
+                  'en' => t.idiomaEn,
+                  _ => t.idiomaSistema,
+                }),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  _triarIdioma();
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.help_outline),

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   GeoJSONSource, Map as MapaGL, NavigationControl, ScaleControl, setWorkerUrl,
   type ExpressionSpecification, type FilterSpecification, type LayerSpecification, type Point,
@@ -251,6 +252,7 @@ export function Mapa({
   dades, elements, fons, variablesActives, epoca, veurePartides, veureMunicipis, veureSigpac,
   seleccionat, onSeleccionar, capturant, ignorarClics, onClicCaptura, esborrany, enquadrar,
 }: Props) {
+  const { t } = useTranslation();
   const contenidor = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<MapaGL | null>(null);
   const [llest, setLlest] = useState(false);
@@ -428,5 +430,5 @@ export function Mapa({
     mapa.fitBounds([[o, s], [e, n]], { padding: { top: 120, bottom: 48, left: 48, right: 48 }, maxZoom: 17, duration: 800 });
   }, [enquadrar, llest]);
 
-  return <div ref={contenidor} className="mapa" role="application" aria-label="Mapa de l'inventari" />;
+  return <div ref={contenidor} className="mapa" role="application" aria-label={t('mapa.etiqueta')} />;
 }

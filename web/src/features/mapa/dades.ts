@@ -46,7 +46,7 @@ export async function carregarDades(): Promise<Dades> {
   const [temes, partides, municipis] = await Promise.all([
     supabase
       .from('temes')
-      .select('id, nom, color, variables(id, nom, tema_id, geometria, text_lliure, actiu, categories(id, nom, actiu))')
+      .select('id, nom, nom_es, nom_en, color, variables(id, nom, nom_es, nom_en, tema_id, geometria, text_lliure, actiu, categories(id, nom, nom_es, nom_en, actiu))')
       .order('ordre')
       .order('nom', { referencedTable: 'variables' }),
     rpc('partides_geojson', v.partides),
@@ -75,8 +75,8 @@ export async function carregarFitxa(id: string, ambSessio: boolean): Promise<Fit
   const { data, error } = await supabase
     .from('elements')
     .select(`id, descripcio, text_lliure, estat, origen, partida_id, created_at, revisat_at, ${ambSessio ? 'autor_id, ' : ''}motiu_rebuig, sigpac_ref,
-      variable:variables(nom, tema:temes(nom, color)),
-      categoria:categories(nom),
+      variable:variables(nom, nom_es, nom_en, tema:temes(nom, nom_es, nom_en, color)),
+      categoria:categories(nom, nom_es, nom_en),
       partida:partides(nom),
       municipi:municipis(nom),
       fotos:element_fotos(id, storage_path)`)

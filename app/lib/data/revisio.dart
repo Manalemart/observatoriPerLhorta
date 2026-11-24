@@ -58,6 +58,7 @@ class ElementRevisio {
     required this.variableId,
     required this.variable,
     required this.categoria,
+    this.categoriaId,
     required this.estat,
     required this.origen,
     required this.perRevisar,
@@ -81,6 +82,7 @@ class ElementRevisio {
       variableId: j['variable_id'] as int,
       variable: j['variable'] as String,
       categoria: j['categoria'] as String?,
+      categoriaId: j['categoria_id'] as int?,
       estat: j['estat'] as String,
       origen: j['origen'] as String,
       perRevisar: j['per_revisar'] as bool,
@@ -100,6 +102,7 @@ class ElementRevisio {
   final String? color;
   final int variableId;
   final String variable;
+  final int? categoriaId;
   final String? categoria;
   final String estat;
   final String origen;

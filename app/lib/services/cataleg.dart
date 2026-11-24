@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/models.dart';
@@ -16,6 +17,36 @@ class Cataleg extends ChangeNotifier {
   List<Tema> _temes = const [];
   List<Tema> get temes => _temes;
 
+  /// Els noms en l'idioma actual a partir dels ids d'un element (tema_id, variable_id,
+  /// categoria_id). Si el catàleg encara no ha carregat, [defecte] (el valencià que du l'element).
+  String nomTema(Object? id, String? defecte) {
+    for (final t in _temes) {
+      if (t.id == id) return t.nomVisible;
+    }
+    return defecte ?? '';
+  }
+
+  String nomVariable(Object? id, String? defecte) {
+    for (final t in _temes) {
+      for (final v in t.variables) {
+        if (v.id == id) return v.nomVisible;
+      }
+    }
+    return defecte ?? '';
+  }
+
+  String? nomCategoria(Object? id, String? defecte) {
+    if (id == null) return defecte;
+    for (final t in _temes) {
+      for (final v in t.variables) {
+        for (final c in v.categories) {
+          if (c.id == id) return c.nomVisible;
+        }
+      }
+    }
+    return defecte;
+  }
+
   Future<void> carregar() async {
     final prefs = await SharedPreferences.getInstance();
     final desat = prefs.getString(_clau);
@@ -30,5 +61,14 @@ class Cataleg extends ChangeNotifier {
     } catch (e) {
       debugPrint('Catàleg sense actualitzar: $e'); // sin red: sirve la copia
     }
+  }
+}
+
+/// El catàleg del Provider, si n'hi ha (en alguns tests no).
+Cataleg? catalegDe(BuildContext context) {
+  try {
+    return Provider.of<Cataleg>(context, listen: false);
+  } catch (_) {
+    return null;
   }
 }

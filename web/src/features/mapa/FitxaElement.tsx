@@ -5,6 +5,7 @@ import { esborrarFotos } from '../../lib/fotos';
 import { supabase } from '../../lib/supabase';
 import { carregarFitxa, useUrlsFotos } from './dades';
 import type { Fitxa } from './tipus';
+import { nomCat } from '../../lib/cataleg';
 
 interface Props {
   id: string;
@@ -151,7 +152,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
           <p className="fitxa-xips">
             <span className="xip">
               <span className="mostra" style={{ background: fitxa.variable.tema.color }} aria-hidden="true" />
-              {fitxa.variable.tema.nom}
+              {nomCat(fitxa.variable.tema)}
             </span>
             {fitxa.origen === 'legacy_2018' && (
               <span className="xip xip-2018">
@@ -160,9 +161,9 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
               </span>
             )}
           </p>
-          <h2>{fitxa.text_lliure ?? fitxa.variable.nom}</h2>
+          <h2>{fitxa.text_lliure ?? nomCat(fitxa.variable)}</h2>
           {fitxa.estat === 'validat' && (
-            <Compartir id={fitxa.id} titol={fitxa.text_lliure ?? fitxa.variable.nom} />
+            <Compartir id={fitxa.id} titol={fitxa.text_lliure ?? nomCat(fitxa.variable)} />
           )}
           {fitxa.estat === 'rebutjat' && fitxa.motiu_rebuig && (
             <p className="motiu" role="status"><strong>{t('fitxa.motiu')}:</strong> {fitxa.motiu_rebuig}</p>
@@ -180,7 +181,7 @@ export function FitxaElement({ id, posicio, total, onMoure, onTancar, onCanvi, o
             fitxa.descripcio && <p className="fitxa-descripcio">{fitxa.descripcio}</p>
           )}
           <dl>
-            {fitxa.categoria && (<><dt>{t('fitxa.categoria')}</dt><dd>{fitxa.categoria.nom}</dd></>)}
+            {fitxa.categoria && (<><dt>{t('fitxa.categoria')}</dt><dd>{nomCat(fitxa.categoria)}</dd></>)}
             {fitxa.partida && (<><dt>{t('fitxa.partida')}</dt><dd>{fitxa.partida.nom}</dd></>)}
             {fitxa.municipi && (<><dt>{t('fitxa.municipi')}</dt><dd>{fitxa.municipi.nom}</dd></>)}
             {fitxa.sigpac_ref && (<><dt>SIGPAC</dt><dd>{fitxa.sigpac_ref}</dd></>)}
