@@ -2,6 +2,8 @@
 
 Textos per a copiar i pegar en Play Console i App Store Connect, en valencià (idioma principal: **català**, que és com el llisten les dues botigues). Versió **1.0.0**.
 
+La app també està en castellà i anglés: els textos traduïts, per a afegir eixos idiomes en les dues botigues, estan en [fitxa-es.md](fitxa-es.md) i [fitxa-en.md](fitxa-en.md).
+
 > ⚠️ **Abans d'enviar-la a revisió**: crear el compte de revisió en Supabase i posar-lo en les dues botigues ([CODEMAGIC.md](../CODEMAGIC.md#compte-de-revisió-apple-i-google-i-de-les-captures)).
 
 ## Dades generals
@@ -59,7 +61,7 @@ Entres amb el teu correu, sense contrasenya. Tot el que aportes ho revisa la coo
 DADES OBERTES
 Les dades de l'inventari es publiquen amb llicència CC BY 4.0 i les fotografies amb CC BY-SA 4.0. El codi de l'aplicació és lliure (AGPL-3.0).
 
-També en mòbil i en tauleta.
+En valencià, castellà i anglés. També en mòbil i en tauleta.
 
 L'inventari parteix del treball de camp de 2017-2018 i ara el posem al dia entre totes i tots.
 ```
@@ -109,8 +111,10 @@ Resultat esperat: **PEGI 3 / 4+**.
 
 ## Informació per als revisors d'Apple
 
+Els revisors lligen anglés: millor pegar la versió anglesa de [fitxa-en.md](fitxa-en.md#información-para-los-revisores-de-apple).
+
 ```
-L'app és l'Observatori Ciutadà de l'Horta, un inventari ciutadà del paisatge agrícola de València (Espanya), de l'associació sense ànim de lucre Per l'Horta. L'app està en català (valencià).
+L'app és l'Observatori Ciutadà de l'Horta, un inventari ciutadà del paisatge agrícola de València (Espanya), de l'associació sense ànim de lucre Per l'Horta. L'app està en català (valencià), castellà i anglés.
 
 Entrada: la gent entra amb el correu, sense contrasenya (enllaç o codi). Per a la revisió hi ha un compte que entra amb contrasenya: escriviu el correu de prova i l'app demanarà la contrasenya.
 Compte de prova: test@mediamapes.com / <contrasenya>.
