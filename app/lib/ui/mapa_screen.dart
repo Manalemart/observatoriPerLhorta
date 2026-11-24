@@ -13,6 +13,7 @@ import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
 import '../services/cataleg.dart';
+import '../services/idioma.dart';
 import '../services/paquets.dart';
 import '../services/sessio.dart';
 import '../services/simbologia.dart';
@@ -195,6 +196,33 @@ class _MapaScreenState extends State<MapaScreen> {
     await mostrarGuia(context);
   }
 
+  Future<void> _triarIdioma() async {
+    final t = L.of(context);
+    final idioma = context.read<Idioma>();
+    final opcions = <(Locale?, String)>[
+      (null, t.idiomaSistema),
+      (Idioma.valencia, t.idiomaCa),
+      (Idioma.castella, t.idiomaEs),
+    ];
+    await showDialog<void>(
+      context: context,
+      builder: (c) => SimpleDialog(
+        title: Text(t.perfilIdioma),
+        children: [
+          for (final (l, nom) in opcions)
+            ListTile(
+              leading: Icon(idioma.triat == l ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+              title: Text(nom),
+              onTap: () {
+                idioma.triar(l);
+                Navigator.of(c).pop();
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
   /// Busca un municipi o una partida i hi porta el mapa.
   Future<void> _cercar() async {
     final t = L.of(context);
@@ -250,6 +278,19 @@ class _MapaScreenState extends State<MapaScreen> {
                     if (ctx.mounted) Navigator.of(ctx).pop();
                   },
                 ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.translate),
+                title: Text(t.perfilIdioma),
+                subtitle: Text(switch (context.read<Idioma>().triat?.languageCode) {
+                  'ca' => t.idiomaCa,
+                  'es' => t.idiomaEs,
+                  _ => t.idiomaSistema,
+                }),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  _triarIdioma();
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.help_outline),

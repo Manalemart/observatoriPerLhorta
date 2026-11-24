@@ -1,8 +1,10 @@
 import { useEffect, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import { LegalEs } from './LegalEs';
 
-// Texto legal: va aquí y no en locales/ porque, si llega el castellano, se traduce como
-// documento, no frase a frase. Datos de la entidad: su aviso legal (perlhorta.info/avis-legal).
+// Texto legal: va aquí y no en locales/ porque se traduce como documento, no frase a frase
+// (la versión en castellano está en LegalEs.tsx: si cambia uno, hay que cambiar el otro). Datos de la entidad: su aviso legal (perlhorta.info/avis-legal).
 // Lo tienen que revisar Per l'Horta y su asesoría antes de abrir la web.
 
 const TITULAR = "l'Associació Per l'Horta";
@@ -23,6 +25,8 @@ export function Legal() {
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();
   }, [hash]);
+  const { i18n } = useTranslation();
+  if (i18n.language === 'es') return <LegalEs />;
 
   return (
     <main className="pagina pagina-estreta legal">
@@ -139,8 +143,8 @@ export function Legal() {
 
         <h3>Galetes</h3>
         <p>
-          La web només guarda en el navegador la sessió, perquè no hages d'entrar cada vegada. No usa galetes
-          d'analítica ni de publicitat.
+          La web només guarda en el navegador la sessió, perquè no hages d'entrar cada vegada, i l'idioma que
+          tries. No usa galetes d'analítica ni de publicitat.
         </p>
       </Seccio>
 

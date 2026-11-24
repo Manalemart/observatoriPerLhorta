@@ -13,6 +13,7 @@ import 'data/local/magatzem.dart';
 import 'data/remote/api_observatori.dart';
 import 'services/avisos.dart';
 import 'services/cataleg.dart';
+import 'services/idioma.dart';
 import 'services/paquets.dart';
 import 'services/sessio.dart';
 import 'services/simbologia.dart';
@@ -51,6 +52,7 @@ Future<void> main() async {
   );
   await paquets.carregar();
   final simbologia = await Simbologia.carregar();
+  final idioma = await Idioma.carregar();
 
   await sincronitzacio.carregar();
   // Al recuperar la red se envía lo pendiente y se recargan las pantallas. Sin sesión no se puede
@@ -86,6 +88,7 @@ Future<void> main() async {
       Provider.value(value: api),
       Provider.value(value: sigpac),
       Provider.value(value: simbologia),
+      ChangeNotifierProvider.value(value: idioma),
       ChangeNotifierProvider.value(value: sessio),
       ChangeNotifierProvider.value(value: cataleg),
       ChangeNotifierProvider.value(value: sincronitzacio),

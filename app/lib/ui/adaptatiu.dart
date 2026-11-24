@@ -118,3 +118,8 @@ Future<bool> confirmar(
         );
   return dialeg.then((resposta) => resposta == true);
 }
+
+/// Codi d'idioma per a DateFormat i NumberFormat ('ca' o 'es'). El posa l'app en construir-se.
+class Localitzacio {
+  static String codi = 'ca';
+}

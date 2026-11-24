@@ -117,7 +117,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
   Widget build(BuildContext context) {
     final t = L.of(context);
     final sinc = context.watch<Sincronitzacio>();
-    final data = DateFormat.yMd('ca');
+    final data = DateFormat.yMd(Localitzacio.codi);
     final perEnviar = sinc.items;
     final revisions = sinc.revisions;
     final enviades = _enviades ?? const <AportacioRemota>[];

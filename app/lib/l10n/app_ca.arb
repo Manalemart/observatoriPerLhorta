@@ -374,5 +374,9 @@
   "llistaRetirarText": "S'esborrarà «{titol}», amb les seues fotos. No es pot desfer.",
   "@llistaRetirarText": {"placeholders": {"titol": {"type": "String"}}},
   "llistaRetirada": "Aportació retirada.",
-  "llistaErrorAccio": "No s'ha pogut fer. Comprova la connexió i torna-ho a provar."
+  "llistaErrorAccio": "No s'ha pogut fer. Comprova la connexió i torna-ho a provar.",
+  "perfilIdioma": "Idioma",
+  "idiomaSistema": "El del dispositiu",
+  "idiomaCa": "Valencià",
+  "idiomaEs": "Castellano"
 }

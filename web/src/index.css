@@ -428,3 +428,7 @@ a.usuari:hover span { text-decoration: underline; text-underline-offset: 3px; }
 
 .fitxa-compartir { margin: 0 0 0.75rem; }
 .fitxa-compartir .boto { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0 0.7rem; }
+
+/* Selector d'idioma */
+.selector-idioma { height: 36px; padding: 0 0.4rem; border: 1px solid var(--vora); border-radius: 999px; background: var(--superficie); color: var(--text); font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.selector-idioma:hover { border-color: var(--text-2); }
