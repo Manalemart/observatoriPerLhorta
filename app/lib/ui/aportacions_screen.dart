@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../core/errors_servidor.dart';
 
 import '../core/tema_app.dart';
 import '../data/models.dart';
@@ -117,7 +118,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
   Widget build(BuildContext context) {
     final t = L.of(context);
     final sinc = context.watch<Sincronitzacio>();
-    final data = DateFormat.yMd('ca');
+    final data = DateFormat.yMd(Localitzacio.codi);
     final perEnviar = sinc.items;
     final revisions = sinc.revisions;
     final enviades = _enviades ?? const <AportacioRemota>[];
@@ -154,7 +155,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
                     'canviat' => t.revisioCanviat,
                     _ => t.revisioNoTrobat,
                   })),
-                  subtitle: Text(r.error ?? '${data.format(r.creadaEn)} · ${t.llistaEsperant}'),
+                  subtitle: Text(r.error != null ? traduirErrorServidor(r.error!) : '${data.format(r.creadaEn)} · ${t.llistaEsperant}'),
                   trailing: IconButton(
                     tooltip: t.llistaEsborrar,
                     onPressed: () => sinc.esborrarRevisio(r.id),
@@ -165,7 +166,7 @@ class _AportacionsScreenState extends State<AportacionsScreen> {
                 ListTile(
                   leading: Icon(a.estat == EstatCola.error ? Icons.error_outline : Icons.cloud_upload_outlined),
                   title: Text(a.titol),
-                  subtitle: Text(a.error ?? t.llistaEsperant),
+                  subtitle: Text(a.error != null ? traduirErrorServidor(a.error!) : t.llistaEsperant),
                   trailing: a.estat == EstatCola.error
                       ? Row(
                           mainAxisSize: MainAxisSize.min,

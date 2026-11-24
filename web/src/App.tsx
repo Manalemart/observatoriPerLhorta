@@ -18,7 +18,7 @@ import { useTema } from './lib/tema';
 import { Validacio } from './features/validacio/Validacio';
 
 export function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { uid, perfil, potValidar, eixir } = useAuth();
   const { pathname } = useLocation();
   const { tema, canviar: canviarTema } = useTema();
@@ -66,6 +66,16 @@ export function App() {
           {potValidar && <NavLink to="/validacio">{t('validacio.titol')}</NavLink>}
         </nav>
         <div className="capcalera-accions">
+          <select
+            className="selector-idioma"
+            aria-label={t('idioma.etiqueta')}
+            value={i18n.language === 'es' || i18n.language === 'en' ? i18n.language : 'ca-ES-valencia'}
+            onChange={(e) => void i18n.changeLanguage(e.target.value)}
+          >
+            <option value="ca-ES-valencia">VA</option>
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+          </select>
           <button
             type="button"
             className="boto-tema"

@@ -25,7 +25,7 @@ create table public.dispositius_push (
   token       text primary key,
   perfil_id   uuid not null references public.perfils on delete cascade,
   plataforma  text not null check (plataforma in ('android', 'ios')),
-  idioma      text not null default 'ca' check (idioma in ('ca', 'es')),
+  idioma      text not null default 'ca' check (idioma in ('ca', 'es', 'en')),
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
@@ -53,7 +53,7 @@ begin
     raise exception 'Token no vàlid' using errcode = '22023';
   end if;
   insert into public.dispositius_push (token, perfil_id, plataforma, idioma)
-  values (p_token, auth.uid(), p_plataforma, case when p_idioma = 'es' then 'es' else 'ca' end)
+  values (p_token, auth.uid(), p_plataforma, case when p_idioma in ('es', 'en') then p_idioma else 'ca' end)
   on conflict (token) do update
     set perfil_id = excluded.perfil_id, plataforma = excluded.plataforma,
         idioma = excluded.idioma, updated_at = now();

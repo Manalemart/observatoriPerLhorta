@@ -6,7 +6,9 @@ import { useAuth } from '../../auth/AuthContext';
 import { pujarFoto } from '../../lib/fotos';
 import { recintEnPunt, type Recinte } from '../../lib/sigpac';
 import { supabase } from '../../lib/supabase';
+import { traduirErrorServidor } from '../../lib/errorsServidor';
 import type { Esborrany, Tema, Variable } from '../mapa/tipus';
+import { nomCat } from '../../lib/cataleg';
 
 const MAX_FOTOS = 5;
 const VERTEXS_MINIMS = { linia: 2, poligon: 3 } as const;
@@ -119,7 +121,7 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
       .single();
     if (err) {
       // Los errores de validación del trigger ya vienen redactados en valenciano
-      setError(err.code === '22023' ? err.message : t('comu.errorDesar'));
+      setError(err.code === '22023' ? traduirErrorServidor(err.message) : t('comu.errorDesar'));
       setEnviant(false);
       return;
     }
@@ -149,7 +151,7 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
             }}
           >
             <option value="">{t('comu.tria')}</option>
-            {temes.map((x) => <option key={x.id} value={x.id}>{x.nom}</option>)}
+            {temes.map((x) => <option key={x.id} value={x.id}>{nomCat(x)}</option>)}
           </select>
         </label>
 
@@ -166,7 +168,7 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
               }}
             >
               <option value="">{t('comu.tria')}</option>
-              {variables.map((v) => <option key={v.id} value={v.id}>{v.nom}</option>)}
+              {variables.map((v) => <option key={v.id} value={v.id}>{nomCat(v)}</option>)}
             </select>
           </label>
         )}
@@ -180,7 +182,7 @@ export function Aportar({ temes, onVariable, onEsborrany, registrarClic, onCance
               onChange={(e) => setCategoriaId(e.target.value ? Number(e.target.value) : '')}
             >
               <option value="">{t('comu.tria')}</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.nom}</option>)}
+              {categories.map((c) => <option key={c.id} value={c.id}>{nomCat(c)}</option>)}
             </select>
           </label>
         )}

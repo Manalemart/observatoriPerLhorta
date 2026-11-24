@@ -12,6 +12,7 @@ import '../core/tema_app.dart';
 import '../data/remote/api_observatori.dart';
 import '../data/revisio.dart';
 import '../l10n/app_localizations.dart';
+import '../services/cataleg.dart';
 import '../services/fotos.dart';
 import '../services/paquets.dart';
 import '../services/sigpac.dart';
@@ -315,7 +316,7 @@ class _RevisioScreenState extends State<RevisioScreen> {
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     const Icon(Icons.cloud_off, size: 16),
                     const SizedBox(width: 6),
-                    Text(t.revisioSenseXarxa(DateFormat('d/M/yyyy', 'ca').format(_dadesDe!))),
+                    Text(t.revisioSenseXarxa(DateFormat('d/M/yyyy', Localitzacio.codi).format(_dadesDe!))),
                   ]),
                 ),
               ),
@@ -451,7 +452,10 @@ class _FitxaRevisioState extends State<_FitxaRevisio> {
       EstatRevisio.canviat => t.revisioEstatCanviat,
       EstatRevisio.nou => t.revisioEstatNou,
     };
-    final detall = [if (e.categoria != null && e.categoria != 'Sense categoria') e.categoria!, e.tema].join(' · ');
+    final cat = catalegDe(context);
+    final nomCategoria = cat?.nomCategoria(e.categoriaId, e.categoria) ?? e.categoria;
+    final nomTema = cat?.nomTema(e.temaId, e.tema) ?? e.tema;
+    final detall = [if (nomCategoria != null && e.categoria != 'Sense categoria' && e.categoria != 'Sense Categoria') nomCategoria, nomTema].join(' · ');
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
       child: Column(
@@ -460,7 +464,7 @@ class _FitxaRevisioState extends State<_FitxaRevisio> {
         children: [
           Text(t.revisioNumero(e.numero, e.quadre), style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 4),
-          Text(e.variable, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          Text(cat?.nomVariable(e.variableId, e.variable) ?? e.variable, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           Text(detall),
           const SizedBox(height: 8),
           Text(widget.pendent ? '$estat · ${t.revisioPendentEnviar}' : estat, style: Theme.of(context).textTheme.bodySmall),

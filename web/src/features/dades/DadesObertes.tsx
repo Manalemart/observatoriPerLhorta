@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { colorDelTema, descarregar } from './descarrega';
 import type { Dades } from '../mapa/tipus';
+import { nomCat } from '../../lib/cataleg';
 
 interface Fila {
   nom: string;
@@ -15,7 +16,7 @@ interface Resum {
   per_municipi: Fila[];
 }
 
-function Barres({ titol, files, color }: { titol: string; files: Fila[]; color: (nom: string) => string }) {
+function Barres({ titol, files, color, nom = (n) => n }: { titol: string; files: Fila[]; color: (nom: string) => string; nom?: (n: string) => string }) {
   const { i18n } = useTranslation();
   const fmt = new Intl.NumberFormat(i18n.language);
   const maxim = Math.max(...files.map((f) => f.n), 1);
@@ -26,7 +27,7 @@ function Barres({ titol, files, color }: { titol: string; files: Fila[]; color: 
         <tbody>
           {files.map((f) => (
             <tr key={f.nom}>
-              <th scope="row">{f.nom}</th>
+              <th scope="row">{nom(f.nom)}</th>
               <td className="barra-cel" aria-hidden="true">
                 <span className="barra" style={{ width: `${(f.n / maxim) * 100}%`, background: color(f.nom) }} />
               </td>
@@ -86,7 +87,7 @@ export function DadesObertes({ dades }: { dades: Dades }) {
             <span>{t('fitxa.tema')}</span>
             <select value={tema} onChange={(e) => setTema(e.target.value)}>
               <option value="">{t('dades.tots')}</option>
-              {dades.temes.map((x) => <option key={x.id} value={x.nom}>{x.nom}</option>)}
+              {dades.temes.map((x) => <option key={x.id} value={x.nom}>{nomCat(x)}</option>)}
             </select>
           </label>
           <label className="camp">
@@ -111,7 +112,8 @@ export function DadesObertes({ dades }: { dades: Dades }) {
 
       {resum && (
         <div className="grafiques">
-          <Barres titol={t('dades.perTema')} files={resum.per_tema} color={(nom) => colorDelTema(dades.temes, nom)} />
+          <Barres titol={t('dades.perTema')} files={resum.per_tema} color={(nom) => colorDelTema(dades.temes, nom)}
+            nom={(n) => nomCat(dades.temes.find((x) => x.nom === n) ?? { nom: n })} />
           <Barres titol={t('dades.perMunicipi')} files={resum.per_municipi} color={() => 'var(--marca)'} />
         </div>
       )}

@@ -1,0 +1,4 @@
+/* Textos dels permisos (Info.plist) en en */
+"NSCameraUsageDescription" = "The Observatory uses the camera to take photos of the features you add or review in the Horta.";
+"NSPhotoLibraryUsageDescription" = "The Observatory opens your photo library so you can choose photos of the features you add or review.";
+"NSLocationWhenInUseUsageDescription" = "The Observatory uses your location while you use it to show you on the map and place contributions where you are.";

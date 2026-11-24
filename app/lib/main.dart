@@ -14,6 +14,7 @@ import 'data/remote/api_observatori.dart';
 import 'services/avisos.dart';
 import 'services/avisos_push.dart';
 import 'services/cataleg.dart';
+import 'services/idioma.dart';
 import 'services/paquets.dart';
 import 'services/sessio.dart';
 import 'services/simbologia.dart';
@@ -52,13 +53,19 @@ Future<void> main() async {
   );
   await paquets.carregar();
   final simbologia = await Simbologia.carregar();
+  final idioma = await Idioma.carregar();
 
   await sincronitzacio.carregar();
 
   final push = AvisosPush(client, onObrir: obrirAvisos);
   await push.iniciar();
   sessio.abansDEixir = push.oblidar;
-  String idioma() => WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'es' ? 'es' : 'ca';
+  // Els avisos push ixen en l'idioma de la app: el triat o, si no, el del dispositiu
+  String idiomaPush() =>
+      (idioma.triat ?? Idioma.resoldre(WidgetsBinding.instance.platformDispatcher.locale)).languageCode;
+  idioma.addListener(() {
+    if (sessio.entrada) push.registrar(idioma: idiomaPush());
+  });
   // Al recuperar la red se envía lo pendiente y se recargan las pantallas. Sin sesión no se puede
   void ambXarxa(List<ConnectivityResult> r) {
     if (!r.contains(ConnectivityResult.none) && sessio.entrada) {
@@ -77,7 +84,7 @@ Future<void> main() async {
       cataleg.carregar();
       sincronitzacio.enviar();
       avisos.carregar();
-      push.registrar(idioma: idioma());
+      push.registrar(idioma: idiomaPush());
     } else {
       avisos.buidar();
     }
@@ -86,7 +93,7 @@ Future<void> main() async {
     cataleg.carregar();
     sincronitzacio.enviar();
     avisos.carregar();
-    push.registrar(idioma: idioma());
+    push.registrar(idioma: idiomaPush());
   }
 
   runApp(MultiProvider(
@@ -95,6 +102,7 @@ Future<void> main() async {
       Provider.value(value: sigpac),
       Provider.value(value: simbologia),
       Provider.value(value: push),
+      ChangeNotifierProvider.value(value: idioma),
       ChangeNotifierProvider.value(value: sessio),
       ChangeNotifierProvider.value(value: cataleg),
       ChangeNotifierProvider.value(value: sincronitzacio),

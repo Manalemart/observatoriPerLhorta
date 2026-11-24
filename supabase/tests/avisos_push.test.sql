@@ -1,7 +1,7 @@
 -- Tests pgTAP dels avisos push: registrar i oblidar dispositius, permisos i el trigger.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(11);
+select plan(13);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'a@test.local'),
@@ -26,6 +26,10 @@ select throws_ok($$select public.registrar_dispositiu('curt', 'android')$$, '220
 select lives_ok($$select public.registrar_dispositiu(repeat('a', 40), 'android', 'es')$$, 'A registra el seu mòbil');
 select is((select count(*)::int from public.dispositius_push), 1, 'A veu el seu dispositiu');
 select is((select idioma from public.dispositius_push), 'es', 'amb el seu idioma');
+select public.registrar_dispositiu(repeat('a', 40), 'android', 'en');
+select is((select idioma from public.dispositius_push), 'en', 'també en anglés');
+select public.registrar_dispositiu(repeat('a', 40), 'android', 'fr');
+select is((select idioma from public.dispositius_push), 'ca', 'un idioma que no hi és: valencià');
 select throws_ok($$insert into public.dispositius_push (token, perfil_id, plataforma) values (repeat('z', 40), '00000000-0000-0000-0000-00000000000b', 'ios')$$,
   '42501', null, 'no es pot inserir directament');
 reset role;

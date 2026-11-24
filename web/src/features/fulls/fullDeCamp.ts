@@ -14,6 +14,8 @@
 
 import type { Geometry, Polygon, Position } from 'geojson';
 import { supabase } from '../../lib/supabase';
+import i18n from '../../lib/i18n';
+import { nomCat, type NomCataleg } from '../../lib/cataleg';
 import { urlTesela, ZOOM_MAX_FONS } from '../mapa/estil';
 import type { Fons } from '../mapa/tipus';
 
@@ -25,7 +27,9 @@ interface ElementFull {
   tema_id: number;
   tema: string;
   color: string;
+  variable_id?: number;
   variable: string;
+  categoria_id?: number | null;
   categoria: string | null;
   estat: 'pendent' | 'validat' | 'rebutjat';
   origen: string;
@@ -400,14 +404,44 @@ async function logoComDataUrl(): Promise<string | null> {
 }
 
 function estatDada(e: ElementFull, idioma: string) {
-  if (e.estat === 'pendent') return 'Pendent de validar';
-  if (e.estat === 'rebutjat') return 'Rebutjat';
-  if (e.per_revisar) return '2018 · per revisar';
-  if (e.revisat_at) return `Revisat ${new Date(e.revisat_at).toLocaleDateString(idioma)}`;
-  return 'Nova';
+  const t = i18n.t;
+  if (e.estat === 'pendent') return t('pdf.pendent');
+  if (e.estat === 'rebutjat') return t('pdf.rebutjat');
+  if (e.per_revisar) return t('pdf.perRevisar');
+  if (e.revisat_at) return t('pdf.revisat', { data: new Date(e.revisat_at).toLocaleDateString(idioma) });
+  return t('pdf.nova');
 }
 
 const slug = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+// ─── Noms del catàleg en l'idioma de la web ─────────────────────────────────
+// full_de_camp() els dona en valencià (la clau); ací es tradueixen pels ids.
+interface NomsFull {
+  tema: (id: number | undefined, defecte: string) => string;
+  variable: (id: number | undefined, defecte: string) => string;
+  categoria: (id: number | null | undefined, defecte: string) => string;
+}
+
+async function nomsCataleg(): Promise<NomsFull> {
+  const per = { t: new Map<number, NomCataleg>(), v: new Map<number, NomCataleg>(), c: new Map<number, NomCataleg>() };
+  try {
+    const { data } = await supabase
+      .from('temes')
+      .select('id, nom, nom_es, nom_en, variables(id, nom, nom_es, nom_en, categories(id, nom, nom_es, nom_en))');
+    for (const t of (data ?? []) as (NomCataleg & { id: number; variables: (NomCataleg & { id: number; categories: (NomCataleg & { id: number })[] })[] })[]) {
+      per.t.set(t.id, t);
+      for (const v of t.variables) {
+        per.v.set(v.id, v);
+        for (const c of v.categories) per.c.set(c.id, c);
+      }
+    }
+  } catch { /* sense catàleg: els noms en valencià */ }
+  const nom = (m: Map<number, NomCataleg>) => (id: number | null | undefined, defecte: string) => {
+    const x = id == null ? undefined : m.get(id);
+    return x ? nomCat(x) : defecte;
+  };
+  return { tema: nom(per.t), variable: nom(per.v), categoria: nom(per.c) };
+}
 
 // ─── PDF ───────────────────────────────────────────────────────────────────
 export async function generarFull(partidaId: number, tipus: TipusFull, fons: Fons, onPas: (p: Pas) => void, idioma = 'ca-ES') {
@@ -426,7 +460,8 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
   const ordre = revisio ? numerar(v, dades.elements) : [];
 
   onPas('sigpac');
-  const [sigpac, { jsPDF }, { default: autoTable }, logo] = await Promise.all([
+  const [noms, sigpac, { jsPDF }, { default: autoTable }, logo] = await Promise.all([
+    nomsCataleg(),
     recintesSigpac(v), import('jspdf'), import('jspdf-autotable'), logoComDataUrl(),
   ]);
 
@@ -446,9 +481,10 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
   onPas('pdf');
   const avui = new Date().toLocaleDateString(idioma);
   const doc = new jsPDF({ orientation: v.pagina.apaisat ? 'landscape' : 'portrait', unit: 'mm', format: 'a4' });
-  const titol = revisio ? 'FULL DE REVISIÓ' : 'FULL DE CAMP';
+  const t = i18n.t;
+  const titol = revisio ? t('pdf.titolRevisio') : t('pdf.titolCamp');
   doc.setProperties({ title: `${titol} · ${net(p.nom)}`, author: "Observatori Ciutadà de l'Horta", creator: "Observatori Ciutadà de l'Horta" });
-  const nomFons = fons === 'pnoa' ? 'ortofoto PNOA' : 'mapa topogràfic';
+  const nomFons = fons === 'pnoa' ? t('pdf.fonsPnoa') : t('pdf.fonsTopo');
   const area = `${new Intl.NumberFormat(idioma).format(p.area_ha)} ha`;
 
   const capcalera = (amplePagina: number, subtitol: string) => {
@@ -526,13 +562,13 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
       doc.text(text, lx + ample + 1.2, ly + 0.7);
       lx += ample + 1.2 + doc.getTextWidth(text) + 5;
     };
-    entrada(5, (x, y) => { doc.setDrawColor(VERD); doc.setLineWidth(1); doc.line(x, y - 0.5, x + 5, y - 0.5); }, 'Partida');
-    if (sigpac) entrada(5, (x, y) => { doc.setDrawColor(fons === 'pnoa' ? '#e0b800' : '#b86e00'); doc.setLineWidth(0.6); doc.line(x, y - 0.5, x + 5, y - 0.5); }, 'Recinte SIGPAC (núm. de parcel·la)');
+    entrada(5, (x, y) => { doc.setDrawColor(VERD); doc.setLineWidth(1); doc.line(x, y - 0.5, x + 5, y - 0.5); }, t('pdf.partida'));
+    if (sigpac) entrada(5, (x, y) => { doc.setDrawColor(fons === 'pnoa' ? '#e0b800' : '#b86e00'); doc.setLineWidth(0.6); doc.line(x, y - 0.5, x + 5, y - 0.5); }, t('pdf.recinte'));
     if (ambElements) {
-      for (const t of new Map(dades.elements.map((e) => [e.tema_id, e])).values()) {
-        entrada(3, (x, y) => { doc.setFillColor(t.color); doc.rect(x, y - 2, 3, 3, 'F'); }, net(t.tema));
+      for (const te of new Map(dades.elements.map((e) => [e.tema_id, e])).values()) {
+        entrada(3, (x, y) => { doc.setFillColor(te.color); doc.rect(x, y - 2, 3, 3, 'F'); }, net(noms.tema(te.tema_id, te.tema)));
       }
-      entrada(3, (x, y) => { doc.setDrawColor(TEXT); doc.setLineWidth(0.3); doc.setLineDashPattern([0.8, 0.6], 0); doc.rect(x, y - 2, 3, 3); doc.setLineDashPattern([], 0); }, 'Discontinu: inventari 2017-2018 per revisar');
+      entrada(3, (x, y) => { doc.setDrawColor(TEXT); doc.setLineWidth(0.3); doc.setLineDashPattern([0.8, 0.6], 0); doc.rect(x, y - 2, 3, 3); doc.setLineDashPattern([], 0); }, t('pdf.discontinu'));
     }
     if (nota) {
       doc.setFont('helvetica', 'normal');
@@ -545,50 +581,50 @@ export async function construirFull(dades: DadesFull, tipus: TipusFull, fons: Fo
     doc.setFontSize(6.5);
     doc.setTextColor(GRIS);
     doc.text(
-      net(`Fons: ${fons === 'pnoa' ? 'PNOA' : 'MTN'} © Instituto Geográfico Nacional${sigpac ? ' · Recintes SIGPAC © FEGA' : ''}${ambElements ? " · Parcel·les 2018: D. G. del Cadastre · Dades: Observatori Ciutadà de l'Horta — Per l'Horta (CC BY 4.0)" : ''}`),
+      net(`${t('pdf.fonts', { fons: fons === 'pnoa' ? 'PNOA' : 'MTN' })}${sigpac ? t('pdf.fontsSigpac') : ''}${ambElements ? t('pdf.fontsDades') : ''}`),
       8, pagina.h - 4, { maxWidth: pagina.w - 30 },
     );
     if (!sigpac) {
       doc.setTextColor('#8f1f1a');
-      doc.text('No s\'ha pogut consultar el SIGPAC: el plànol va sense recintes.', 8, pagina.h - 7.5);
+      doc.text(net(t('pdf.senseSigpac')), 8, pagina.h - 7.5);
     }
   };
 
   // ── Plano general
   capcalera(v.pagina.w, revisio
-    ? `${p.municipi} · ${area} · ${dades.elements.length} elements · sobre ${nomFons} · ${avui}`
-    : `${p.municipi} · ${area} · full de treball en blanc sobre ${nomFons}${sigpac ? ' amb recintes SIGPAC' : ''} · ${avui}`);
+    ? t('pdf.subtitolRevisio', { municipi: p.municipi, area, n: dades.elements.length, fons: nomFons, data: avui })
+    : t('pdf.subtitolCamp', { municipi: p.municipi, area, fons: nomFons, sigpac: sigpac ? t('pdf.ambSigpac') : '', data: avui }));
   pagPla(v, general, revisio, revisio,
-    detalls.length ? `Detalls ampliats a les pàgines següents: ${detalls.map((d) => d.nom).join(', ')}.` : undefined);
+    detalls.length ? t('pdf.detalls', { quadres: detalls.map((d) => d.nom).join(', ') }) : undefined);
 
   // ── Detalles
   for (const d of detalls) {
     doc.addPage('a4', d.v.pagina.apaisat ? 'landscape' : 'portrait');
-    const rang = d.ns.length > 1 ? `elements ${d.ns[0]} a ${d.ns[d.ns.length - 1]}` : `element ${d.ns[0]}`;
-    capcalera(d.v.pagina.w, `Detall del quadre ${d.nom} · ${rang} · ${p.municipi}`);
+    const rang = d.ns.length > 1 ? t('pdf.rangElements', { de: d.ns[0], a: d.ns[d.ns.length - 1] }) : t('pdf.unElement', { n: d.ns[0] });
+    capcalera(d.v.pagina.w, t('pdf.detallQuadre', { quadre: d.nom, rang, municipi: p.municipi }));
     pagPla(d.v, d.pla, false, true);
   }
 
   // ── Lista (solo en la hoja de revisión)
   if (revisio) {
     doc.addPage('a4', 'landscape');
-    capcalera(297, `${p.municipi} · llista per a marcar al camp · ${avui}`);
+    capcalera(297, t('pdf.llista', { municipi: p.municipi, data: avui }));
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8.5);
     doc.setTextColor(TEXT);
     doc.text(
-      net("Per a cada element, marca una casella i apunta el que calga. El número i el quadre són els del plànol i dels detalls. Després, a la web o a l'app, obri l'element i respon «És encara així?»: si ha canviat, fes una aportació nova."),
+      net(t('pdf.instruccions')),
       8, 31, { maxWidth: 281 },
     );
     const caselles = new Set([6, 7, 8]);
     autoTable(doc, {
       startY: 38,
       margin: { left: 8, right: 8, top: 30, bottom: 12 },
-      head: [['Núm.', 'Quadre', 'Element', 'Tema', 'Dada', 'Codi', 'Igual', 'Canviat', 'No el trobe', 'Notes']],
+      head: [t('pdf.columnes', { returnObjects: true }) as string[]],
       body: ordre.map(({ e, n, cela: c }) => [
         String(n), c,
-        net(e.categoria && e.categoria !== 'Sense categoria' ? `${e.variable} · ${e.categoria}` : e.variable),
-        net(e.tema), estatDada(e, idioma), e.id.slice(0, 8), '', '', '', '',
+        net(e.categoria && !/^sense categoria$/i.test(e.categoria) ? `${noms.variable(e.variable_id, e.variable)} · ${noms.categoria(e.categoria_id, e.categoria)}` : noms.variable(e.variable_id, e.variable)),
+        net(noms.tema(e.tema_id, e.tema)), estatDada(e, idioma), e.id.slice(0, 8), '', '', '', '',
       ]),
       theme: 'grid',
       styles: { font: 'helvetica', fontSize: 8, cellPadding: 1.6, textColor: TEXT, lineColor: '#cfc8bd', lineWidth: 0.2, minCellHeight: 8, valign: 'middle' },

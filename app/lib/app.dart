@@ -8,6 +8,7 @@ import 'core/tema_app.dart';
 import 'data/revisio.dart';
 import 'l10n/app_localizations.dart';
 import 'services/avisos.dart';
+import 'services/idioma.dart';
 import 'services/sessio.dart';
 import 'services/sincronitzacio.dart';
 import 'ui/adaptatiu.dart';
@@ -77,10 +78,11 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
-        title: "Observatori de l'Horta",
+        onGenerateTitle: (c) => L.of(c).appTitol,
         theme: temaApp(Brightness.light),
         darkTheme: temaApp(Brightness.dark),
-        locale: const Locale('ca'),
+        locale: context.watch<Idioma>().triat,
+        localeResolutionCallback: (dispositiu, _) => Idioma.resoldre(dispositiu),
         supportedLocales: L.supportedLocales,
         localizationsDelegates: const [
           L.delegate,
@@ -89,6 +91,10 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
           GlobalCupertinoLocalizations.delegate,
         ],
         routerConfig: _router,
+        builder: (c, fill) {
+          Localitzacio.codi = Localizations.localeOf(c).languageCode;
+          return fill ?? const SizedBox.shrink();
+        },
       );
 }
 

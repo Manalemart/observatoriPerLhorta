@@ -77,7 +77,7 @@ class _AvisosScreenState extends State<AvisosScreen> {
   Widget build(BuildContext context) {
     final t = L.of(context);
     final avisos = context.watch<Avisos>();
-    final data = DateFormat('d/M/yyyy', 'ca');
+    final data = DateFormat('d/M/yyyy', Localitzacio.codi);
     return Scaffold(
       appBar: AppBar(
         title: TitolBarra(t.avisosTitol),

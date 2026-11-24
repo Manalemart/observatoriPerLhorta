@@ -15,7 +15,9 @@ import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 
 type Accio = 'validat' | 'rebutjat' | 'reobert' | 'nova_aportacio' | 'revisat';
 
-const TEXTOS: Record<'ca' | 'es', Record<Accio, [string, string]>> = {
+type Idioma = 'ca' | 'es' | 'en';
+
+const TEXTOS: Record<Idioma, Record<Accio, [string, string]>> = {
   ca: {
     validat: ['Aportació validada', "«{e}» ja és en l'inventari. Gràcies!"],
     rebutjat: ['Aportació rebutjada', '«{e}»: mira el motiu en Avisos.'],
@@ -30,7 +32,16 @@ const TEXTOS: Record<'ca' | 'es', Record<Accio, [string, string]>> = {
     nova_aportacio: ['Aportación nueva en tu partida', '«{e}» está pendiente de validar.'],
     revisat: ['Elemento revisado', 'Alguien ha revisado «{e}» en tu partida.'],
   },
+  en: {
+    validat: ['Contribution validated', '“{e}” is now in the inventory. Thank you!'],
+    rebutjat: ['Contribution rejected', '“{e}”: see the reason in Notifications.'],
+    reobert: ['Contribution pending again', '“{e}” is pending validation again.'],
+    nova_aportacio: ['New contribution in your partida', '“{e}” is pending validation.'],
+    revisat: ['Feature reviewed', 'Someone has reviewed “{e}” in your partida.'],
+  },
 };
+
+const idiomaDe = (x: unknown): Idioma => (x === 'es' || x === 'en' ? x : 'ca');
 
 interface CompteServei {
   project_id: string;
@@ -95,7 +106,7 @@ Deno.serve(async (req) => {
 
   const { data: n } = await db
     .from('notificacions')
-    .select('id, perfil_id, accio, llegida, element:elements(text_lliure, variable:variables(nom)), perfil:perfils(avisos_push)')
+    .select('id, perfil_id, accio, llegida, element:elements(text_lliure, variable:variables(nom, nom_es, nom_en)), perfil:perfils(avisos_push)')
     .eq('id', notificacio_id)
     .maybeSingle();
   // deno-lint-ignore no-explicit-any
@@ -108,19 +119,25 @@ Deno.serve(async (req) => {
   const cs: CompteServei = JSON.parse(Deno.env.get('FCM_SERVICE_ACCOUNT') ?? '{}');
   if (!cs.project_id) return new Response('Falta FCM_SERVICE_ACCOUNT', { status: 500 });
   const token = await tokenAcces(cs);
-  const nomElement: string = aviso.element?.text_lliure ?? aviso.element?.variable?.nom ?? '';
+  // El text de la persona tal com està; si no n'hi ha, el nom del catàleg en l'idioma del mòbil
+  const nomElement = (l: Idioma): string => {
+    const v = aviso.element?.variable;
+    const cataleg = (l === 'es' ? v?.nom_es : l === 'en' ? v?.nom_en : null) ?? v?.nom;
+    return aviso.element?.text_lliure || cataleg || '';
+  };
   const accio = aviso.accio as Accio;
 
   let enviats = 0;
   for (const d of dispositius) {
-    const textos = TEXTOS[d.idioma === 'es' ? 'es' : 'ca'][accio] ?? TEXTOS.ca.validat;
+    const l = idiomaDe(d.idioma);
+    const textos = TEXTOS[l][accio] ?? TEXTOS[l].validat;
     const r = await fetch(`https://fcm.googleapis.com/v1/projects/${cs.project_id}/messages:send`, {
       method: 'POST',
       headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
       body: JSON.stringify({
         message: {
           token: d.token,
-          notification: { title: textos[0], body: textos[1].replace('{e}', nomElement) },
+          notification: { title: textos[0], body: textos[1].replace('{e}', nomElement(l)) },
           data: { pantalla: 'avisos', accio },
           android: { priority: 'normal', notification: { tag: `aviso-${aviso.id}` } },
           apns: { payload: { aps: { sound: 'default', 'thread-id': 'avisos' } } },

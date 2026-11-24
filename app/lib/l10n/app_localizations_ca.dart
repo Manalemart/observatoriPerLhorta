@@ -784,4 +784,19 @@ class LCa extends L {
   @override
   String get avisosPushDetall =>
       'Quan validen o revisen les teues aportacions, o n\'hi ha de noves en les teues partides';
+
+  @override
+  String get perfilIdioma => 'Idioma';
+
+  @override
+  String get idiomaSistema => 'El del dispositiu';
+
+  @override
+  String get idiomaCa => 'Valencià';
+
+  @override
+  String get idiomaEs => 'Castellano';
+
+  @override
+  String get idiomaEn => 'English';
 }
