@@ -257,13 +257,14 @@ otp_expiry = 3600
 # content_path = "./supabase/templates/password_changed_notification.html"
 
 # Primer acceso de un correo nuevo: Supabase envía esta, no la de magic_link.
-# Las dos llevan enlace (web) y código (app).
+# Las dos llevan enlace (web) y código (app), en el idioma de la persona (.Data.idioma,
+# que copia perfils.idioma; vegeu la migració idioma_avisos).
 [auth.email.template.confirmation]
-subject = "Confirma el teu compte a l'Observatori Ciutadà de l'Horta"
+subject = "{{ $l := printf \"%v\" .Data.idioma }}{{ if eq $l \"es\" }}Confirma tu cuenta en el {{ else if eq $l \"en\" }}Confirm your account at the {{ else }}Confirma el teu compte a l'{{ end }}Observatori Ciutadà de l'Horta"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.magic_link]
-subject = "Entra a l'Observatori Ciutadà de l'Horta"
+subject = "{{ $l := printf \"%v\" .Data.idioma }}{{ if eq $l \"es\" }}Entra en el {{ else if eq $l \"en\" }}Sign in to the {{ else }}Entra a l'{{ end }}Observatori Ciutadà de l'Horta"
 content_path = "./supabase/templates/magic_link.html"
 
 [auth.sms]
