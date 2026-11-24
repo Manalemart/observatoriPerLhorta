@@ -779,6 +779,13 @@ class LEs extends L {
       'No se ha podido hacer. Comprueba la conexión y vuelve a intentarlo.';
 
   @override
+  String get avisosPush => 'Avisos en el móvil';
+
+  @override
+  String get avisosPushDetall =>
+      'Cuando validan o revisan tus aportaciones, o hay nuevas en tus partidas';
+
+  @override
   String get perfilIdioma => 'Idioma';
 
   @override

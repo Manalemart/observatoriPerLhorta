@@ -1407,6 +1407,18 @@ abstract class L {
   /// **'No s\'ha pogut fer. Comprova la connexió i torna-ho a provar.'**
   String get llistaErrorAccio;
 
+  /// No description provided for @avisosPush.
+  ///
+  /// In ca, this message translates to:
+  /// **'Avisos al mòbil'**
+  String get avisosPush;
+
+  /// No description provided for @avisosPushDetall.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quan validen o revisen les teues aportacions, o n\'hi ha de noves en les teues partides'**
+  String get avisosPushDetall;
+
   /// No description provided for @perfilIdioma.
   ///
   /// In ca, this message translates to:

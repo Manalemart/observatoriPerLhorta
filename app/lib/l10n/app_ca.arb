@@ -375,6 +375,8 @@
   "@llistaRetirarText": {"placeholders": {"titol": {"type": "String"}}},
   "llistaRetirada": "Aportació retirada.",
   "llistaErrorAccio": "No s'ha pogut fer. Comprova la connexió i torna-ho a provar.",
+  "avisosPush": "Avisos al mòbil",
+  "avisosPushDetall": "Quan validen o revisen les teues aportacions, o n'hi ha de noves en les teues partides",
   "perfilIdioma": "Idioma",
   "idiomaSistema": "El del dispositiu",
   "idiomaCa": "Valencià",

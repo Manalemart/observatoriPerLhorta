@@ -776,6 +776,13 @@ class LEn extends L {
       'It could not be done. Check your connection and try again.';
 
   @override
+  String get avisosPush => 'Phone notifications';
+
+  @override
+  String get avisosPushDetall =>
+      'When your contributions are validated or reviewed, or there are new ones in your partidas';
+
+  @override
   String get perfilIdioma => 'Language';
 
   @override

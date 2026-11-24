@@ -222,5 +222,7 @@
   "idiomaSistema": "El del dispositivo",
   "idiomaCa": "Valencià",
   "idiomaEs": "Castellano",
-  "idiomaEn": "English"
+  "idiomaEn": "English",
+  "avisosPush": "Avisos en el móvil",
+  "avisosPushDetall": "Cuando validan o revisan tus aportaciones, o hay nuevas en tus partidas"
 }

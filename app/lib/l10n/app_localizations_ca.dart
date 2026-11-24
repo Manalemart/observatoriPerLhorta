@@ -779,6 +779,13 @@ class LCa extends L {
       'No s\'ha pogut fer. Comprova la connexió i torna-ho a provar.';
 
   @override
+  String get avisosPush => 'Avisos al mòbil';
+
+  @override
+  String get avisosPushDetall =>
+      'Quan validen o revisen les teues aportacions, o n\'hi ha de noves en les teues partides';
+
+  @override
   String get perfilIdioma => 'Idioma';
 
   @override

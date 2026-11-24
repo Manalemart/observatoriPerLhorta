@@ -1,7 +1,9 @@
 # Codemagic: compilar la app sense Mac (vegeu docs/CODEMAGIC.md).
 #
 # Grups de variables que s'han de crear en Codemagic (Team/App settings → Environment variables):
-#   observatori: SUPABASE_URL, SUPABASE_KEY (la clau pública, anon/publishable)
+#   observatori: SUPABASE_URL, SUPABASE_KEY (la clau pública, anon/publishable) i, per als avisos
+#                push, FIREBASE_API_KEY, FIREBASE_PROJECT_ID, FIREBASE_SENDER_ID,
+#                FIREBASE_APP_ID_ANDROID i FIREBASE_APP_ID_IOS (vegeu docs/PUSH.md)
 #   captures:    CAPTURES_EMAIL, CAPTURES_PASSWORD (compte de prova amb contrasenya i àlies)
 # Integracions:
 #   App Store Connect: una clau d'API amb el nom «observatori-asc» (Team settings → Integrations)
@@ -68,7 +70,7 @@ workflows:
             --build-number=$((ULTIM + 1)) \
             --export-options-plist=/Users/builder/export_options.plist \
             --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-            --dart-define=SUPABASE_KEY="$SUPABASE_KEY"
+            --dart-define=SUPABASE_KEY="$SUPABASE_KEY"             --dart-define=FIREBASE_API_KEY="$FIREBASE_API_KEY"             --dart-define=FIREBASE_PROJECT_ID="$FIREBASE_PROJECT_ID"             --dart-define=FIREBASE_SENDER_ID="$FIREBASE_SENDER_ID"             --dart-define=FIREBASE_APP_ID="$FIREBASE_APP_ID_IOS"
     artifacts:
       - app/build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
@@ -132,7 +134,7 @@ workflows:
           flutter build appbundle --release \
             --build-number=$((BUILD_NUMBER + 10)) \
             --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-            --dart-define=SUPABASE_KEY="$SUPABASE_KEY"
+            --dart-define=SUPABASE_KEY="$SUPABASE_KEY"             --dart-define=FIREBASE_API_KEY="$FIREBASE_API_KEY"             --dart-define=FIREBASE_PROJECT_ID="$FIREBASE_PROJECT_ID"             --dart-define=FIREBASE_SENDER_ID="$FIREBASE_SENDER_ID"             --dart-define=FIREBASE_APP_ID="$FIREBASE_APP_ID_ANDROID"
     artifacts:
       - app/build/app/outputs/bundle/release/*.aab
     # La primera versió s'ha de pujar a mà en Play Console. Després, per a publicar sola en

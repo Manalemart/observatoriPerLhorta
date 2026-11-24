@@ -32,6 +32,10 @@
 	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
 	<!-- Només HTTPS estàndard: no cal documentació d'exportació a App Store Connect -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>

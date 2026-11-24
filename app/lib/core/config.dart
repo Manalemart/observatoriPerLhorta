@@ -9,6 +9,13 @@ class Config {
 
   static const paquet = 'com.mamlabsfera.observatori_perlhorta';
 
+  /// Firebase (avisos push). Buit = sense avisos push. Vegeu docs/PUSH.md.
+  /// L'appId és diferent per a Android i iOS: cada compilació porta el seu.
+  static const firebaseApiKey = String.fromEnvironment('FIREBASE_API_KEY');
+  static const firebaseAppId = String.fromEnvironment('FIREBASE_APP_ID');
+  static const firebaseSenderId = String.fromEnvironment('FIREBASE_SENDER_ID');
+  static const firebaseProjectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
+
   /// Adreça de la web pública, per a compartir enllaços als elements (`/mapa?element=…`).
   /// Buida = encara no hi ha domini: la app no mostra «Comparteix».
   /// Es passa en compilar: --dart-define=URL_WEB=https://...

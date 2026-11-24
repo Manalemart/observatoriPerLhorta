@@ -76,11 +76,16 @@ export function Legal() {
           </li>
           <li>La web, en Vercel, que la servix des de Londres.</li>
           <li>Els correus d'entrada i d'avisos s'envien amb Brevo, des de la Unió Europea.</li>
+          <li>
+            Els avisos al mòbil (si els accepta l'aplicació) passen per Firebase Cloud Messaging, de Google:
+            només reben l'identificador del mòbil i el text de l'avís, sense el teu nom ni el teu correu.
+          </li>
         </ul>
         <p>
           El Regne Unit té una decisió d'adequació de la Comissió Europea: la llei hi garantix una protecció de
-          les dades equivalent a la de la Unió Europea. Supabase i Vercel actuen com a subencarregats del
-          tractament, amb contractes que inclouen les clàusules contractuals tipus de la Comissió Europea.
+          les dades equivalent a la de la Unió Europea. Supabase, Vercel i Google (Firebase) actuen com a
+          subencarregats del tractament, amb contractes que inclouen les clàusules contractuals tipus de la
+          Comissió Europea.
         </p>
 
         <h3>Quines dades</h3>
@@ -93,6 +98,10 @@ export function Legal() {
           <li>
             La teua ubicació GPS, només quan tu la demanes per a situar una aportació. No es registra en cap altre
             moment.
+          </li>
+          <li>
+            Si acceptes els avisos al mòbil, un identificador del mòbil per a enviar-los. S'esborra en eixir del
+            compte o en esborrar-lo, i els pots desactivar en la pantalla d'avisos.
           </li>
         </ul>
 

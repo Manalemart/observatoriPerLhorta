@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../core/tema_app.dart';
 import '../l10n/app_localizations.dart';
 import '../services/avisos.dart';
+import '../services/avisos_push.dart';
 
 import 'adaptatiu.dart';
 
@@ -94,6 +95,7 @@ class _AvisosScreenState extends State<AvisosScreen> {
         child: ListView(
           padding: farciment,
           children: [
+            if (AvisosPush.configurat) const _InterruptorPush(),
             if (avisos.resumCorreu != null) ...[
               SwitchListTile(
                 secondary: const Icon(Icons.mail_outline),
@@ -149,6 +151,51 @@ class _AvisosScreenState extends State<AvisosScreen> {
           ],
         ),
       )),
+    );
+  }
+}
+
+/// «Avisos al mòbil»: si este compte rep avisos push (en tots els seus mòbils).
+class _InterruptorPush extends StatefulWidget {
+  const _InterruptorPush();
+
+  @override
+  State<_InterruptorPush> createState() => _InterruptorPushState();
+}
+
+class _InterruptorPushState extends State<_InterruptorPush> {
+  bool? _valor;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AvisosPush>().actius().then((v) {
+      if (mounted) setState(() => _valor = v);
+    }).catchError((_) {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = L.of(context);
+    if (_valor == null) return const SizedBox.shrink();
+    return SwitchListTile(
+      secondary: const Icon(Icons.notifications_active_outlined),
+      title: Text(t.avisosPush),
+      subtitle: Text(t.avisosPushDetall),
+      value: _valor!,
+      onChanged: (v) async {
+        final abans = _valor;
+        final push = context.read<AvisosPush>();
+        final avis = ScaffoldMessenger.of(context);
+        setState(() => _valor = v);
+        try {
+          await push.desarActius(v);
+        } catch (_) {
+          if (!mounted) return;
+          setState(() => _valor = abans);
+          avis.showSnackBar(SnackBar(content: Text(t.avisosResumError)));
+        }
+      },
     );
   }
 }
