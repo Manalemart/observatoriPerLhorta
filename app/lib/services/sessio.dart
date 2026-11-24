@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/config.dart';
+import '../core/localitzacio.dart';
 
 /// Sesión y alias. Avisa a go_router cuando cambian.
 class Sessio extends ChangeNotifier {
@@ -18,6 +19,10 @@ class Sessio extends ChangeNotifier {
   bool _aliesCarregat = false;
   String? _alies;
 
+  /// L'idioma que mostra la app i el guardat al perfil (per als correus i els avisos push).
+  String? _idiomaApp;
+  String? _idiomaPerfil;
+
   bool get entrada => _client.auth.currentUser != null;
   String? get alies => _alies;
   String? get email => _client.auth.currentUser?.email;
@@ -31,9 +36,11 @@ class Sessio extends ChangeNotifier {
     _alies = null;
     if (uid != null) {
       try {
-        final f = await _client.from('perfils').select('nom_public').eq('id', uid).single();
+        final f = await _client.from('perfils').select('nom_public, idioma').eq('id', uid).single();
         _alies = f['nom_public'] as String?;
+        _idiomaPerfil = f['idioma'] as String?;
         _aliesCarregat = true;
+        unawaited(_desarIdioma());
       } catch (e) {
         debugPrint('Àlies sense carregar: $e');
       }
@@ -41,10 +48,37 @@ class Sessio extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// La app avisa de l'idioma que mostra (MaterialApp.builder); si no és el del perfil, es guarda
+  /// perquè els correus i els avisos push isquen en el mateix idioma.
+  void usarIdioma(String codi) {
+    if (_idiomaApp == codi) return;
+    _idiomaApp = codi;
+    unawaited(_desarIdioma());
+  }
+
+  Future<void> _desarIdioma() async {
+    final uid = _client.auth.currentUser?.id;
+    final codi = _idiomaApp;
+    if (uid == null || codi == null || !_aliesCarregat || codi == _idiomaPerfil) return;
+    if (codi != 'ca' && codi != 'es' && codi != 'en') return;
+    _idiomaPerfil = codi;
+    try {
+      await _client.from('perfils').update({'idioma': codi}).eq('id', uid);
+    } catch (e) {
+      _idiomaPerfil = null;
+      debugPrint('Idioma sense desar: $e');
+    }
+  }
+
   /// El correo trae un enlace que vuelve a la app (y, si la plantilla lo incluye, un código).
   /// supabase_flutter recoge el enlace y abre la sesión por su cuenta.
   Future<void> demanarCodi(String email) =>
-      _client.auth.signInWithOtp(email: email, emailRedirectTo: Config.redireccioEntrada);
+      _client.auth.signInWithOtp(
+        email: email,
+        emailRedirectTo: Config.redireccioEntrada,
+        // Per a la plantilla del correu (i l'idioma del perfil, si és un compte nou)
+        data: {'idioma': Localitzacio.codi},
+      );
 
   /// El compte de revisió de les botigues entra amb contrasenya (vegeu Config.compteRevisio).
   bool esCompteRevisio(String email) =>

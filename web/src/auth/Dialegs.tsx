@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { idiomaCurt } from '../lib/i18n';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 
@@ -37,7 +38,7 @@ export function DialegEntrada({ onTancar }: { onTancar: () => void }) {
     e.preventDefault();
     setEnviant(true);
     setError(false);
-    const { error: err } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: retorn } });
+    const { error: err } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: retorn, data: { idioma: idiomaCurt() } } });
     setEnviant(false);
     if (err) setError(true);
     else setEnviat(true);

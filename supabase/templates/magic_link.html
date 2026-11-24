@@ -1,11 +1,28 @@
+{{ $l := printf "%v" .Data.idioma }}
 <!doctype html>
-<html lang="ca-ES-valencia">
+<html>
   <body style="font-family: system-ui, sans-serif; color: #2b2822; line-height: 1.5;">
+{{ if eq $l "es" }}
+    <h2 style="color: #4a7016;">Observatori Ciutadà de l'Horta</h2>
+    <p>Para entrar desde la web, abre este enlace en el mismo navegador donde lo has pedido:</p>
+    <p><a href="{{ .ConfirmationURL }}">Entra en el Observatori</a></p>
+    <p>Si estás en la app, escribe este código:</p>
+    <p style="font-size: 1.75rem; font-weight: 700; letter-spacing: 0.2em;">{{ .Token }}</p>
+    <p style="color: #5c584f; font-size: 0.875rem;">Si no lo has pedido tú, puedes ignorar este correo.</p>
+{{ else if eq $l "en" }}
+    <h2 style="color: #4a7016;">Observatori Ciutadà de l'Horta</h2>
+    <p>To sign in on the website, open this link in the same browser where you requested it:</p>
+    <p><a href="{{ .ConfirmationURL }}">Sign in to the Observatori</a></p>
+    <p>If you are in the app, enter this code:</p>
+    <p style="font-size: 1.75rem; font-weight: 700; letter-spacing: 0.2em;">{{ .Token }}</p>
+    <p style="color: #5c584f; font-size: 0.875rem;">If you did not request this, you can ignore this email.</p>
+{{ else }}
     <h2 style="color: #4a7016;">Observatori Ciutadà de l'Horta</h2>
     <p>Per a entrar des de la web, obri este enllaç en el mateix navegador on l'has demanat:</p>
     <p><a href="{{ .ConfirmationURL }}">Entra a l'Observatori</a></p>
     <p>Si estàs en l'app, escriu este codi:</p>
     <p style="font-size: 1.75rem; font-weight: 700; letter-spacing: 0.2em;">{{ .Token }}</p>
     <p style="color: #5c584f; font-size: 0.875rem;">Si no ho has demanat tu, pots ignorar este correu.</p>
+{{ end }}
   </body>
 </html>

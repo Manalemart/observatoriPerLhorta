@@ -93,6 +93,7 @@ class _ObservatoriAppState extends State<ObservatoriApp> {
         routerConfig: _router,
         builder: (c, fill) {
           Localitzacio.codi = Localizations.localeOf(c).languageCode;
+          widget.sessio.usarIdioma(Localitzacio.codi);
           return fill ?? const SizedBox.shrink();
         },
       );
