@@ -9,7 +9,7 @@ La carpeta `app/ios` está preparada desde Windows, **sin haber compilado nunca*
 | Proyecto iOS | `flutter create --platforms=ios .` (Flutter 3.41) | `app/ios/` |
 | Bundle ID | `com.mamlabsfera.observatoriPerlhorta` | `Runner.xcodeproj/project.pbxproj` |
 | Nombre visible | «Observatori» | `Info.plist` (`CFBundleDisplayName`) |
-| Versión | la de `pubspec.yaml` (`1.0.1+2` → `CFBundleShortVersionString` 1.0.1, `CFBundleVersion` 2) | automática |
+| Versión | la de `pubspec.yaml` (`1.0.0` → `CFBundleShortVersionString`); el número de compilación (`CFBundleVersion`) lo pone Codemagic: el último de TestFlight + 1 | `codemagic.yaml` |
 | iOS mínimo | **15.0** | `Podfile`, `project.pbxproj` |
 | Idioma | `ca` | `Info.plist` |
 | Esquema del enlace de acceso | `observatoriplh://login-callback` | `Info.plist` (`CFBundleURLTypes`) |
