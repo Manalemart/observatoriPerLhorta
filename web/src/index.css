@@ -164,7 +164,6 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--marca); margin
 .legal ul { list-style: disc; padding-left: 1.25rem; }
 .legal li { margin-bottom: 0.35rem; }
 .legal nav { margin-bottom: 1rem; }
-.avis-esborrany { padding: 0.6rem 0.75rem; border-left: 3px solid #d9a400; background: var(--superficie-2); font-weight: 600; }
 .pendent { background: #ffe58f; color: #2b2822; padding: 0 0.2rem; border-radius: 3px; }
 .peu a { color: inherit; }
 
