@@ -21,10 +21,7 @@ export function LegalEn() {
   return (
     <main className="pagina pagina-estreta legal" lang="en">
       <h1>Legal notice and privacy</h1>
-      <p className="avis-esborrany" role="note">
-        Draft pending review by {TITULAR}. It is not in force until the final version is published. In case of
-        doubt, the Valencian version prevails.
-      </p>
+      <p>In case of doubt, the Valencian version prevails.</p>
       <nav aria-label="Sections">
         <a href="#avis-legal">Legal notice</a> · <a href="#privacitat">Privacy</a> · <a href="#condicions">Terms of use</a>
       </nav>

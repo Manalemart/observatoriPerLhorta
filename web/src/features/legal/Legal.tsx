@@ -33,9 +33,6 @@ export function Legal() {
   return (
     <main className="pagina pagina-estreta legal">
       <h1>Avís legal i privacitat</h1>
-      <p className="avis-esborrany" role="note">
-        Esborrany pendent de revisió per {TITULAR}. No és vigent fins que es publique la versió definitiva.
-      </p>
       <nav aria-label="Seccions">
         <a href="#avis-legal">Avís legal</a> · <a href="#privacitat">Privacitat</a> · <a href="#condicions">Condicions d'ús</a>
       </nav>

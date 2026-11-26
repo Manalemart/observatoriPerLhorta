@@ -20,10 +20,7 @@ export function LegalEs() {
   return (
     <main className="pagina pagina-estreta legal" lang="es">
       <h1>Aviso legal y privacidad</h1>
-      <p className="avis-esborrany" role="note">
-        Borrador pendiente de revisión por {TITULAR}. No está vigente hasta que se publique la versión definitiva.
-        En caso de duda, prevalece la versión en valenciano.
-      </p>
+      <p>En caso de duda, prevalece la versión en valenciano.</p>
       <nav aria-label="Secciones">
         <a href="#avis-legal">Aviso legal</a> · <a href="#privacitat">Privacidad</a> · <a href="#condicions">Condiciones de uso</a>
       </nav>
