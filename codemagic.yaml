@@ -44,7 +44,7 @@ workflows:
       vars:
         BUNDLE_ID: com.mamlabsfera.observatoriPerlhorta
         # L'identificador numèric de la app en App Store Connect (App Information → Apple ID)
-        APP_STORE_APPLE_ID: "0000000000"
+        APP_STORE_APPLE_ID: "6839642949"
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.mamlabsfera.observatoriPerlhorta
